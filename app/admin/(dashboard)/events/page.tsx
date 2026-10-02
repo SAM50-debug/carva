@@ -72,7 +72,7 @@ export default function EventsPage() {
         </Link> */}
       </div>
 
-      <div className="bg-[#111827] border border-white/8 rounded-2xl overflow-hidden">
+      <div className="bg-[#111827] border border-white/8 rounded-2xl overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-300">
           <thead className="bg-white/5 text-slate-400 border-b border-white/8">
             <tr>
@@ -80,7 +80,6 @@ export default function EventsPage() {
               <th className="px-6 py-4 font-medium">Type</th>
               <th className="px-6 py-4 font-medium">Participation</th>
               <th className="px-6 py-4 font-medium">Status</th>
-              <th className="px-6 py-4 font-medium text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/8">
@@ -100,15 +99,6 @@ export default function EventsPage() {
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${evt.isActive ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-500/10 text-slate-400'}`}>
                     {evt.isActive ? "Active" : "Hidden"}
                   </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <Link
-                    href={`/admin/events/${evt._id}`}
-                    className="inline-flex items-center gap-2 text-sm text-[#c8102e] hover:text-[#ff1a3b] font-medium"
-                  >
-                    <Edit className="w-4 h-4" />
-                    Edit
-                  </Link>
                 </td>
               </tr>
             ))}

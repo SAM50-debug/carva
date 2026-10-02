@@ -60,7 +60,7 @@ export default async function GlobalAttendanceRecordsPage() {
         </div>
       </div>
 
-      <div className="bg-[#111827]/50 rounded-2xl border border-white/10 overflow-hidden backdrop-blur-sm">
+      <div className="bg-[#111827]/50 rounded-2xl border border-white/10 overflow-hidden overflow-x-auto backdrop-blur-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-slate-300">
             <thead className="bg-[#1f2937]/50 text-xs uppercase text-slate-400 border-b border-white/10">
@@ -77,7 +77,7 @@ export default async function GlobalAttendanceRecordsPage() {
                   <td className="px-6 py-4 font-medium text-white">{record.studentInfo.studentName}</td>
                   <td className="px-6 py-4 font-mono text-slate-400">{record.studentInfo.rollNumber}</td>
                   <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-white">
+                    <span className="inline-flex whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-white">
                       {record.eventInfo.name}
                     </span>
                   </td>

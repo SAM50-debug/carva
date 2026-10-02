@@ -57,7 +57,7 @@ export default async function AttendanceListPage({ params }: { params: { eventId
         </div>
       </div>
 
-      <div className="bg-[#111827]/50 rounded-2xl border border-white/10 overflow-hidden backdrop-blur-sm">
+      <div className="bg-[#111827]/50 rounded-2xl border border-white/10 overflow-hidden overflow-x-auto backdrop-blur-sm">
         <table className="w-full text-left text-sm text-slate-300">
           <thead className="bg-[#1f2937]/50 text-xs uppercase text-slate-400 border-b border-white/10">
             <tr>

@@ -55,7 +55,7 @@ export default async function RegistrationsPage() {
         <ExportExcelButton data={exportData} filename="caravan26_registrations" />
       </div>
       
-      <div className="bg-[#111827]/50 rounded-2xl border border-white/10 overflow-hidden backdrop-blur-sm">
+      <div className="bg-[#111827]/50 rounded-2xl border border-white/10 overflow-hidden overflow-x-auto backdrop-blur-sm">
         <table className="w-full text-left text-sm text-slate-300">
           <thead className="bg-[#1f2937]/50 text-xs uppercase text-slate-400 border-b border-white/10">
             <tr>
@@ -80,7 +80,7 @@ export default async function RegistrationsPage() {
                 </td>
                 <td className="px-6 py-4 capitalize">{reg.participationType}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                  <span className={`inline-flex whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-medium ${
                     reg.status === 'verified' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
                     reg.status === 'rejected' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
                     'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
@@ -92,7 +92,7 @@ export default async function RegistrationsPage() {
                   {new Date(reg.submittedAt).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <Link href={`/admin/registrations/${reg._id}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-medium transition">
+                  <Link href={`/admin/registrations/${reg._id}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-medium transition-all active:scale-95 duration-200">
                     <Eye className="w-3.5 h-3.5" /> View
                   </Link>
                 </td>

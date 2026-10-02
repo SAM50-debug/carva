@@ -106,7 +106,7 @@ export default function QRScanner({ eventId, eventName }: { eventId: string; eve
             <div className="absolute inset-0 flex items-center justify-center bg-black/80">
               <button 
                 onClick={startScanning}
-                className="bg-[#c8102e] hover:bg-[#a50e26] text-white px-6 py-3 rounded-xl font-medium transition"
+                className="bg-[#c8102e] hover:bg-[#a50e26] text-white px-6 py-3 rounded-xl font-medium transition-all active:scale-95 duration-200"
               >
                 Start Camera
               </button>
@@ -162,7 +162,7 @@ export default function QRScanner({ eventId, eventName }: { eventId: string; eve
             <p className="text-amber-400 font-medium mb-8 px-4">{message}</p>
             <button 
               onClick={resetScanner}
-              className="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-medium transition"
+              className="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-medium transition-all active:scale-95 duration-200"
             >
               Scan Next Participant
             </button>

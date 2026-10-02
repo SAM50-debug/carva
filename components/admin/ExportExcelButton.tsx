@@ -41,7 +41,7 @@ export default function ExportExcelButton({ data, filename }: ExportExcelButtonP
   return (
     <button
       onClick={handleDownload}
-      className="flex items-center gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-xl transition-colors text-sm font-medium"
+      className="flex items-center gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-xl transition-all active:scale-95 duration-200 text-sm font-medium"
     >
       <Download className="w-4 h-4" />
       Export Excel

@@ -54,7 +54,7 @@ export default function CategoriesPage() {
         </div>
       </div>
 
-      <div className="bg-[#111827] border border-white/8 rounded-2xl overflow-hidden">
+      <div className="bg-[#111827] border border-white/8 rounded-2xl overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-300">
           <thead className="bg-white/5 text-slate-400 border-b border-white/8">
             <tr>

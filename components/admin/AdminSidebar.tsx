@@ -56,7 +56,7 @@ export default function AdminSidebar({ role = "super_admin" }: { role?: string }
           href={href}
           onClick={() => setMobileOpen(false)}
           className={clsx(
-            "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
+            "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all active:scale-[0.98] duration-200",
             isActive(href, exact)
               ? "bg-[#c8102e] text-white shadow-lg shadow-red-900/30"
               : "text-slate-400 hover:text-white hover:bg-white/5"
