@@ -64,9 +64,7 @@ export default function Navigation() {
         <motion.a
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.96 }}
-          href="https://forms.cloud.microsoft/r/3c3TxNrbsM"
-          target="_blank"
-          rel="noreferrer"
+          href="/register"
           className="ml-auto shrink-0 bg-brand-red text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-full font-bold text-xs md:text-sm hover:bg-red-600 transition-colors shadow-lg shadow-brand-red/20 whitespace-nowrap"
         >
           REGISTER

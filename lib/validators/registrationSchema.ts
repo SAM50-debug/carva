@@ -1,0 +1,79 @@
+import { z } from "zod";
+
+const selectedEventSchema = z.object({
+  categoryId: z.string(),
+  eventId: z.string(),
+  categoryName: z.string(),
+  eventName: z.string(),
+  subEvent: z.string().optional(),
+});
+
+const teamDetailsSchema = z.object({
+  teamName: z.string().min(1, "Team Name is required"),
+  leaderName: z.string().min(1, "Team Leader Name is required"),
+  memberCount: z.number().min(2, "Must have at least 2 members"),
+  culturalMemberCount: z.number().optional(),
+  membersInfo: z.string().min(1, "Team Members Info is required"),
+  concept: z.string().optional(),
+});
+
+export const registrationSchema = z.object({
+  // Participant Info
+  university: z.string().min(1, "University name is required"),
+  studentName: z.string().min(1, "Student name is required"),
+  rollNumber: z.string().min(1, "Roll number is required"),
+  course: z.string().min(1, "Course / Program is required"),
+  year: z.string().min(1, "Year is required"),
+  gender: z.string().min(1, "Gender is required"),
+  mobile: z.string().regex(/^[0-9]{10}$/, "Mobile number must be 10 digits"),
+  email: z.string().email("Invalid email address"),
+  facultyName: z.string().min(1, "Faculty Coordinator name is required"),
+  facultyMobile: z.string().min(1, "Faculty Coordinator mobile is required"),
+  facultyEmail: z.string().email("Invalid Faculty Coordinator email"),
+  
+  participationType: z.enum(["individual", "team"]),
+  teamDetails: teamDetailsSchema.optional(),
+
+  // Events
+  selectedEvents: z.array(selectedEventSchema).min(1, "Must select at least one event"),
+
+  // Payment
+  isRIMT: z.boolean(),
+  idCardUrl: z.string().optional(), // For RIMT
+  paymentProofUrl: z.string().optional(), // For Others
+  paymentDate: z.string().optional(), // For Others
+}).superRefine((data, ctx) => {
+  if (data.participationType === "team" && !data.teamDetails) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Team details are required for team participation",
+      path: ["teamDetails"],
+    });
+  }
+
+  if (data.isRIMT && !data.idCardUrl) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Student ID Card upload is required for RIMT students",
+      path: ["idCardUrl"],
+    });
+  }
+
+  if (!data.isRIMT && !data.paymentProofUrl) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Payment screenshot/receipt is required",
+      path: ["paymentProofUrl"],
+    });
+  }
+
+  if (!data.isRIMT && !data.paymentDate) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Payment date is required",
+      path: ["paymentDate"],
+    });
+  }
+});
+
+export type RegistrationFormData = z.infer<typeof registrationSchema>;
