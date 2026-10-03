@@ -3,13 +3,38 @@ import Link from "next/link";
 import { Eye, ArrowLeft } from "lucide-react";
 import ExportExcelButton from "@/components/admin/ExportExcelButton";
 
+import { headers } from "next/headers";
+import { ObjectId } from "mongodb";
+
 export default async function RegistrationsPage() {
   const db = await getDb();
   
+  const headersList = await headers();
+  const payloadStr = headersList.get("x-user-payload");
+  const user = payloadStr ? JSON.parse(payloadStr) : null;
+  const role = user?.role || "super_admin";
+  const assignedCategoryIds = user?.assignedCategoryIds || [];
+
+  let filterQuery = {};
+  
+  if (role === "sub_admin" && assignedCategoryIds.length > 0) {
+    const assignedCategoryObjectIds = assignedCategoryIds.map((id: string) => new ObjectId(id));
+    const subAdminEvents = await db.collection("events").find({ categoryId: { $in: assignedCategoryObjectIds } }, { projection: { _id: 1 } }).toArray();
+    const eventIds = subAdminEvents.map(e => e._id.toString());
+    
+    // Only show registrations that have at least one event belonging to this sub_admin's assigned categories
+    filterQuery = {
+      "selectedEvents.eventId": { $in: eventIds }
+    };
+  } else if (role === "sub_admin") {
+    // If sub_admin has no assigned categories, they see nothing
+    filterQuery = { _id: null };
+  }
+
   // Fetch registrations, sort by newest
   const registrations = await db
     .collection("registrations")
-    .find({})
+    .find(filterQuery)
     .sort({ submittedAt: -1 })
     .toArray();
 

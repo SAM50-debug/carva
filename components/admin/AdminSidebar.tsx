@@ -42,10 +42,14 @@ export default function AdminSidebar({ role = "super_admin" }: { role?: string }
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
 
-  // Sub admins only see Attendance and Settings (or just Attendance for now)
+  // Sub admins see Attendance, Attendance Records, and Registrations
   const filteredNav = NAV.filter(item => {
     if (role === "super_admin") return true;
-    return item.href === "/admin/attendance";
+    return (
+      item.href === "/admin/attendance" || 
+      item.href === "/admin/attendance-records" || 
+      item.href === "/admin/registrations"
+    );
   });
 
   const NavLinks = () => (

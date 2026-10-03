@@ -3,11 +3,39 @@ import { Users, Search, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import ExportExcelButton from "@/components/admin/ExportExcelButton";
 
+import { headers } from "next/headers";
+import { ObjectId } from "mongodb";
+
 export default async function GlobalAttendanceRecordsPage() {
   const db = await getDb();
 
+  const headersList = await headers();
+  const payloadStr = headersList.get("x-user-payload");
+  const user = payloadStr ? JSON.parse(payloadStr) : null;
+  const role = user?.role || "super_admin";
+  const assignedCategoryIds = user?.assignedCategoryIds || [];
+
+  let matchStage = {};
+  
+  if (role === "sub_admin" && assignedCategoryIds.length > 0) {
+    const assignedCategoryObjectIds = assignedCategoryIds.map((id: string) => new ObjectId(id));
+    const subAdminEvents = await db.collection("events").find({ categoryId: { $in: assignedCategoryObjectIds } }, { projection: { _id: 1 } }).toArray();
+    const eventIds = subAdminEvents.map(e => e._id.toString());
+    
+    matchStage = { $match: { eventId: { $in: eventIds } } };
+  } else if (role === "sub_admin") {
+    // If sub_admin has no assigned categories, they see nothing
+    matchStage = { $match: { _id: null } }; // impossible match
+  }
+
   // Aggregate all attendance records with student and event info
-  const records = await db.collection("attendance").aggregate([
+  const pipeline: any[] = [];
+  
+  if (Object.keys(matchStage).length > 0) {
+    pipeline.push(matchStage);
+  }
+
+  pipeline.push(
     {
       $lookup: {
         from: "registrations",
@@ -32,7 +60,9 @@ export default async function GlobalAttendanceRecordsPage() {
     { $unwind: "$eventInfo" },
     { $sort: { scannedAt: -1 } },
     { $limit: 200 } // Limit to 200 most recent for performance
-  ]).toArray();
+  );
+
+  const records = await db.collection("attendance").aggregate(pipeline).toArray();
 
   const exportData = records.map(r => ({
     studentName: r.studentInfo.studentName,
