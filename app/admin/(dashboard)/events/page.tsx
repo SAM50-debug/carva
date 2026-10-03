@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Edit, Plus, ArrowLeft } from "lucide-react";
 import { EventDoc } from "@/lib/db/models/types";
+import DashboardLoading from "../loading";
 
 export default function EventsPage() {
   const [events, setEvents] = useState<EventDoc[]>([]);
@@ -23,7 +24,7 @@ export default function EventsPage() {
     });
   }, []);
 
-  if (loading) return <div className="text-slate-400">Loading events...</div>;
+  if (loading) return <DashboardLoading />;
 
   const filteredEvents = Array.isArray(events)
     ? events.filter(e => {

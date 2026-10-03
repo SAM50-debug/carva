@@ -2,6 +2,7 @@ import { getDb } from "@/lib/db/client";
 import Link from "next/link";
 import { Eye, ArrowLeft } from "lucide-react";
 import ExportExcelButton from "@/components/admin/ExportExcelButton";
+import RegistrationsTable from "./RegistrationsTable";
 
 import { headers } from "next/headers";
 import { ObjectId } from "mongodb";
@@ -92,46 +93,7 @@ export default async function RegistrationsPage() {
               <th className="px-6 py-4 text-right">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10">
-            {registrations.map((reg) => (
-              <tr key={reg._id.toString()} className="hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4">
-                  <div className="font-semibold text-white">{reg.studentName}</div>
-                  <div className="text-xs text-slate-500">{reg.email}</div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="text-white">{reg.collegeName || "RIMT University"}</div>
-                  <div className="text-xs text-slate-500">{reg.course} • {reg.year} Year</div>
-                </td>
-                <td className="px-6 py-4 capitalize">{reg.participationType}</td>
-                <td className="px-6 py-4">
-                  <span className={`inline-flex whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-medium ${
-                    reg.status === 'verified' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                    reg.status === 'rejected' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                    'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
-                  }`}>
-                    {reg.status || 'pending'}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-slate-400">
-                  {new Date(reg.submittedAt).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <Link href={`/admin/registrations/${reg._id}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-medium transition-all active:scale-95 duration-200">
-                    <Eye className="w-3.5 h-3.5" /> View
-                  </Link>
-                </td>
-              </tr>
-            ))}
-            
-            {registrations.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
-                  No registrations found yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
+          <RegistrationsTable initialData={JSON.parse(JSON.stringify(registrations.slice(0, 50)))} />
         </table>
       </div>
     </div>

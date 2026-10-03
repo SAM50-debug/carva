@@ -8,23 +8,28 @@ if (!dbName) throw new Error("MONGODB_DB_NAME is not defined");
 
 // Global cache to reuse connection across hot-reloads in dev
 const globalForMongo = global as typeof globalThis & {
-  _mongoClient?: MongoClient;
+  _mongoClientPromise?: Promise<MongoClient>;
 };
 
 let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === "development") {
-  if (!globalForMongo._mongoClient) {
-    globalForMongo._mongoClient = new MongoClient(uri);
+  if (!globalForMongo._mongoClientPromise) {
+    client = new MongoClient(uri);
+    globalForMongo._mongoClientPromise = client.connect();
+  } else {
+    client = new MongoClient(uri); // It won't actually be used to connect here, but to satisfy types
   }
-  client = globalForMongo._mongoClient;
+  clientPromise = globalForMongo._mongoClientPromise;
 } else {
   client = new MongoClient(uri);
+  clientPromise = client.connect();
 }
 
 export async function getDb(): Promise<Db> {
-  await client.connect();
-  return client.db(dbName);
+  const connectedClient = await clientPromise;
+  return connectedClient.db(dbName);
 }
 
-export { client };
+export { client, clientPromise };

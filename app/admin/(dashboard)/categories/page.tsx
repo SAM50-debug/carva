@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Edit, ArrowLeft } from "lucide-react";
+import DashboardLoading from "../loading";
 
 type Category = {
   _id: string;
@@ -27,7 +28,7 @@ export default function CategoriesPage() {
       });
   }, []);
 
-  if (loading) return <div className="text-slate-400">Loading categories...</div>;
+  if (loading) return <DashboardLoading />;
 
   const filteredCategories = Array.isArray(categories) 
     ? categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.slug.toLowerCase().includes(search.toLowerCase()))
