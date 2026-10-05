@@ -44,6 +44,13 @@ export default function RegistrationForm() {
   const nextStep = () => setCurrentStep((prev) => prev + 1);
   const prevStep = () => setCurrentStep((prev) => prev - 1);
 
+  // Scroll to top when step changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [currentStep]);
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setSubmitError("");
