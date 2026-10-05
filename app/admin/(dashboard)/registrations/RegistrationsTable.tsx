@@ -9,10 +9,16 @@ type Registration = {
   _id: string;
   studentName: string;
   email: string;
-  collegeName?: string;
+  university?: string;
   course: string;
   year: string;
   participationType: string;
+  teamDetails?: {
+    teamName: string;
+    leaderName: string;
+    memberCount: number;
+    membersInfo: string;
+  };
   status: string;
   submittedAt: string;
 };
@@ -74,10 +80,15 @@ export default function RegistrationsTable({ initialData }: { initialData: Regis
               <div className="text-xs text-slate-500">{reg.email}</div>
             </td>
             <td className="px-6 py-4">
-              <div className="text-white">{reg.collegeName || "RIMT University"}</div>
+              <div className="text-white">{reg.university || "RIMT University"}</div>
               <div className="text-xs text-slate-500">{reg.course} • {reg.year} Year</div>
             </td>
-            <td className="px-6 py-4 capitalize">{reg.participationType}</td>
+            <td className="px-6 py-4">
+              <div className="capitalize">{reg.participationType}</div>
+              {reg.participationType === 'team' && reg.teamDetails && (
+                <div className="text-xs text-[#c8102e] font-medium mt-0.5">{reg.teamDetails.teamName}</div>
+              )}
+            </td>
             <td className="px-6 py-4">
               <span className={`inline-flex whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-medium ${
                 reg.status === 'verified' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
@@ -87,7 +98,7 @@ export default function RegistrationsTable({ initialData }: { initialData: Regis
                 {reg.status || 'pending'}
               </span>
             </td>
-            <td className="px-6 py-4 text-slate-400">
+            <td className="px-6 py-4 text-slate-400" suppressHydrationWarning>
               {new Date(reg.submittedAt).toLocaleDateString()}
             </td>
             <td className="px-6 py-4 text-right">

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { RegistrationFormData } from "@/lib/validators/registrationSchema";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { createPortal } from "react-dom";
 
 export function Step2Events({ 
   data, 
@@ -148,7 +149,7 @@ export function Step2Events({
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-300">Number of Team Members <span className="text-red-500">*</span></label>
-              <input type="number" min="2" value={teamDetails.memberCount} onChange={(e) => updateTeamDetails("memberCount", parseInt(e.target.value) || 0)} className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60" />
+              <input type="number" min="2" max="8" value={teamDetails.memberCount} onChange={(e) => updateTeamDetails("memberCount", parseInt(e.target.value) || 0)} onKeyDown={(e) => e.preventDefault()} className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60 [color-scheme:dark]" />
               {errors.memberCount && <p className="text-red-500 text-xs">{errors.memberCount}</p>}
             </div>
             <div className="space-y-2 md:col-span-2">
@@ -298,13 +299,24 @@ export function Step2Events({
         </button>
       </div>
 
-      {toastMessage && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="bg-red-500/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 font-medium border border-red-400/30">
-            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">!</div>
-            {toastMessage}
+      {toastMessage && typeof window !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setToastMessage("")} />
+          <div className="relative bg-[#111827] border border-white/10 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+              <span className="text-3xl text-red-500 font-bold">!</span>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Limit Reached</h3>
+            <p className="text-slate-400 mb-6">{toastMessage}</p>
+            <button 
+              onClick={() => setToastMessage("")}
+              className="w-full bg-[#c8102e] hover:bg-[#a50e26] text-white py-3 rounded-xl font-medium transition-colors active:scale-95"
+            >
+              Understood
+            </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

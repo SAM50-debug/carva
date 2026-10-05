@@ -63,6 +63,27 @@ export function Step3Payment({
     if (validate()) onNext();
   };
 
+  const getPricingInfo = () => {
+    let rate = 200; // Solo
+    let type = "Solo";
+    if (data.participationType === "team") {
+      const count = data.teamDetails?.memberCount || 2;
+      if (count === 2) {
+        rate = 400; // Duo
+        type = "Duo";
+      } else {
+        rate = 800; // Group
+        type = "Group";
+      }
+    }
+    const numEvents = data.selectedEvents?.length || 0;
+    const total = rate * numEvents;
+
+    return { rate, type, numEvents, total };
+  };
+
+  const { rate, type, numEvents, total } = getPricingInfo();
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
       
@@ -110,17 +131,50 @@ export function Step3Payment({
         <div>
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-white">Payment & Verification</h2>
-            <p className="text-slate-400">Scan the QR code to pay the registration fee, then upload the receipt.</p>
+            <p className="text-slate-400">Transfer the registration fee to the bank account below, then upload the receipt.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-lg">
-              <h3 className="text-slate-800 font-bold mb-4">UPI Payment QR</h3>
-              <div className="relative w-48 h-48 mb-4 border-4 border-slate-100 rounded-xl overflow-hidden">
-                <Image src="/payment-qr.png" alt="Payment QR" fill className="object-contain bg-white" />
+            <div className="bg-[#111827]/50 rounded-2xl p-6 flex flex-col items-start border border-white/10 shadow-lg relative overflow-hidden backdrop-blur-sm">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#c8102e]/10 rounded-full blur-3xl pointer-events-none" />
+              
+              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <div className="w-2 h-6 bg-[#c8102e] rounded-full" />
+                Payment Summary
+              </h3>
+
+              <div className="w-full space-y-3 mb-6 bg-black/30 p-4 rounded-xl border border-white/5">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-400">Participation Type</span>
+                  <span className="text-white font-medium">{type}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-400">Selected Events</span>
+                  <span className="text-white font-medium">{numEvents} x ₹{rate}</span>
+                </div>
+                <div className="h-px w-full bg-white/10 my-2" />
+                <div className="flex justify-between items-center text-lg">
+                  <span className="text-white font-bold">Total Amount</span>
+                  <span className="text-[#c8102e] font-bold">₹{total}</span>
+                </div>
               </div>
-              <p className="text-sm text-slate-600 font-medium">Scan using any UPI app</p>
-              <p className="text-xs text-slate-500 mt-2">After successful payment, take a screenshot of the transaction ID.</p>
+
+              <h3 className="text-sm font-bold text-white mb-3 uppercase tracking-wider text-slate-400">Bank Details</h3>
+              <div className="w-full space-y-4">
+                <div className="bg-black/30 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
+                  <span className="text-xs text-slate-500 font-medium">Account Number</span>
+                  <span className="text-white font-mono tracking-widest text-lg">920010070512696</span>
+                </div>
+                <div className="bg-black/30 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
+                  <span className="text-xs text-slate-500 font-medium">IFSC Code</span>
+                  <span className="text-white font-mono tracking-wider text-lg">UTIB0000762</span>
+                </div>
+              </div>
+              
+              <p className="text-xs text-slate-500 mt-6 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#c8102e]" />
+                Please take a screenshot after successful transfer.
+              </p>
             </div>
 
             <div className="space-y-6">
@@ -131,7 +185,7 @@ export function Step3Payment({
                   value={data.paymentDate || ""} 
                   onChange={(e) => updateData({ paymentDate: e.target.value })} 
                   max={new Date().toISOString().split("T")[0]}
-                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60" 
+                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60 [color-scheme:dark]" 
                 />
                 {errors.paymentDate && <p className="text-red-500 text-xs">{errors.paymentDate}</p>}
               </div>

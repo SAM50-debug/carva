@@ -25,7 +25,7 @@ export default async function RegistrationDetailPage({ params }: { params: { id:
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">{reg.studentName}</h1>
           <p className="text-slate-400 flex items-center gap-2">
-            <School className="w-4 h-4" /> {reg.collegeName || "RIMT University"}
+            <School className="w-4 h-4" /> {reg.university || "RIMT University"}
           </p>
         </div>
         <div className="text-right">
@@ -81,6 +81,33 @@ export default async function RegistrationDetailPage({ params }: { params: { id:
               </div>
             </div>
           </div>
+
+          {/* Team Info */}
+          {reg.participationType === "team" && reg.teamDetails && (
+            <div className="bg-[#111827]/50 rounded-2xl border border-white/10 p-6 backdrop-blur-sm">
+              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5 text-[#c8102e]" /> Team Details
+              </h2>
+              <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Team Name</p>
+                  <p className="text-slate-300 font-medium">{reg.teamDetails.teamName}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Leader Name</p>
+                  <p className="text-slate-300 font-medium">{reg.teamDetails.leaderName}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Total Members</p>
+                  <p className="text-slate-300 font-medium">{reg.teamDetails.memberCount}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-xs text-slate-500 mb-1">Members Info</p>
+                  <p className="text-slate-300 font-medium whitespace-pre-wrap">{reg.teamDetails.membersInfo}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Events */}
           <div className="bg-[#111827]/50 rounded-2xl border border-white/10 p-6 backdrop-blur-sm">

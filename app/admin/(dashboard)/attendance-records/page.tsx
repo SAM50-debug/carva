@@ -65,7 +65,9 @@ export default async function GlobalAttendanceRecordsPage() {
   const records = await db.collection("attendance").aggregate(pipeline).toArray();
 
   const exportData = records.map(r => ({
-    studentName: r.studentInfo.studentName,
+    participantName: r.studentInfo.studentName,
+    participationType: r.studentInfo.participationType,
+    teamName: r.studentInfo.teamDetails?.teamName || "N/A",
     rollNumber: r.studentInfo.rollNumber,
     eventName: r.eventInfo.name,
     scannedAt: r.scannedAt?.toString()
@@ -104,14 +106,19 @@ export default async function GlobalAttendanceRecordsPage() {
             <tbody className="divide-y divide-white/10">
               {records.map((record) => (
                 <tr key={record._id.toString()} className="hover:bg-white/5 transition-colors">
-                  <td className="px-6 py-4 font-medium text-white">{record.studentInfo.studentName}</td>
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-white">{record.studentInfo.studentName}</div>
+                    {record.studentInfo.participationType === 'team' && record.studentInfo.teamDetails && (
+                      <div className="text-xs text-[#c8102e] font-medium mt-0.5">{record.studentInfo.teamDetails.teamName}</div>
+                    )}
+                  </td>
                   <td className="px-6 py-4 font-mono text-slate-400">{record.studentInfo.rollNumber}</td>
                   <td className="px-6 py-4">
                     <span className="inline-flex whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-white">
                       {record.eventInfo.name}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right font-mono text-xs text-emerald-400">
+                  <td className="px-6 py-4 text-right font-mono text-xs text-emerald-400" suppressHydrationWarning>
                     {new Date(record.scannedAt).toLocaleString([], { 
                       month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
                     })}

@@ -11,7 +11,7 @@ const selectedEventSchema = z.object({
 const teamDetailsSchema = z.object({
   teamName: z.string().min(1, "Team Name is required"),
   leaderName: z.string().min(1, "Team Leader Name is required"),
-  memberCount: z.number().min(2, "Must have at least 2 members"),
+  memberCount: z.number().min(2, "Must have at least 2 members").max(8, "Cannot exceed 8 members"),
   culturalMemberCount: z.number().optional(),
   membersInfo: z.string().min(1, "Team Members Info is required"),
   concept: z.string().optional(),

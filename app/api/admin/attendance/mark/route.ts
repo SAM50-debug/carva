@@ -47,14 +47,6 @@ export async function POST(req: NextRequest) {
       return apiError("Participant did not register for this specific event.", 403);
     }
 
-    // 3. Mark attendance
-    const attendanceDoc = {
-      registrationId: registration._id,
-      eventId: eventId,
-      scannedAt: new Date(),
-      // In a real app we could get the scanner's subadmin ID from the JWT via headers
-    };
-
     // Check if already scanned
     const existing = await db.collection("attendance").findOne({ 
       registrationId: registration._id, 
@@ -62,8 +54,35 @@ export async function POST(req: NextRequest) {
     });
 
     if (existing) {
-      return apiError("Participant has already been scanned in for this event!", 409);
+      return NextResponse.json({ 
+        error: "Participant has already been scanned in for this event!", 
+        participantName: registration.studentName,
+        university: registration.university,
+        participationType: registration.participationType,
+        teamName: registration.teamDetails?.teamName,
+        leaderName: registration.teamDetails?.leaderName,
+        memberCount: registration.teamDetails?.memberCount,
+      }, { status: 409 });
     }
+
+    if (body.action === "verify") {
+      return apiSuccess({
+        message: "Verification successful",
+        participantName: registration.studentName,
+        university: registration.university,
+        participationType: registration.participationType,
+        teamName: registration.teamDetails?.teamName,
+        leaderName: registration.teamDetails?.leaderName,
+        memberCount: registration.teamDetails?.memberCount,
+      });
+    }
+
+    // 3. Mark attendance
+    const attendanceDoc = {
+      registrationId: registration._id,
+      eventId: eventId,
+      scannedAt: new Date(),
+    };
 
     await db.collection("attendance").insertOne(attendanceDoc);
 

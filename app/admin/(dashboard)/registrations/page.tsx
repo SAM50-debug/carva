@@ -62,6 +62,7 @@ export default async function RegistrationsPage() {
       "Year": r.year || "N/A",
       "University": r.university || r.collegeName || "RIMT University",
       "Participation Type": r.participationType || r.type || "individual",
+      "Team Name": r.teamDetails?.teamName || "N/A",
       "Status": r.status || "verified",
       "QR Code": r.qrCode || "N/A",
       "Total Events": r.selectedEvents?.length || 0,
