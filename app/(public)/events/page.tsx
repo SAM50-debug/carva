@@ -161,8 +161,8 @@ export default function EventsPage() {
             return {
               id: e.slug || e._id,
               name: e.name,
-              // Normalize: "Cultural Events" → "CULTURAL", "Fine Arts" → "FINE ARTS"
-              category: cat.name.toUpperCase().replace(/\s*EVENTS?\s*$/i, "").trim(),
+              // Normalize: "Cultural Events" → "CULTURAL", "Business Battles" → "BUSINESS", "Media Club Events" -> "MEDIA"
+              category: cat.name.toUpperCase().replace(/(?:\s*(?:EVENTS?|CLUB|BATTLES))+\s*$/i, "").trim(),
               description: e.descriptor || "",
               teamSize: teamSizeStr,
               duration:
