@@ -39,7 +39,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   const mappedEvent = {
     id: dbEvent._id.toString(),
     name: dbEvent.name,
-    category: dbCategory ? dbCategory.name.toUpperCase().replace(/\s*EVENTS?\s*$/i, "").trim() : "CULTURAL",
+    category: dbCategory ? dbCategory.name.toUpperCase().replace(/(?:\s*(?:EVENTS?|CLUB|BATTLES))+\s*$/i, "").trim() : "CULTURAL",
     description: dbEvent.descriptor || "",
     teamSize: teamSizeStr,
     duration: dbEvent.duration?.display || (dbEvent.duration?.minutes ? `${dbEvent.duration.minutes} mins` : undefined),
