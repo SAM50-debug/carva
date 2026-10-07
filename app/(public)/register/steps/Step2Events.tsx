@@ -149,7 +149,11 @@ export function Step2Events({
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-300">Number of Team Members <span className="text-red-500">*</span></label>
-              <input type="number" min="2" max="8" value={teamDetails.memberCount} onChange={(e) => updateTeamDetails("memberCount", parseInt(e.target.value) || 0)} onKeyDown={(e) => e.preventDefault()} className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60 [color-scheme:dark]" />
+              <select value={teamDetails.memberCount} onChange={(e) => updateTeamDetails("memberCount", parseInt(e.target.value) || 2)} className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60 [color-scheme:dark]">
+                {[2, 3, 4, 5, 6, 7, 8].map(num => (
+                  <option key={num} value={num} className="bg-[#111827]">{num}</option>
+                ))}
+              </select>
               {errors.memberCount && <p className="text-red-500 text-xs">{errors.memberCount}</p>}
             </div>
             <div className="space-y-2 md:col-span-2">
