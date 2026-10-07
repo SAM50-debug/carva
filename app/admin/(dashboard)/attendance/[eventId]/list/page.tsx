@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Users } from "lucide-react";
 import { headers } from "next/headers";
 
-export default async function AttendanceListPage({ params }: { params: { eventId: string } }) {
+export default async function AttendanceListPage({ params }: { params: Promise<{ eventId: string }> }) {
   const { eventId } = await params;
   
   if (!ObjectId.isValid(eventId)) return notFound();

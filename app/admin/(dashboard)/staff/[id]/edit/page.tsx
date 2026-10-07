@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import EditStaffForm from "./EditStaffForm";
 
-export default async function EditStaffPage({ params }: { params: { id: string } }) {
+export default async function EditStaffPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!ObjectId.isValid(id)) return notFound();
 

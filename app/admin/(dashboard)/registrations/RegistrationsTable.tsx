@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { Eye, Loader2 } from "lucide-react";
 import { getRegistrationsPage } from "./actions";
+import { EditRegistrationModal } from "./[id]/EditRegistrationModal";
 
 type Registration = {
   _id: string;
@@ -23,7 +24,7 @@ type Registration = {
   submittedAt: string;
 };
 
-export default function RegistrationsTable({ initialData }: { initialData: Registration[] }) {
+export default function RegistrationsTable({ initialData, query = "" }: { initialData: Registration[], query?: string }) {
   const [data, setData] = useState<Registration[]>(initialData);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -38,7 +39,7 @@ export default function RegistrationsTable({ initialData }: { initialData: Regis
     setLoading(true);
     try {
       const skip = page * 50;
-      const nextBatch = await getRegistrationsPage(skip, 50);
+      const nextBatch = await getRegistrationsPage(skip, 50, query);
       
       if (nextBatch.length === 0) {
         setHasMore(false);
@@ -52,7 +53,14 @@ export default function RegistrationsTable({ initialData }: { initialData: Regis
     } finally {
       setLoading(false);
     }
-  }, [page, loading, hasMore]);
+  }, [page, loading, hasMore, query]);
+
+  // When initialData changes (e.g. from URL search params changing), reset the infinite scroll state
+  useEffect(() => {
+    setData(initialData);
+    setPage(1);
+    setHasMore(initialData.length === 50);
+  }, [initialData]);
 
   useEffect(() => {
     if (!loadingTriggerRef.current) return;
@@ -102,9 +110,22 @@ export default function RegistrationsTable({ initialData }: { initialData: Regis
               {new Date(reg.submittedAt).toLocaleDateString()}
             </td>
             <td className="px-6 py-4 text-right">
-              <Link href={`/admin/registrations/${reg._id}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-medium transition-all active:scale-95 duration-200">
-                <Eye className="w-3.5 h-3.5" /> View
-              </Link>
+              <div className="flex items-center justify-end gap-2">
+                <EditRegistrationModal 
+                  registration={reg} 
+                  compact 
+                  onSuccess={(updatedReg) => {
+                    setData(prev => prev.map(r => 
+                      r._id === reg._id 
+                        ? { ...r, ...updatedReg } 
+                        : r
+                    ));
+                  }}
+                />
+                <Link href={`/admin/registrations/${reg._id}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-medium transition-all active:scale-95 duration-200">
+                  <Eye className="w-3.5 h-3.5" /> View
+                </Link>
+              </div>
             </td>
           </tr>
         ))}

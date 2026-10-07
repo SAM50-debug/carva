@@ -4,8 +4,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, User, School, Calendar, Smartphone, QrCode, Mail, Users } from "lucide-react";
 import Image from "next/image";
+import { EditRegistrationModal } from "./EditRegistrationModal";
 
-export default async function RegistrationDetailPage({ params }: { params: { id: string } }) {
+export default async function RegistrationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
   if (!ObjectId.isValid(id)) return notFound();
@@ -28,12 +29,15 @@ export default async function RegistrationDetailPage({ params }: { params: { id:
             <School className="w-4 h-4" /> {reg.university || "RIMT University"}
           </p>
         </div>
-        <div className="text-right">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Verified
+        <div className="text-right flex flex-col items-end gap-3">
+          <div className="flex items-center gap-3">
+            <EditRegistrationModal registration={JSON.parse(JSON.stringify(reg))} />
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Verified
+            </div>
           </div>
-          <p className="text-sm text-slate-500 mt-2 flex items-center gap-1.5 justify-end">
+          <p className="text-sm text-slate-500 flex items-center gap-1.5">
             <QrCode className="w-3.5 h-3.5" /> {reg.qrCode}
           </p>
         </div>

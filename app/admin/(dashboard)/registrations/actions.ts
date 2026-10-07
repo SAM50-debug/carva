@@ -4,7 +4,7 @@ import { getDb } from "@/lib/db/client";
 import { headers } from "next/headers";
 import { ObjectId } from "mongodb";
 
-export async function getRegistrationsPage(skip: number, limit: number = 50) {
+export async function getRegistrationsPage(skip: number, limit: number = 50, query: string = "") {
   const db = await getDb();
   
   const headersList = await headers();
@@ -13,7 +13,7 @@ export async function getRegistrationsPage(skip: number, limit: number = 50) {
   const role = user?.role || "super_admin";
   const assignedCategoryIds = user?.assignedCategoryIds || [];
 
-  let filterQuery = {};
+  let filterQuery: any = {};
   
   if (role === "sub_admin" && assignedCategoryIds.length > 0) {
     const assignedCategoryObjectIds = assignedCategoryIds.map((id: string) => new ObjectId(id));
@@ -23,6 +23,17 @@ export async function getRegistrationsPage(skip: number, limit: number = 50) {
     filterQuery = { "selectedEvents.eventId": { $in: eventIds } };
   } else if (role === "sub_admin") {
     filterQuery = { _id: null };
+  }
+
+  if (query && query.trim() !== "") {
+    const regex = { $regex: query, $options: "i" };
+    filterQuery.$or = [
+      { studentName: regex },
+      { email: regex },
+      { rollNumber: regex },
+      { "teamDetails.teamName": regex },
+      { qrCode: regex }
+    ];
   }
 
   const registrations = await db

@@ -3,12 +3,14 @@ import Link from "next/link";
 import { Eye, ArrowLeft } from "lucide-react";
 import ExportExcelButton from "@/components/admin/ExportExcelButton";
 import RegistrationsTable from "./RegistrationsTable";
+import RegistrationsSearch from "./RegistrationsSearch";
 
 import { headers } from "next/headers";
 import { ObjectId } from "mongodb";
 
-export default async function RegistrationsPage() {
+export default async function RegistrationsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const db = await getDb();
+  const query = (await searchParams).q || "";
   
   const headersList = await headers();
   const payloadStr = headersList.get("x-user-payload");
@@ -30,6 +32,17 @@ export default async function RegistrationsPage() {
   } else if (role === "sub_admin") {
     // If sub_admin has no assigned categories, they see nothing
     filterQuery = { _id: null };
+  }
+
+  if (query && query.trim() !== "") {
+    const regex = { $regex: query, $options: "i" };
+    (filterQuery as any).$or = [
+      { studentName: regex },
+      { email: regex },
+      { rollNumber: regex },
+      { "teamDetails.teamName": regex },
+      { qrCode: regex }
+    ];
   }
 
   // Fetch registrations, sort by newest
@@ -79,7 +92,10 @@ export default async function RegistrationsPage() {
       
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold text-white">Registrations Dashboard</h1>
-        <ExportExcelButton data={exportData} filename="caravan26_registrations" />
+        <div className="flex items-center gap-3">
+          <RegistrationsSearch initialQuery={query} />
+          <ExportExcelButton data={exportData} filename="caravan26_registrations" />
+        </div>
       </div>
       
       <div className="bg-[#111827]/50 rounded-2xl border border-white/10 overflow-hidden overflow-x-auto backdrop-blur-sm">
@@ -94,7 +110,7 @@ export default async function RegistrationsPage() {
               <th className="px-6 py-4 text-right">Action</th>
             </tr>
           </thead>
-          <RegistrationsTable initialData={JSON.parse(JSON.stringify(registrations.slice(0, 50)))} />
+          <RegistrationsTable initialData={JSON.parse(JSON.stringify(registrations.slice(0, 50)))} query={query} />
         </table>
       </div>
     </div>

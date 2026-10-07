@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import QRScanner from "./QRScanner";
 import { headers } from "next/headers";
 
-export default async function AttendanceScannerPage({ params }: { params: { eventId: string } }) {
+export default async function AttendanceScannerPage({ params }: { params: Promise<{ eventId: string }> }) {
   const { eventId } = await params;
   
   if (!ObjectId.isValid(eventId)) return notFound();

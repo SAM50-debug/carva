@@ -159,7 +159,13 @@ export function Step2Events({
             <div className="space-y-2 md:col-span-2">
               <label className="block text-sm font-medium text-slate-300">Team Members Info <span className="text-red-500">*</span></label>
               <p className="text-xs text-slate-400 mb-1">List each member's Name, Course, Roll No, Mobile, and Email (one member per line)</p>
-              <textarea rows={4} value={teamDetails.membersInfo} onChange={(e) => updateTeamDetails("membersInfo", e.target.value)} className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60"></textarea>
+              <textarea 
+                rows={4} 
+                value={teamDetails.membersInfo} 
+                onChange={(e) => updateTeamDetails("membersInfo", e.target.value)} 
+                placeholder="1. John Doe, B.Tech CSE, 1234567, 9876543210, john@example.com&#10;2. Jane Smith, B.Tech ECE, 7654321, 9998887776, jane@example.com"
+                className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500/50 focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60"
+              />
               {errors.membersInfo && <p className="text-red-500 text-xs">{errors.membersInfo}</p>}
             </div>
           </div>
