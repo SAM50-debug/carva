@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <AdminSidebar role={role} />
       {/* Main content — offset by sidebar width on desktop */}
       <main className="flex-1 min-w-0 lg:ml-64 min-h-screen">
-        <div className="p-6 lg:p-8 pt-16 lg:pt-8">
+        <div className="p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
           {children}
         </div>
       </main>

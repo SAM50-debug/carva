@@ -33,8 +33,9 @@ export async function proxy(request: NextRequest) {
     const role = payload.role as string;
     
     if (role === "sub_admin") {
-      // Allow /admin/attendance, /admin/attendance-records, /admin/registrations, or auth API routes
+      // Allow /admin, /admin/attendance, /admin/attendance-records, /admin/registrations, or auth API routes
       if (
+        pathname !== "/admin" &&
         !pathname.startsWith("/admin/attendance") && 
         !pathname.startsWith("/admin/attendance-records") && 
         !pathname.startsWith("/admin/registrations") && 
@@ -45,7 +46,7 @@ export async function proxy(request: NextRequest) {
         if (isAdminApiRoute) {
           return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
-        return NextResponse.redirect(new URL("/admin/attendance", request.url));
+        return NextResponse.redirect(new URL("/admin", request.url));
       }
     }
 

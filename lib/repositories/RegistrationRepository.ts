@@ -87,6 +87,11 @@ export class RegistrationRepository {
     );
   }
 
+  async delete(id: string): Promise<void> {
+    const col = await this.col();
+    await col.deleteOne({ _id: new ObjectId(id) });
+  }
+
   async ensureIndexes(): Promise<void> {
     const col = await this.col();
     await col.createIndex({ qrCode: 1 }, { unique: true });

@@ -4,13 +4,14 @@ import { Eye, ArrowLeft } from "lucide-react";
 import ExportExcelButton from "@/components/admin/ExportExcelButton";
 import RegistrationsTable from "./RegistrationsTable";
 import RegistrationsSearch from "./RegistrationsSearch";
+import RegistrationsFilter from "./RegistrationsFilter";
 
 import { headers } from "next/headers";
 import { ObjectId } from "mongodb";
 
-export default async function RegistrationsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+export default async function RegistrationsPage({ searchParams }: { searchParams: Promise<{ q?: string; category?: string; event?: string }> }) {
   const db = await getDb();
-  const query = (await searchParams).q || "";
+  const { q: query = "", category = "", event = "" } = await searchParams;
   
   const headersList = await headers();
   const payloadStr = headersList.get("x-user-payload");
@@ -20,10 +21,19 @@ export default async function RegistrationsPage({ searchParams }: { searchParams
 
   let filterQuery = {};
   
+  let availableEvents: any[] = [];
+  let availableCategories: any[] = [];
+  
+  if (role === "super_admin") {
+    availableCategories = await db.collection("categories").find({ isActive: true }, { projection: { name: 1 } }).toArray();
+    availableEvents = await db.collection("events").find({ isActive: true }, { projection: { name: 1, categoryId: 1 } }).toArray();
+  }
+
   if (role === "sub_admin" && assignedCategoryIds.length > 0) {
     const assignedCategoryObjectIds = assignedCategoryIds.map((id: string) => new ObjectId(id));
-    const subAdminEvents = await db.collection("events").find({ categoryId: { $in: assignedCategoryObjectIds } }, { projection: { _id: 1 } }).toArray();
+    const subAdminEvents = await db.collection("events").find({ categoryId: { $in: assignedCategoryObjectIds } }, { projection: { name: 1, categoryId: 1 } }).toArray();
     const eventIds = subAdminEvents.map(e => e._id.toString());
+    availableEvents = subAdminEvents;
     
     // Only show registrations that have at least one event belonging to this sub_admin's assigned categories
     filterQuery = {
@@ -32,6 +42,12 @@ export default async function RegistrationsPage({ searchParams }: { searchParams
   } else if (role === "sub_admin") {
     // If sub_admin has no assigned categories, they see nothing
     filterQuery = { _id: null };
+  }
+
+  if (event) {
+    (filterQuery as any)["selectedEvents.eventId"] = event;
+  } else if (category && role === "super_admin") {
+    (filterQuery as any)["selectedEvents.categoryId"] = category;
   }
 
   if (query && query.trim() !== "") {
@@ -91,8 +107,13 @@ export default async function RegistrationsPage({ searchParams }: { searchParams
       </Link>
       
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <h1 className="text-3xl font-bold text-white">Registrations Dashboard</h1>
-        <div className="flex items-center gap-3">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Registrations</h1>
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full md:w-auto">
+          <RegistrationsFilter 
+            role={role} 
+            categories={JSON.parse(JSON.stringify(availableCategories))} 
+            events={JSON.parse(JSON.stringify(availableEvents))} 
+          />
           <RegistrationsSearch initialQuery={query} />
           <ExportExcelButton data={exportData} filename="caravan26_registrations" />
         </div>
@@ -110,7 +131,13 @@ export default async function RegistrationsPage({ searchParams }: { searchParams
               <th className="px-6 py-4 text-right">Action</th>
             </tr>
           </thead>
-          <RegistrationsTable initialData={JSON.parse(JSON.stringify(registrations.slice(0, 50)))} query={query} />
+          <RegistrationsTable 
+            initialData={JSON.parse(JSON.stringify(registrations.slice(0, 50)))} 
+            query={query} 
+            role={role} 
+            filterEventId={event} 
+            filterCategoryId={category} 
+          />
         </table>
       </div>
     </div>

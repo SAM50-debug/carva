@@ -1,7 +1,15 @@
 import { getDb } from "@/lib/db/client";
+import { headers } from "next/headers";
+import { ObjectId } from "mongodb";
 import DashboardCharts from "./DashboardCharts";
 
 export default async function AdminDashboardPage() {
+  const headersList = await headers();
+  const payloadStr = headersList.get("x-user-payload");
+  const user = payloadStr ? JSON.parse(payloadStr) : null;
+  const role = user?.role || "super_admin";
+  const assignedCategoryIds = user?.assignedCategoryIds || [];
+
   // Quick stats — gracefully handle DB not yet seeded
   let stats = { registrations: 0, events: 0, categories: 0, staff: 0 };
   let universityStats: { name: string; value: number }[] = [];
@@ -11,16 +19,37 @@ export default async function AdminDashboardPage() {
 
   try {
     const db = await getDb();
+    
+    // Construct filter queries based on role
+    let regFilterQuery: any = {};
+    let eventFilterQuery: any = {};
+    let catFilterQuery: any = {};
+    let eventIds: string[] = [];
+    
+    if (role === "sub_admin" && assignedCategoryIds.length > 0) {
+      const assignedCategoryObjectIds = assignedCategoryIds.map((id: string) => new ObjectId(id));
+      const subAdminEvents = await db.collection("events").find({ categoryId: { $in: assignedCategoryObjectIds } }, { projection: { _id: 1 } }).toArray();
+      eventIds = subAdminEvents.map(e => e._id.toString());
+      
+      regFilterQuery = { "selectedEvents.eventId": { $in: eventIds } };
+      eventFilterQuery = { categoryId: { $in: assignedCategoryObjectIds } };
+      catFilterQuery = { _id: { $in: assignedCategoryObjectIds } };
+    } else if (role === "sub_admin") {
+      regFilterQuery = { _id: null };
+      eventFilterQuery = { _id: null };
+      catFilterQuery = { _id: null };
+    }
+
     const [regs, evts, cats, stfs] = await Promise.all([
-      db.collection("registrations").countDocuments(),
-      db.collection("events").countDocuments({ isActive: true }),
-      db.collection("categories").countDocuments({ isActive: true }),
+      db.collection("registrations").countDocuments(regFilterQuery),
+      db.collection("events").countDocuments({ isActive: true, ...eventFilterQuery }),
+      db.collection("categories").countDocuments({ isActive: true, ...catFilterQuery }),
       db.collection("adminUsers").countDocuments({ isActive: true }),
     ]);
     stats = { registrations: regs, events: evts, categories: cats, staff: stfs };
 
     // 1. RIMT vs Non-RIMT
-    const rimtCount = await db.collection("registrations").countDocuments({ university: { $regex: /rimt/i } });
+    const rimtCount = await db.collection("registrations").countDocuments({ ...regFilterQuery, university: { $regex: /rimt/i } });
     const nonRimtCount = regs - rimtCount;
     universityStats = [
       { name: "RIMT", value: rimtCount },
@@ -28,7 +57,10 @@ export default async function AdminDashboardPage() {
     ];
 
     // 2. Daily Registration Trend
+    const matchStage = Object.keys(regFilterQuery).length > 0 ? [{ $match: regFilterQuery }] : [];
+    
     const dailyAggr = await db.collection("registrations").aggregate([
+      ...matchStage,
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$submittedAt" } },
@@ -42,7 +74,11 @@ export default async function AdminDashboardPage() {
 
     // 3. Category & Event Stats
     const eventParticipation = await db.collection("registrations").aggregate([
+      ...matchStage,
       { $unwind: "$selectedEvents" },
+      ...(role === "sub_admin" && eventIds.length > 0 
+        ? [{ $match: { "selectedEvents.eventId": { $in: eventIds } } }]
+        : []),
       {
         $group: {
           _id: "$selectedEvents.eventId",
@@ -53,8 +89,8 @@ export default async function AdminDashboardPage() {
     ]).toArray();
 
     // Map Event names
-    const eventsLookup = await db.collection("events").find({}).project({ name: 1, categoryId: 1 }).toArray();
-    const categoriesLookup = await db.collection("categories").find({}).project({ name: 1 }).toArray();
+    const eventsLookup = await db.collection("events").find(eventFilterQuery).project({ name: 1, categoryId: 1 }).toArray();
+    const categoriesLookup = await db.collection("categories").find(catFilterQuery).project({ name: 1 }).toArray();
 
     const categoryCountMap: Record<string, number> = {};
     const eventCountMap: { name: string, value: number }[] = [];
@@ -85,7 +121,7 @@ export default async function AdminDashboardPage() {
     { label: "Total Registrations", value: stats.registrations, color: "text-emerald-400" },
     { label: "Active Events", value: stats.events, color: "text-blue-400" },
     { label: "Categories", value: stats.categories, color: "text-purple-400" },
-    { label: "Staff Members", value: stats.staff, color: "text-amber-400" },
+    ...(role === "super_admin" ? [{ label: "Staff Members", value: stats.staff, color: "text-amber-400" }] : []),
   ];
 
   return (

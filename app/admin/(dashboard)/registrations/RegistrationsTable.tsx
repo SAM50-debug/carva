@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { Eye, Loader2 } from "lucide-react";
-import { getRegistrationsPage } from "./actions";
+import { Eye, Loader2, Trash2 } from "lucide-react";
+import { getRegistrationsPage, deleteRegistrationAction } from "./actions";
 import { EditRegistrationModal } from "./[id]/EditRegistrationModal";
 
 type Registration = {
@@ -24,7 +24,7 @@ type Registration = {
   submittedAt: string;
 };
 
-export default function RegistrationsTable({ initialData, query = "" }: { initialData: Registration[], query?: string }) {
+export default function RegistrationsTable({ initialData, query = "", role, filterEventId = "", filterCategoryId = "" }: { initialData: Registration[], query?: string, role?: string, filterEventId?: string, filterCategoryId?: string }) {
   const [data, setData] = useState<Registration[]>(initialData);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -39,7 +39,7 @@ export default function RegistrationsTable({ initialData, query = "" }: { initia
     setLoading(true);
     try {
       const skip = page * 50;
-      const nextBatch = await getRegistrationsPage(skip, 50, query);
+      const nextBatch = await getRegistrationsPage(skip, 50, query, filterEventId, filterCategoryId);
       
       if (nextBatch.length === 0) {
         setHasMore(false);
@@ -53,7 +53,7 @@ export default function RegistrationsTable({ initialData, query = "" }: { initia
     } finally {
       setLoading(false);
     }
-  }, [page, loading, hasMore, query]);
+  }, [page, loading, hasMore, query, filterEventId, filterCategoryId]);
 
   // When initialData changes (e.g. from URL search params changing), reset the infinite scroll state
   useEffect(() => {
@@ -77,6 +77,18 @@ export default function RegistrationsTable({ initialData, query = "" }: { initia
       if (observerRef.current) observerRef.current.disconnect();
     };
   }, [loadMore]);
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this registration? This action cannot be undone.")) return;
+    
+    try {
+      await deleteRegistrationAction(id);
+      setData(prev => prev.filter(r => r._id !== id));
+    } catch (err) {
+      console.error("Failed to delete registration", err);
+      alert("Failed to delete registration");
+    }
+  };
 
   return (
     <>
@@ -125,6 +137,11 @@ export default function RegistrationsTable({ initialData, query = "" }: { initia
                 <Link href={`/admin/registrations/${reg._id}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-medium transition-all active:scale-95 duration-200">
                   <Eye className="w-3.5 h-3.5" /> View
                 </Link>
+                {role === "super_admin" && (
+                  <button onClick={() => handleDelete(reg._id)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg text-xs font-medium transition-all active:scale-95 duration-200">
+                    <Trash2 className="w-3.5 h-3.5" /> Delete
+                  </button>
+                )}
               </div>
             </td>
           </tr>

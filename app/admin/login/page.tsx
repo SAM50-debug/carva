@@ -32,11 +32,7 @@ export default function AdminLoginPage() {
       }
       
       // If success, DO NOT set loading to false. Let it stay disabled while the router transitions.
-      if (data.user?.role === "sub_admin") {
-        router.push("/admin/attendance");
-      } else {
-        router.push("/admin");
-      }
+      router.push("/admin");
       
       router.refresh();
     } catch {

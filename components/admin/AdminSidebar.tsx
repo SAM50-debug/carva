@@ -42,10 +42,11 @@ export default function AdminSidebar({ role = "super_admin" }: { role?: string }
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
 
-  // Sub admins see Attendance, Attendance Records, and Registrations
+  // Sub admins see Dashboard, Attendance, Attendance Records, and Registrations
   const filteredNav = NAV.filter(item => {
     if (role === "super_admin") return true;
     return (
+      item.href === "/admin" || 
       item.href === "/admin/attendance" || 
       item.href === "/admin/attendance-records" || 
       item.href === "/admin/registrations"
@@ -78,7 +79,7 @@ export default function AdminSidebar({ role = "super_admin" }: { role?: string }
       {/* Mobile toggle button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#111827] border border-white/10 rounded-xl text-white"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white shadow-xl shadow-black/20 transition-transform active:scale-95"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -94,8 +95,8 @@ export default function AdminSidebar({ role = "super_admin" }: { role?: string }
       {/* Sidebar */}
       <aside
         className={clsx(
-          "fixed top-0 left-0 h-full w-64 bg-[#0d1424] border-r border-white/8 flex flex-col z-50 transition-transform duration-200",
-          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          "fixed top-0 left-0 h-full w-72 lg:w-64 bg-[#0d1424]/95 backdrop-blur-xl border-r border-white/10 flex flex-col z-50 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
+          mobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:translate-x-0"
         )}
       >
         {/* Header */}

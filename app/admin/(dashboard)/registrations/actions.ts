@@ -4,7 +4,7 @@ import { getDb } from "@/lib/db/client";
 import { headers } from "next/headers";
 import { ObjectId } from "mongodb";
 
-export async function getRegistrationsPage(skip: number, limit: number = 50, query: string = "") {
+export async function getRegistrationsPage(skip: number, limit: number = 50, query: string = "", filterEventId: string = "", filterCategoryId: string = "") {
   const db = await getDb();
   
   const headersList = await headers();
@@ -36,6 +36,12 @@ export async function getRegistrationsPage(skip: number, limit: number = 50, que
     ];
   }
 
+  if (filterEventId) {
+    filterQuery["selectedEvents.eventId"] = filterEventId;
+  } else if (filterCategoryId) {
+    filterQuery["selectedEvents.categoryId"] = filterCategoryId;
+  }
+
   const registrations = await db
     .collection("registrations")
     .find(filterQuery)
@@ -45,4 +51,19 @@ export async function getRegistrationsPage(skip: number, limit: number = 50, que
     .toArray();
 
   return JSON.parse(JSON.stringify(registrations));
+}
+
+export async function deleteRegistrationAction(id: string) {
+  const headersList = await headers();
+  const payloadStr = headersList.get("x-user-payload");
+  const user = payloadStr ? JSON.parse(payloadStr) : null;
+
+  if (user?.role !== "super_admin") {
+    throw new Error("Unauthorized");
+  }
+
+  const { registrationRepository } = await import("@/lib/repositories/RegistrationRepository");
+  await registrationRepository.delete(id);
+  
+  return { success: true };
 }
