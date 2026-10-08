@@ -64,25 +64,34 @@ export function Step3Payment({
   };
 
   const getPricingInfo = () => {
-    let rate = 200; // Solo
-    let type = "Solo";
-    if (data.participationType === "team") {
-      const count = data.teamDetails?.memberCount || 2;
-      if (count === 2) {
-        rate = 400; // Duo
-        type = "Duo";
-      } else {
-        rate = 800; // Group
-        type = "Group";
-      }
-    }
     const numEvents = data.selectedEvents?.length || 0;
-    const total = rate * numEvents;
+    const eventBreakdown: { name: string; cost: number }[] = [];
+    let total = 0;
 
-    return { rate, type, numEvents, total };
+    if (data.participationType === "individual") {
+      data.selectedEvents?.forEach(evt => {
+        eventBreakdown.push({ name: evt.eventName, cost: 200 });
+        total += 200;
+      });
+      return { type: "Solo", numEvents, total, eventBreakdown };
+    }
+
+    // Team participation
+    data.selectedEvents?.forEach(evt => {
+      const count = evt.teamDetails?.memberCount || 2;
+      const cost = count <= 2 ? 400 : 1000;
+      eventBreakdown.push({ name: evt.eventName, cost });
+      total += cost;
+    });
+
+    const type = numEvents === 1 
+      ? ((data.selectedEvents?.[0]?.teamDetails?.memberCount || 2) <= 2 ? "Duo" : "Group")
+      : "Team Events";
+
+    return { type, numEvents, total, eventBreakdown };
   };
 
-  const { rate, type, numEvents, total } = getPricingInfo();
+  const { type, numEvents, total, eventBreakdown } = getPricingInfo();
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
@@ -148,10 +157,13 @@ export function Step3Payment({
                   <span className="text-slate-400">Participation Type</span>
                   <span className="text-white font-medium">{type}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-slate-400">Selected Events</span>
-                  <span className="text-white font-medium">{numEvents} x ₹{rate}</span>
-                </div>
+                {/* Event Breakdown */}
+                {eventBreakdown.map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-start text-sm">
+                    <span className="text-slate-400 max-w-[180px] leading-snug">{item.name}</span>
+                    <span className="text-white font-medium shrink-0">₹{item.cost}</span>
+                  </div>
+                ))}
                 <div className="h-px w-full bg-white/10 my-2" />
                 <div className="flex justify-between items-center text-lg">
                   <span className="text-white font-bold">Total Amount</span>

@@ -6,15 +6,15 @@ const selectedEventSchema = z.object({
   categoryName: z.string(),
   eventName: z.string(),
   subEvent: z.string().optional(),
+  teamDetails: z.object({
+    memberCount: z.number(),
+    membersInfo: z.string().min(1, "Members Info is required")
+  }).optional()
 });
 
 const teamDetailsSchema = z.object({
   teamName: z.string().min(1, "Team Name is required"),
   leaderName: z.string().min(1, "Team Leader Name is required"),
-  memberCount: z.number().min(2, "Must have at least 2 members").max(8, "Cannot exceed 8 members"),
-  culturalMemberCount: z.number().optional(),
-  membersInfo: z.string().min(1, "Team Members Info is required"),
-  concept: z.string().optional(),
 });
 
 export const registrationSchema = z.object({
@@ -43,11 +43,46 @@ export const registrationSchema = z.object({
   paymentProofUrl: z.string().optional(), // For Others
   paymentDate: z.string().optional(), // For Others
 }).superRefine((data, ctx) => {
-  if (data.participationType === "team" && !data.teamDetails) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Team details are required for team participation",
-      path: ["teamDetails"],
+  if (data.participationType === "team") {
+    if (!data.teamDetails) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Team details are required for team participation",
+        path: ["teamDetails"],
+      });
+    }
+
+    // Validate per-event team details
+    data.selectedEvents?.forEach((event, index) => {
+      if (!event.teamDetails) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Team members details are required for this event",
+          path: ["selectedEvents", index, "teamDetails"],
+        });
+      } else {
+        const isFashionModeling = event.eventName.toLowerCase().includes("fashion modeling");
+        const isBhangra = event.eventName.toLowerCase().includes("bhangra");
+        
+        let minMembers = 2;
+        let maxMembers = 8;
+        
+        if (isFashionModeling) {
+          minMembers = 11;
+          maxMembers = 13;
+        } else if (isBhangra) {
+          minMembers = 8;
+          maxMembers = 15;
+        }
+
+        if (event.teamDetails.memberCount < minMembers || event.teamDetails.memberCount > maxMembers) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Member count must be between ${minMembers} and ${maxMembers} for this event`,
+            path: ["selectedEvents", index, "teamDetails", "memberCount"],
+          });
+        }
+      }
     });
   }
 

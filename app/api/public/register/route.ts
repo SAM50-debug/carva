@@ -27,6 +27,20 @@ export async function POST(req: NextRequest) {
 
     const db = await getDb();
 
+    // Check Fashion Modeling exclusivity: Only 1 team per university
+    const hasFashionModeling = data.selectedEvents.some(e => e.eventName.toLowerCase().includes("fashion modeling"));
+    if (hasFashionModeling && data.participationType === "team") {
+      const existing = await db.collection("registrations").findOne({
+        university: { $regex: new RegExp(`^${data.university}$`, "i") },
+        "selectedEvents.eventName": { $regex: /fashion modeling/i },
+        status: { $ne: "rejected" }
+      });
+
+      if (existing) {
+        return apiError("Your university has already registered a team for Fashion Modeling.", 400);
+      }
+    }
+
     const qrCode = nanoid(16);
 
     const registrationDoc = {

@@ -48,6 +48,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     objective: dbEvent.objective,
     rounds: dbEvent.rounds,
     deliverables: dbEvent.deliverables,
+    participation: dbEvent.participation,
   };
   
   return <EventDetailClient event={mappedEvent as any} />;

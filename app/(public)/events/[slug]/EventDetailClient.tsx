@@ -55,10 +55,22 @@ function Section({ num, title, children }: { num: string; title: string; childre
   );
 }
 
-export default function EventDetailClient({ event }: { event: { id: string; name: string; category: string; description: string; teamSize: string; duration?: string; objective?: string; theme?: string; rounds?: string[]; rules?: string[]; deliverables?: string[]; judgingCriteria?: string[] } }) {
+export default function EventDetailClient({ event }: { event: { id: string; name: string; category: string; description: string; teamSize: string; duration?: string; objective?: string; theme?: string; rounds?: string[]; rules?: string[]; deliverables?: string[]; judgingCriteria?: string[]; participation?: any } }) {
   const gradient = CATEGORY_GRADIENTS[event.category] ?? "from-white/5 to-transparent";
   const color = CATEGORY_COLORS[event.category] ?? "#ffffff";
   const [isNavigating, setIsNavigating] = useState(false);
+
+  const isFashionModeling = event.name.toLowerCase().includes("fashion modeling");
+  const displayRules = [...(event.rules || [])];
+  
+  if (isFashionModeling) {
+    displayRules.unshift(
+      "Must have 11 to 13 participants.",
+      "Only one team allowed per university.",
+      "Prohibited on stage: original gun, sword, knife, fire, etc.",
+      "Performance time: 12 to 15 minutes (disqualification if violated)."
+    );
+  }
 
   return (
     <div className="relative min-h-screen pb-24 overflow-hidden">
@@ -165,10 +177,10 @@ export default function EventDetailClient({ event }: { event: { id: string; name
             </Section>
           )}
 
-          {event.rules && event.rules.length > 0 && (
+          {displayRules.length > 0 && (
             <Section num="04" title="Rules & Guidelines">
               <motion.ul variants={listVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="space-y-3">
-                {event.rules.map((rule, i) => (
+                {displayRules.map((rule, i) => (
                   <motion.li key={i} variants={itemVariants} className="flex items-start text-white/50 font-medium leading-relaxed">
                     <div className="w-1.5 h-1.5 rounded-full mt-2.5 mr-4 shrink-0 bg-brand-red" />
                     {rule}
@@ -216,10 +228,29 @@ export default function EventDetailClient({ event }: { event: { id: string; name
                 </thead>
                 <tbody className="divide-y divide-white/[0.06]">
                   {[
-                    { cat: "Solo", participation: "1 Participant", fee: "₹200" },
-                    { cat: "Duet", participation: "2 Participants", fee: "₹400" },
-                    { cat: "Group", participation: "3–8 Participants", fee: "₹1,000" },
-                  ].map((row) => (
+                    { cat: "Solo", participation: "1 Participant", fee: "₹200", isSolo: true, isDuo: false, isGroup: false },
+                    { cat: "Duet", participation: "2 Participants", fee: "₹400", isSolo: false, isDuo: true, isGroup: false },
+                    { cat: "Group", participation: (() => {
+                      if (!event.participation || event.participation.type !== "team") return "3–15 Participants";
+                      const min = Math.max(3, event.participation.min || 3);
+                      const max = event.participation.max || 15;
+                      if (min === max) return `${min} Participants`;
+                      return `${min}–${max} Participants`;
+                    })(), fee: "₹1,000", isSolo: false, isDuo: false, isGroup: true },
+                  ].filter(row => {
+                     if (!event.participation) return true;
+                     const pt = event.participation.type;
+                     const min = event.participation.min || 1;
+                     const max = event.participation.max || 15;
+                     
+                     if (pt === "individual") return row.isSolo;
+                     if (pt === "team") {
+                       if (row.isSolo) return min === 1;
+                       if (row.isDuo) return min <= 2 && max >= 2;
+                       if (row.isGroup) return max >= 3;
+                     }
+                     return true;
+                  }).map((row) => (
                     <tr key={row.cat} className="hover:bg-white/[0.03] transition-colors">
                       <td className="px-5 py-4 font-bold text-brand-cream">{row.cat}</td>
                       <td className="px-5 py-4 text-white/50">{row.participation}</td>
