@@ -39,11 +39,11 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Check if this participant is registered for this specific event
-    const isRegisteredForEvent = registration.selectedEvents.some(
+    const matchedEvent = registration.selectedEvents.find(
       (evt: any) => evt.eventId.toString() === eventId.toString()
     );
 
-    if (!isRegisteredForEvent) {
+    if (!matchedEvent) {
       return apiError("Participant did not register for this specific event.", 403);
     }
 
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
         participationType: registration.participationType,
         teamName: registration.teamDetails?.teamName,
         leaderName: registration.teamDetails?.leaderName,
-        memberCount: registration.teamDetails?.memberCount,
+        memberCount: matchedEvent.teamDetails?.memberCount,
       }, { status: 409 });
     }
 
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
         participationType: registration.participationType,
         teamName: registration.teamDetails?.teamName,
         leaderName: registration.teamDetails?.leaderName,
-        memberCount: registration.teamDetails?.memberCount,
+        memberCount: matchedEvent.teamDetails?.memberCount,
       });
     }
 
