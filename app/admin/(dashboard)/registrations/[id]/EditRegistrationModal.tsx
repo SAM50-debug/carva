@@ -38,9 +38,21 @@ export function EditRegistrationModal({
     facultyEmail: registration.facultyEmail || "",
     teamName: registration.teamDetails?.teamName || "",
     leaderName: registration.teamDetails?.leaderName || "",
-    memberCount: registration.teamDetails?.memberCount || "",
-    membersInfo: registration.teamDetails?.membersInfo || "",
+    selectedEvents: registration.selectedEvents || [],
   });
+
+  const handleEventChange = (index: number, field: string, value: string | number) => {
+    setFormData(prev => {
+      const newEvents = [...prev.selectedEvents];
+      if (newEvents[index] && newEvents[index].teamDetails) {
+        newEvents[index].teamDetails = {
+          ...newEvents[index].teamDetails,
+          [field]: value
+        };
+      }
+      return { ...prev, selectedEvents: newEvents };
+    });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -71,10 +83,10 @@ export function EditRegistrationModal({
         payload.teamDetails = {
           teamName: formData.teamName,
           leaderName: formData.leaderName,
-          memberCount: Number(formData.memberCount),
-          membersInfo: formData.membersInfo,
         };
       }
+
+      payload.selectedEvents = formData.selectedEvents;
 
       const res = await fetch(`/api/admin/registrations/${registration._id}/edit`, {
         method: "PUT",
@@ -231,15 +243,57 @@ export function EditRegistrationModal({
                         <label className={labelClass}>Team Leader Name</label>
                         <input name="leaderName" value={formData.leaderName} onChange={handleChange} required className={inputClass} />
                       </div>
-                      <div>
-                        <label className={labelClass}>Total Members</label>
-                        <input type="number" name="memberCount" value={formData.memberCount} onChange={handleChange} required className={inputClass} />
-                      </div>
-                      <div className="sm:col-span-2">
-                        <label className={labelClass}>Members Info</label>
-                        <textarea name="membersInfo" value={formData.membersInfo} onChange={handleChange} rows={3} required className={`${inputClass} resize-none`} />
-                      </div>
                     </div>
+
+                    {/* Per-Event Team Details */}
+                    {formData.selectedEvents.length > 0 && (
+                      <div className="mt-6 space-y-5">
+                        <h4 className="text-sm font-semibold text-white">Event-Specific Member Info</h4>
+                        {formData.selectedEvents.map((evt: any, i: number) => (
+                          <div key={i} className="p-4 bg-white/5 border border-white/10 rounded-xl space-y-4">
+                            <div className="flex flex-col">
+                              <span className="text-xs text-[#c8102e] font-semibold tracking-wider uppercase">{evt.categoryName}</span>
+                              <span className="text-white font-medium">{evt.eventName}</span>
+                            </div>
+                            {evt.teamDetails && (
+                              <div className="grid grid-cols-1 gap-4">
+                                <div>
+                                  <label className={labelClass}>Member Count</label>
+                                  <select 
+                                    value={evt.teamDetails.memberCount || 2} 
+                                    onChange={(e) => handleEventChange(i, "memberCount", parseInt(e.target.value))} 
+                                    required 
+                                    className={inputClass} 
+                                  >
+                                    {(() => {
+                                      const isFash = evt.eventName.toLowerCase().includes("fashion modeling");
+                                      const isBhang = evt.eventName.toLowerCase().includes("bhangra");
+                                      let options = [];
+                                      if (isFash) options = [11, 12, 13];
+                                      else if (isBhang) options = [8, 9, 10, 11, 12, 13, 14, 15];
+                                      else options = [2, 3, 4, 5, 6, 7, 8];
+                                      return options.map(num => (
+                                        <option key={num} value={num} className="bg-[#111827]">{num}</option>
+                                      ));
+                                    })()}
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className={labelClass}>Members Info</label>
+                                  <textarea 
+                                    value={evt.teamDetails.membersInfo || ""} 
+                                    onChange={(e) => handleEventChange(i, "membersInfo", e.target.value)} 
+                                    rows={3} 
+                                    required 
+                                    className={`${inputClass} resize-none`} 
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

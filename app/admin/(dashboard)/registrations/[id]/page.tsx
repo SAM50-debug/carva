@@ -101,13 +101,8 @@ export default async function RegistrationDetailPage({ params }: { params: Promi
                   <p className="text-xs text-slate-500 mb-1">Leader Name</p>
                   <p className="text-slate-300 font-medium">{reg.teamDetails.leaderName}</p>
                 </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-1">Total Members</p>
-                  <p className="text-slate-300 font-medium">{reg.teamDetails.memberCount}</p>
-                </div>
                 <div className="col-span-2">
-                  <p className="text-xs text-slate-500 mb-1">Members Info</p>
-                  <p className="text-slate-300 font-medium whitespace-pre-wrap">{reg.teamDetails.membersInfo}</p>
+                  <p className="text-xs text-slate-500">Note: Member count and info are specific to each event below.</p>
                 </div>
               </div>
             </div>
@@ -127,6 +122,18 @@ export default async function RegistrationDetailPage({ params }: { params: Promi
                   <span className="text-white font-medium text-lg">{evt.eventName}</span>
                   {evt.subEvent && (
                     <span className="text-sm text-slate-400 mt-1">Format: {evt.subEvent}</span>
+                  )}
+                  {evt.teamDetails && (
+                    <div className="mt-3 pt-3 border-t border-white/10 text-sm">
+                      <div className="flex justify-between text-slate-400 mb-2">
+                        <span>Members:</span>
+                        <span className="text-white font-medium">{evt.teamDetails.memberCount}</span>
+                      </div>
+                      <div className="text-slate-400">
+                        <span className="block mb-1">Members Info:</span>
+                        <span className="text-white whitespace-pre-wrap block bg-black/30 p-3 rounded-lg border border-white/5">{evt.teamDetails.membersInfo}</span>
+                      </div>
+                    </div>
                   )}
                 </div>
               ))}

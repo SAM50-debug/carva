@@ -40,8 +40,8 @@ export async function PUT(
     // 4. If sub_admin, verify they have permission for the events the user is registered for
     if (user.role === "sub_admin") {
       const assignedIds = user.assignedCategoryIds || [];
-      const hasPermission = registration.selectedCategories.some((catId: string) =>
-        assignedIds.includes(catId)
+      const hasPermission = registration.selectedEvents?.some((evt: any) =>
+        assignedIds.includes(evt.categoryId)
       );
 
       if (!hasPermission) {
@@ -50,7 +50,7 @@ export async function PUT(
     }
 
     // 5. Perform the update
-    await registrationRepository.update(id, validatedData);
+    await registrationRepository.update(id, validatedData as any);
 
     return apiSuccess({
       message: "Registration updated successfully",

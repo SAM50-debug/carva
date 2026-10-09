@@ -3,10 +3,19 @@ import { z } from "zod";
 const teamDetailsSchema = z.object({
   teamName: z.string().min(1, "Team Name is required"),
   leaderName: z.string().min(1, "Team Leader Name is required"),
-  memberCount: z.coerce.number().min(2, "Must have at least 2 members").max(8, "Cannot exceed 8 members"),
-  culturalMemberCount: z.coerce.number().optional(),
-  membersInfo: z.string().min(1, "Team Members Info is required"),
   concept: z.string().optional(),
+});
+
+const selectedEventSchema = z.object({
+  eventId: z.string(),
+  categoryId: z.string(),
+  categoryName: z.string(),
+  eventName: z.string(),
+  subEvent: z.string().optional(),
+  teamDetails: z.object({
+    memberCount: z.coerce.number(),
+    membersInfo: z.string()
+  }).optional()
 });
 
 export const editRegistrationSchema = z.object({
@@ -25,6 +34,9 @@ export const editRegistrationSchema = z.object({
   
   // Team Info (Nested as per public schema)
   teamDetails: teamDetailsSchema.optional(),
+  
+  // Selected Events (Allows editing member counts per event)
+  selectedEvents: z.array(selectedEventSchema).optional()
 }).strict(); // Using strict to strip out any unallowed fields like paymentStatus
 
 export type EditRegistrationData = z.infer<typeof editRegistrationSchema>;
