@@ -266,12 +266,20 @@ export function EditRegistrationModal({
                                     className={inputClass} 
                                   >
                                     {(() => {
-                                      const isFash = evt.eventName.toLowerCase().includes("fashion modeling");
-                                      const isBhang = evt.eventName.toLowerCase().includes("bhangra");
+                                      const evtName = evt.eventName.toLowerCase();
+                                      const isCultural = evt.categoryName?.toLowerCase().includes("cultural") || false;
+                                      const isFash = evtName.includes("fashion modeling");
+                                      const isBhang = evtName.includes("bhangra");
+                                      const isMono = evtName.includes("mono acting");
+                                      
+                                      let minM = 2; let maxM = 8;
+                                      if (isFash) { minM = 11; maxM = 13; }
+                                      else if (isBhang) { minM = 8; maxM = 15; }
+                                      else if (isMono) { minM = 1; maxM = 1; }
+                                      else if (isCultural) { minM = 2; maxM = 15; }
+
                                       let options = [];
-                                      if (isFash) options = [11, 12, 13];
-                                      else if (isBhang) options = [8, 9, 10, 11, 12, 13, 14, 15];
-                                      else options = [2, 3, 4, 5, 6, 7, 8];
+                                      for(let j = minM; j <= maxM; j++) options.push(j);
                                       return options.map(num => (
                                         <option key={num} value={num} className="bg-[#111827]">{num}</option>
                                       ));

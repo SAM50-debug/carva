@@ -61,8 +61,11 @@ export const registrationSchema = z.object({
           path: ["selectedEvents", index, "teamDetails"],
         });
       } else {
-        const isFashionModeling = event.eventName.toLowerCase().includes("fashion modeling");
-        const isBhangra = event.eventName.toLowerCase().includes("bhangra");
+        const evtName = event.eventName.toLowerCase();
+        const isCultural = event.categoryName.toLowerCase().includes("cultural");
+        const isFashionModeling = evtName.includes("fashion modeling");
+        const isBhangra = evtName.includes("bhangra");
+        const isMonoActing = evtName.includes("mono acting");
         
         let minMembers = 2;
         let maxMembers = 8;
@@ -72,6 +75,12 @@ export const registrationSchema = z.object({
           maxMembers = 13;
         } else if (isBhangra) {
           minMembers = 8;
+          maxMembers = 15;
+        } else if (isMonoActing) {
+          minMembers = 1;
+          maxMembers = 1;
+        } else if (isCultural) {
+          minMembers = 2;
           maxMembers = 15;
         }
 

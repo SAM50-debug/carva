@@ -185,15 +185,26 @@ export function Step2Events({
 
   const saveModalData = () => {
     if (!activeModalEvent) return;
-    const isFashionModeling = activeModalEvent.eventName.toLowerCase().includes("fashion modeling");
-    const isBhangra = activeModalEvent.eventName.toLowerCase().includes("bhangra");
+    const evtName = activeModalEvent.eventName.toLowerCase();
+    const isCultural = activeModalEvent.categoryName.toLowerCase().includes("cultural");
+    const isFashionModeling = evtName.includes("fashion modeling");
+    const isBhangra = evtName.includes("bhangra");
+    const isMonoActing = evtName.includes("mono acting");
+
     let minMembers = 2;
     let maxMembers = 8;
+
     if (isFashionModeling) {
       minMembers = 11;
       maxMembers = 13;
     } else if (isBhangra) {
       minMembers = 8;
+      maxMembers = 15;
+    } else if (isMonoActing) {
+      minMembers = 1;
+      maxMembers = 1;
+    } else if (isCultural) {
+      minMembers = 2;
       maxMembers = 15;
     }
 
@@ -513,12 +524,20 @@ export function Step2Events({
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60 [color-scheme:dark]"
                 >
                   {(() => {
-                    const isFash = activeModalEvent.eventName.toLowerCase().includes("fashion modeling");
-                    const isBhang = activeModalEvent.eventName.toLowerCase().includes("bhangra");
+                    const evtName = activeModalEvent.eventName.toLowerCase();
+                    const isCultural = activeModalEvent.categoryName.toLowerCase().includes("cultural");
+                    const isFash = evtName.includes("fashion modeling");
+                    const isBhang = evtName.includes("bhangra");
+                    const isMono = evtName.includes("mono acting");
+                    
+                    let minM = 2; let maxM = 8;
+                    if (isFash) { minM = 11; maxM = 13; }
+                    else if (isBhang) { minM = 8; maxM = 15; }
+                    else if (isMono) { minM = 1; maxM = 1; }
+                    else if (isCultural) { minM = 2; maxM = 15; }
+                    
                     let options = [];
-                    if (isFash) options = [11, 12, 13];
-                    else if (isBhang) options = [8, 9, 10, 11, 12, 13, 14, 15];
-                    else options = [2, 3, 4, 5, 6, 7, 8];
+                    for(let i = minM; i <= maxM; i++) options.push(i);
                     return options.map(num => <option key={num} value={num} className="bg-[#111827]">{num}</option>);
                   })()}
                 </select>
