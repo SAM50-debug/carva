@@ -291,10 +291,9 @@ function buildDefaultFormTemplate(adminId: ObjectId): object {
       },
       {
         id: nanoid(10),
-        title: "Payment",
+        title: "Student Verification",
         fields: [
-          makeField("Upload Student ID / Fee Receipt", "file", true, { helpText: "RIMT students: student ID card. Other universities: fee receipt or payment screenshot." }),
-          makeField("Payment Date", "date", true),
+          makeField("Upload Student ID Card", "file", true, { helpText: "Upload a valid student ID card." }),
         ].map((f, i) => ({ ...f, order: i + 1 })),
       },
       {

@@ -217,52 +217,9 @@ export default function EventDetailClient({ event }: { event: { id: string; name
 
           {/* Entry Fee */}
           <Section num="07" title="Entry Fee">
-            <div className="overflow-hidden rounded-2xl border border-white/10">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-white/[0.06]">
-                    <th className="px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-white/40">Category</th>
-                    <th className="px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-white/40">Participation</th>
-                    <th className="px-5 py-3 text-right text-xs font-black uppercase tracking-widest text-white/40">Entry Fee</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/[0.06]">
-                  {[
-                    { cat: "Solo", participation: "1 Participant", fee: "₹200", isSolo: true, isDuo: false, isGroup: false },
-                    { cat: "Duet", participation: "2 Participants", fee: "₹400", isSolo: false, isDuo: true, isGroup: false },
-                    { cat: "Group", participation: (() => {
-                      if (!event.participation || event.participation.type !== "team") return "3–15 Participants";
-                      const min = Math.max(3, event.participation.min || 3);
-                      const max = event.participation.max || 15;
-                      if (min === max) return `${min} Participants`;
-                      return `${min}–${max} Participants`;
-                    })(), fee: "₹1,000", isSolo: false, isDuo: false, isGroup: true },
-                  ].filter(row => {
-                     if (!event.participation) return true;
-                     const pt = event.participation.type;
-                     const min = event.participation.min || 1;
-                     const max = event.participation.max || 15;
-                     
-                     if (pt === "individual") return row.isSolo;
-                     if (pt === "team") {
-                       if (row.isSolo) return min === 1;
-                       if (row.isDuo) return min <= 2 && max >= 2;
-                       if (row.isGroup) return max >= 3;
-                     }
-                     return true;
-                  }).map((row) => (
-                    <tr key={row.cat} className="hover:bg-white/[0.03] transition-colors">
-                      <td className="px-5 py-4 font-bold text-brand-cream">{row.cat}</td>
-                      <td className="px-5 py-4 text-white/50">{row.participation}</td>
-                      <td className="px-5 py-4 text-right font-black" style={{ color }}>{row.fee}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="overflow-hidden rounded-2xl border border-white/10 p-6 bg-white/[0.03]">
+              <p className="text-xl font-bold text-center" style={{ color }}>Registration is free</p>
             </div>
-            <p className="text-white/30 text-xs mt-4 font-medium">
-              * Entry fee is applicable per performance/category.
-            </p>
           </Section>
 
           {/* CTA */}

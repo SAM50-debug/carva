@@ -116,31 +116,9 @@ export default function RulesClient({ rules }: { rules: RuleSection[] }) {
         >
           <div className="card-glow" />
           <h3 className="font-display text-2xl md:text-3xl font-extrabold text-white mb-8">Entry Fee</h3>
-          <div className="overflow-hidden rounded-2xl border border-white/10 mb-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-white/[0.06]">
-                  <th className="px-5 py-4 text-left text-xs font-black uppercase tracking-widest text-white/40">Category</th>
-                  <th className="px-5 py-4 text-left text-xs font-black uppercase tracking-widest text-white/40">Participation</th>
-                  <th className="px-5 py-4 text-right text-xs font-black uppercase tracking-widest text-white/40">Entry Fee</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/[0.06]">
-                {[
-                  { cat: "Solo", participation: "1 Participant", fee: "₹200" },
-                  { cat: "Duet", participation: "2 Participants", fee: "₹400" },
-                  { cat: "Group", participation: "3–8 Participants", fee: "₹1,000" },
-                ].map((row) => (
-                  <tr key={row.cat} className="hover:bg-white/[0.03] transition-colors">
-                    <td className="px-5 py-4 font-bold text-brand-cream">{row.cat}</td>
-                    <td className="px-5 py-4 text-white/50">{row.participation}</td>
-                    <td className="px-5 py-4 text-right font-black text-brand-red">{row.fee}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="overflow-hidden rounded-2xl border border-white/10 mb-4 p-6 bg-white/[0.03]">
+            <p className="text-xl font-bold text-brand-red text-center">Registration is free</p>
           </div>
-          <p className="text-white/30 text-sm font-medium">* Entry fee is applicable per performance/category.</p>
         </motion.div>
       </div>
     </div>
