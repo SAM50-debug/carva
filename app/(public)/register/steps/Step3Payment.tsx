@@ -47,14 +47,7 @@ export function Step3Payment({
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    
-    if (data.isRIMT) {
-      if (!data.idCardUrl) newErrors.idCardUrl = "Student ID Card is required";
-    } else {
-      if (!data.paymentProofUrl) newErrors.paymentProofUrl = "Payment Screenshot is required";
-      if (!data.paymentDate) newErrors.paymentDate = "Payment Date is required";
-    }
-
+    if (!data.idCardUrl) newErrors.idCardUrl = "Student ID Card is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -63,175 +56,46 @@ export function Step3Payment({
     if (validate()) onNext();
   };
 
-  const getPricingInfo = () => {
-    const numEvents = data.selectedEvents?.length || 0;
-    const eventBreakdown: { name: string; cost: number }[] = [];
-    let total = 0;
-
-    if (data.participationType === "individual") {
-      data.selectedEvents?.forEach(evt => {
-        eventBreakdown.push({ name: evt.eventName, cost: 200 });
-        total += 200;
-      });
-      return { type: "Solo", numEvents, total, eventBreakdown };
-    }
-
-    // Team participation
-    data.selectedEvents?.forEach(evt => {
-      const count = evt.teamDetails?.memberCount || 2;
-      const cost = count <= 2 ? 400 : 1000;
-      eventBreakdown.push({ name: evt.eventName, cost });
-      total += cost;
-    });
-
-    const type = numEvents === 1 
-      ? ((data.selectedEvents?.[0]?.teamDetails?.memberCount || 2) <= 2 ? "Duo" : "Group")
-      : "Team Events";
-
-    return { type, numEvents, total, eventBreakdown };
-  };
-
-  const { type, numEvents, total, eventBreakdown } = getPricingInfo();
-
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
       
-      {data.isRIMT ? (
-        // RIMT Flow
-        <div>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white">Student Verification</h2>
-            <p className="text-slate-400">As a RIMT student, please upload your ID card for verification.</p>
-          </div>
-
-          <div className="bg-black/20 rounded-2xl p-8 border border-white/10 text-center">
-            {data.idCardUrl ? (
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center">
-                  <CheckCircle2 className="w-8 h-8 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-white font-medium">ID Card Uploaded Successfully</p>
-                  <button onClick={() => updateData({ idCardUrl: "" })} className="text-sm text-[#c8102e] hover:underline mt-2">
-                    Upload a different file
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-16 h-16 bg-[#c8102e]/10 rounded-full flex items-center justify-center">
-                  <Upload className="w-8 h-8 text-[#c8102e]" />
-                </div>
-                <div>
-                  <p className="text-white font-medium mb-2">Upload Student ID Card <span className="text-red-500">*</span></p>
-                  <p className="text-sm text-slate-400 mb-4">JPEG, PNG, or PDF up to 5MB</p>
-                  <label className="relative cursor-pointer bg-[#c8102e] hover:bg-[#a50e26] text-white px-6 py-2.5 rounded-xl font-medium transition-colors inline-flex items-center gap-2">
-                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Choose File"}
-                    <input type="file" className="hidden" accept="image/*,.pdf" onChange={(e) => handleFileUpload(e, "idCardUrl")} disabled={uploading} />
-                  </label>
-                </div>
-                {errors.idCardUrl && <p className="text-red-500 text-sm mt-2">{errors.idCardUrl}</p>}
-              </div>
-            )}
-          </div>
+      <div>
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-white">Student Verification</h2>
+          <p className="text-slate-400">Please upload your University/College ID card for verification.</p>
         </div>
-      ) : (
-        // Other University Flow
-        <div>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white">Payment & Verification</h2>
-            <p className="text-slate-400">Transfer the registration fee to the bank account below, then upload the receipt.</p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-[#111827]/50 rounded-2xl p-6 flex flex-col items-start border border-white/10 shadow-lg relative overflow-hidden backdrop-blur-sm">
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#c8102e]/10 rounded-full blur-3xl pointer-events-none" />
-              
-              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                <div className="w-2 h-6 bg-[#c8102e] rounded-full" />
-                Payment Summary
-              </h3>
-
-              <div className="w-full space-y-3 mb-6 bg-black/30 p-4 rounded-xl border border-white/5">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-slate-400">Participation Type</span>
-                  <span className="text-white font-medium">{type}</span>
-                </div>
-                {/* Event Breakdown */}
-                {eventBreakdown.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-start text-sm">
-                    <span className="text-slate-400 max-w-[180px] leading-snug">{item.name}</span>
-                    <span className="text-white font-medium shrink-0">₹{item.cost}</span>
-                  </div>
-                ))}
-                <div className="h-px w-full bg-white/10 my-2" />
-                <div className="flex justify-between items-center text-lg">
-                  <span className="text-white font-bold">Total Amount</span>
-                  <span className="text-[#c8102e] font-bold">₹{total}</span>
-                </div>
+        <div className="bg-black/20 rounded-2xl p-8 border border-white/10 text-center">
+          {data.idCardUrl ? (
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 text-green-500" />
               </div>
-
-              <h3 className="text-sm font-bold text-white mb-3 uppercase tracking-wider text-slate-400">Bank Details</h3>
-              <div className="w-full space-y-4">
-                <div className="bg-black/30 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
-                  <span className="text-xs text-slate-500 font-medium">Account Number</span>
-                  <span className="text-white font-mono tracking-widest text-lg">920010070512696</span>
-                </div>
-                <div className="bg-black/30 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
-                  <span className="text-xs text-slate-500 font-medium">IFSC Code</span>
-                  <span className="text-white font-mono tracking-wider text-lg">UTIB0000762</span>
-                </div>
-              </div>
-              
-              <p className="text-xs text-slate-500 mt-6 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#c8102e]" />
-                Please take a screenshot after successful transfer.
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-300">Payment Date <span className="text-red-500">*</span></label>
-                <input 
-                  type="date" 
-                  value={data.paymentDate || ""} 
-                  onChange={(e) => updateData({ paymentDate: e.target.value })} 
-                  max={new Date().toISOString().split("T")[0]}
-                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60 [color-scheme:dark]" 
-                />
-                {errors.paymentDate && <p className="text-red-500 text-xs">{errors.paymentDate}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-300">Upload Payment Screenshot <span className="text-red-500">*</span></label>
-                <div className={`border-2 border-dashed rounded-2xl p-6 text-center transition-colors ${errors.paymentProofUrl ? 'border-red-500/50 bg-red-500/5' : 'border-white/20 bg-white/5 hover:bg-white/10'}`}>
-                  {data.paymentProofUrl ? (
-                    <div className="flex flex-col items-center">
-                      <CheckCircle2 className="w-8 h-8 text-green-500 mb-2" />
-                      <p className="text-white text-sm font-medium">Screenshot Uploaded</p>
-                      <button onClick={() => updateData({ paymentProofUrl: "" })} className="text-xs text-[#c8102e] hover:underline mt-2">
-                        Replace file
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <Upload className="w-8 h-8 text-slate-400 mb-3" />
-                      <label className="cursor-pointer">
-                        <span className="text-[#c8102e] hover:underline font-medium">Click to upload</span>
-                        <span className="text-slate-400 ml-1">or drag and drop</span>
-                        <input type="file" className="hidden" accept="image/*,.pdf" onChange={(e) => handleFileUpload(e, "paymentProofUrl")} disabled={uploading} />
-                      </label>
-                      <p className="text-xs text-slate-500 mt-2">PNG, JPG up to 5MB</p>
-                      {uploading && <p className="text-sm text-[#c8102e] mt-2 flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> Uploading...</p>}
-                    </div>
-                  )}
-                </div>
-                {errors.paymentProofUrl && <p className="text-red-500 text-xs">{errors.paymentProofUrl}</p>}
+              <div>
+                <p className="text-white font-medium">ID Card Uploaded Successfully</p>
+                <button onClick={() => updateData({ idCardUrl: "" })} className="text-sm text-[#c8102e] hover:underline mt-2">
+                  Upload a different file
+                </button>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-16 h-16 bg-[#c8102e]/10 rounded-full flex items-center justify-center">
+                <Upload className="w-8 h-8 text-[#c8102e]" />
+              </div>
+              <div>
+                <p className="text-white font-medium mb-2">Upload Student ID Card <span className="text-red-500">*</span></p>
+                <p className="text-sm text-slate-400 mb-4">JPEG, PNG, or PDF up to 5MB</p>
+                <label className="relative cursor-pointer bg-[#c8102e] hover:bg-[#a50e26] text-white px-6 py-2.5 rounded-xl font-medium transition-colors inline-flex items-center gap-2">
+                  {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Choose File"}
+                  <input type="file" className="hidden" accept="image/*,.pdf" onChange={(e) => handleFileUpload(e, "idCardUrl")} disabled={uploading} />
+                </label>
+              </div>
+              {errors.idCardUrl && <p className="text-red-500 text-sm mt-2">{errors.idCardUrl}</p>}
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       <div className="flex justify-between pt-8 border-t border-white/10 mt-8">
         <button

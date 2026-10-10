@@ -180,7 +180,7 @@ export const eventsData: EventDetails[] = [
     name: "Robothon",
     category: "TECHNICAL",
     description: "Robot Design, Control & Race Challenge",
-    teamSize: "1-3 participants",
+    teamSize: "2-4 participants",
     duration: "Match based",
     objective: "To design/build and operate a robot capable of following a path.",
     theme: "Robot Design & Race",

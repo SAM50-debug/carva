@@ -135,7 +135,7 @@ const EVENTS_BY_CATEGORY: Record<string, object[]> = {
     },
     {
       slug: "robothon", name: "Robothon",
-      participation: { type: "team", min: 1, max: 3 },
+      participation: { type: "team", min: 2, max: 4 },
     },
     {
       slug: "structurathon", name: "Structurathon",

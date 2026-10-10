@@ -27,9 +27,9 @@ export const registrationSchema = z.object({
   gender: z.string().min(1, "Gender is required"),
   mobile: z.string().regex(/^[0-9]{10}$/, "Mobile number must be 10 digits"),
   email: z.string().email("Invalid email address"),
-  facultyName: z.string().min(1, "Faculty Coordinator name is required"),
-  facultyMobile: z.string().min(1, "Faculty Coordinator mobile is required"),
-  facultyEmail: z.string().email("Invalid Faculty Coordinator email"),
+  facultyName: z.string().optional().or(z.literal("")),
+  facultyMobile: z.string().optional().or(z.literal("")),
+  facultyEmail: z.union([z.literal(""), z.string().email("Invalid Faculty Coordinator email")]).optional(),
   
   participationType: z.enum(["individual", "team"]),
   teamDetails: teamDetailsSchema.optional(),
@@ -95,27 +95,11 @@ export const registrationSchema = z.object({
     });
   }
 
-  if (data.isRIMT && !data.idCardUrl) {
+  if (!data.idCardUrl) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "Student ID Card upload is required for RIMT students",
+      message: "Student ID Card upload is required",
       path: ["idCardUrl"],
-    });
-  }
-
-  if (!data.isRIMT && !data.paymentProofUrl) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Payment screenshot/receipt is required",
-      path: ["paymentProofUrl"],
-    });
-  }
-
-  if (!data.isRIMT && !data.paymentDate) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Payment date is required",
-      path: ["paymentDate"],
     });
   }
 });

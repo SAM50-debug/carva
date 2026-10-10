@@ -27,9 +27,7 @@ export function Step1Details({
     if (!data.gender) newErrors.gender = "Required";
     if (!data.mobile || !/^[0-9]{10}$/.test(data.mobile)) newErrors.mobile = "Valid 10-digit number required";
     if (!data.email || !/^\S+@\S+\.\S+$/.test(data.email)) newErrors.email = "Valid email required";
-    if (!data.facultyName) newErrors.facultyName = "Required";
-    if (!data.facultyMobile) newErrors.facultyMobile = "Required";
-    if (!data.facultyEmail) newErrors.facultyEmail = "Required";
+    if (data.facultyEmail && !/^\S+@\S+\.\S+$/.test(data.facultyEmail)) newErrors.facultyEmail = "Valid email required";
     if (!data.participationType) newErrors.participationType = "Required";
 
     setErrors(newErrors);
@@ -138,23 +136,23 @@ export function Step1Details({
         
         {/* Faculty Coordinator Info */}
         <div className="md:col-span-2 border-t border-white/10 pt-6 mt-2">
-          <h3 className="text-lg font-medium text-white mb-4">Faculty Coordinator Details</h3>
+          <h3 className="text-lg font-medium text-white mb-4">Faculty Coordinator Details (Optional)</h3>
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-slate-300">Coordinator Name <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-medium text-slate-300">Coordinator Name</label>
           <input type="text" value={data.facultyName || ""} onChange={(e) => updateData({ facultyName: e.target.value })} className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60" />
           {errors.facultyName && <p className="text-red-500 text-xs">{errors.facultyName}</p>}
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-slate-300">Coordinator Mobile <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-medium text-slate-300">Coordinator Mobile</label>
           <input type="tel" value={data.facultyMobile || ""} onChange={(e) => updateData({ facultyMobile: e.target.value })} className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60" />
           {errors.facultyMobile && <p className="text-red-500 text-xs">{errors.facultyMobile}</p>}
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <label className="block text-sm font-medium text-slate-300">Coordinator Email <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-medium text-slate-300">Coordinator Email</label>
           <input type="email" value={data.facultyEmail || ""} onChange={(e) => updateData({ facultyEmail: e.target.value })} className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#c8102e]/60" />
           {errors.facultyEmail && <p className="text-red-500 text-xs">{errors.facultyEmail}</p>}
         </div>

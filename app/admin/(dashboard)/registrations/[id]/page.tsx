@@ -146,7 +146,7 @@ export default async function RegistrationDetailPage({ params }: { params: Promi
         <div className="space-y-6">
           <div className="bg-[#111827]/50 rounded-2xl border border-white/10 p-6 backdrop-blur-sm">
             <h2 className="text-lg font-semibold text-white mb-4">
-              {reg.isRIMT ? "Student ID Card" : "Payment Receipt"}
+              Student Verification Document
             </h2>
             <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-black/50 border border-white/10">
               {reg.idCardUrl || reg.paymentProofUrl ? (
