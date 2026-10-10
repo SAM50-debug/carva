@@ -1,6 +1,13 @@
 import { FileText, ArrowRight } from "lucide-react";
+import { useState, useCallback } from "react";
+import { CountdownTimer } from "@/components/public/CountdownTimer";
 
 export function Step0Info({ onNext }: { onNext: () => void }) {
+  const [isExpired, setIsExpired] = useState(false);
+  const handleExpire = useCallback(() => {
+    setIsExpired(true);
+  }, []);
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="text-center">
@@ -42,13 +49,25 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
           </a>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center">
+          <h3 className="text-slate-300 font-medium mb-6 text-sm tracking-widest uppercase flex items-center gap-2">
+            <span className="w-8 h-[1px] bg-white/20"></span>
+            {isExpired ? "Registration has ended" : "Registration ends in"}
+            <span className="w-8 h-[1px] bg-white/20"></span>
+          </h3>
+          <CountdownTimer onExpire={handleExpire} />
+          
           <button
             onClick={onNext}
-            className="flex items-center gap-2 bg-[#c8102e] hover:bg-[#a50e26] text-white px-8 py-4 rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-[#c8102e]/20"
+            disabled={isExpired}
+            className={`flex items-center gap-2 px-8 py-4 rounded-xl font-bold transition-all shadow-lg ${
+              isExpired 
+                ? "bg-gray-600/50 text-gray-400 cursor-not-allowed opacity-80 shadow-none hover:scale-100 active:scale-100" 
+                : "bg-[#c8102e] hover:bg-[#a50e26] text-white hover:scale-105 active:scale-95 shadow-[#c8102e]/20"
+            }`}
           >
-            Begin Registration
-            <ArrowRight className="w-5 h-5" />
+            {isExpired ? "Registration Ended" : "Begin Registration"}
+            {!isExpired && <ArrowRight className="w-5 h-5" />}
           </button>
         </div>
       </div>
