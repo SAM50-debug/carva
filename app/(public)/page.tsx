@@ -95,7 +95,7 @@ export default function Home() {
               <span className="text-sm font-semibold text-brand-cream/90">October 23–24, 2026 · RIMT University</span>
             </motion.div>
 
-            {/* Registration is Free badge */}
+            {/* Free to Register badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -103,7 +103,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide shadow-[0_0_20px_rgba(16,185,129,0.18)] backdrop-blur-md"
             >
               <Sparkles size={13} className="text-emerald-400 animate-pulse" />
-              <span>Registration is Free</span>
+              <span>Free to Register</span>
             </motion.div>
           </div>
 
