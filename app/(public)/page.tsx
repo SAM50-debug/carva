@@ -81,17 +81,31 @@ export default function Home() {
           style={{ opacity: opacityHero, y: yHero }}
           className="relative w-full max-w-5xl mx-auto"
         >
-          {/* Date badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
-            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-brand-gold/[0.08] border border-brand-gold/30 mb-10"
-          >
-            <span className="w-2 h-2 rounded-full bg-brand-gold" style={{ animation: "dot-pulse 1.5s ease-in-out infinite" }} />
-            <Calendar size={14} className="text-brand-gold" />
-            <span className="text-sm font-semibold text-brand-cream/90">October 23–24, 2026 · RIMT University</span>
-          </motion.div>
+          {/* Badges */}
+          <div className="flex flex-col items-center gap-3 mb-10">
+            {/* Date badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
+              className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-brand-gold/[0.08] border border-brand-gold/30"
+            >
+              <span className="w-2 h-2 rounded-full bg-brand-gold" style={{ animation: "dot-pulse 1.5s ease-in-out infinite" }} />
+              <Calendar size={14} className="text-brand-gold" />
+              <span className="text-sm font-semibold text-brand-cream/90">October 23–24, 2026 · RIMT University</span>
+            </motion.div>
+
+            {/* Registration is Free badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.22 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide shadow-[0_0_20px_rgba(16,185,129,0.18)] backdrop-blur-md"
+            >
+              <Sparkles size={13} className="text-emerald-400 animate-pulse" />
+              <span>Registration is Free</span>
+            </motion.div>
+          </div>
 
           {/* Headline — word-by-word entrance */}
           <div className="overflow-hidden mb-6">
@@ -121,7 +135,7 @@ export default function Home() {
             transition={{ type: "spring", stiffness: 200, damping: 22, delay: 0.55 }}
             className="text-xl md:text-2xl text-white/50 mb-14 max-w-2xl mx-auto font-medium"
           >
-            The ultimate Inter-University Youth Festival. 30+ events across 6 arenas.
+            The ultimate Inter-University & Inter-College Youth Festival. 30+ events across 6 arenas.
           </motion.p>
 
           <motion.div
@@ -136,7 +150,7 @@ export default function Home() {
               href="/register"
               className="w-full sm:w-auto bg-brand-crimson text-brand-cream px-10 py-4 rounded-full font-bold text-lg flex items-center justify-center gap-2 shadow-[0_0_40px_rgba(196,30,58,0.4)] hover:shadow-[0_0_60px_rgba(196,30,58,0.6)] transition-shadow"
             >
-              Register Now <ArrowRight size={20} />
+              Register for Free <ArrowRight size={20} />
             </motion.a>
             <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
               <Link
