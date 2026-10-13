@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
 
     if (!file) return apiError("No file provided");
 
-    // Optional: simple file size check (e.g., 5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      return apiError("File is too large (max 5MB)", 400);
+    // File size check (max 15MB limit)
+    if (file.size > 15 * 1024 * 1024) {
+      return apiError("File is too large (max 15MB)", 400);
     }
 
     const bytes = await file.arrayBuffer();

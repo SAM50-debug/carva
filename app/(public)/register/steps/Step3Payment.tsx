@@ -21,6 +21,11 @@ export function Step3Payment({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (file.size > 15 * 1024 * 1024) {
+      setErrors(prev => ({ ...prev, [field]: "File is too large (max 15MB)" }));
+      return;
+    }
+
     setUploading(true);
     setErrors(prev => ({ ...prev, [field]: "" }));
 
@@ -85,7 +90,7 @@ export function Step3Payment({
               </div>
               <div>
                 <p className="text-white font-medium mb-2">Upload Student ID Card <span className="text-red-500">*</span></p>
-                <p className="text-sm text-slate-400 mb-4">JPEG, PNG, or PDF up to 5MB</p>
+                <p className="text-sm text-slate-400 mb-4">JPEG, PNG, or PDF up to 15MB</p>
                 <label className="relative cursor-pointer bg-[#c8102e] hover:bg-[#a50e26] text-white px-6 py-2.5 rounded-xl font-medium transition-colors inline-flex items-center gap-2">
                   {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Choose File"}
                   <input type="file" className="hidden" accept="image/*,.pdf" onChange={(e) => handleFileUpload(e, "idCardUrl")} disabled={uploading} />

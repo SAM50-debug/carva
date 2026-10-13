@@ -20,15 +20,15 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
       <div className="bg-black/20 rounded-2xl p-6 border border-white/10">
         <h2 className="text-xl font-semibold text-white mb-4">Before you begin</h2>
         <p className="text-slate-400 mb-6 leading-relaxed">
-          Please download and read the official event rules, guidelines, and invitation carefully before proceeding with your registration. 
+          Please download and read the official event rules, guidelines, and invitation carefully before proceeding with your registration.
           Make sure you have your team details and Student ID card ready.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <a 
-            href="/Final Events Caravan'26.pdf" 
-            target="_blank" 
-            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors flex-1"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <a
+            href="/Final Events Caravan'26.pdf"
+            target="_blank"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors"
           >
             <FileText className="w-5 h-5 text-[#c8102e]" />
             <div className="text-left">
@@ -36,14 +36,25 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
               <div className="text-xs text-slate-400">PDF Document</div>
             </div>
           </a>
-          <a 
-            href="/Invitation to Universities.pdf" 
-            target="_blank" 
-            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors flex-1"
+          <a
+            href="/Invitation to Universities.pdf"
+            target="_blank"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors"
           >
             <FileText className="w-5 h-5 text-[#c8102e]" />
             <div className="text-left">
               <div className="font-medium">Invitation to Universities</div>
+              <div className="text-xs text-slate-400">PDF Document</div>
+            </div>
+          </a>
+          <a
+            href="/CARAVAN26_venue.pdf"
+            target="_blank"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors"
+          >
+            <FileText className="w-5 h-5 text-[#c8102e]" />
+            <div className="text-left">
+              <div className="font-medium">Venues</div>
               <div className="text-xs text-slate-400">PDF Document</div>
             </div>
           </a>
@@ -56,15 +67,14 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
             <span className="w-8 h-[1px] bg-white/20"></span>
           </h3>
           <CountdownTimer onExpire={handleExpire} />
-          
+
           <button
             onClick={onNext}
             disabled={isExpired}
-            className={`flex items-center gap-2 px-8 py-4 rounded-xl font-bold transition-all shadow-lg ${
-              isExpired 
-                ? "bg-gray-600/50 text-gray-400 cursor-not-allowed opacity-80 shadow-none hover:scale-100 active:scale-100" 
+            className={`flex items-center gap-2 px-8 py-4 rounded-xl font-bold transition-all shadow-lg ${isExpired
+                ? "bg-gray-600/50 text-gray-400 cursor-not-allowed opacity-80 shadow-none hover:scale-100 active:scale-100"
                 : "bg-[#c8102e] hover:bg-[#a50e26] text-white hover:scale-105 active:scale-95 shadow-[#c8102e]/20"
-            }`}
+              }`}
           >
             {isExpired ? "Registration Ended" : "Begin Registration"}
             {!isExpired && <ArrowRight className="w-5 h-5" />}
