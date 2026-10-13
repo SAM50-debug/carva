@@ -21,7 +21,7 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
         <h2 className="text-xl font-semibold text-white mb-4">Before you begin</h2>
         <p className="text-slate-400 mb-6 leading-relaxed">
           Please download and read the official event rules, guidelines, and invitation carefully before proceeding with your registration.
-          Make sure you have your team details and Student ID card ready.
+          Make sure you have your participant and team details ready.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

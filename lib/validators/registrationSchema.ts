@@ -94,14 +94,6 @@ export const registrationSchema = z.object({
       }
     });
   }
-
-  if (!data.idCardUrl) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Student ID Card upload is required",
-      path: ["idCardUrl"],
-    });
-  }
 });
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;

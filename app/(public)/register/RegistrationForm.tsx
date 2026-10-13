@@ -6,7 +6,6 @@ import { RegistrationFormData } from "@/lib/validators/registrationSchema";
 import { Step0Info } from "@/app/(public)/register/steps/Step0Info";
 import { Step1Details } from "@/app/(public)/register/steps/Step1Details";
 import { Step2Events } from "@/app/(public)/register/steps/Step2Events";
-import { Step3Payment } from "@/app/(public)/register/steps/Step3Payment";
 import { Step4Declaration } from "@/app/(public)/register/steps/Step4Declaration";
 import { Step5Confirmation } from "@/app/(public)/register/steps/Step5Confirmation";
 
@@ -69,7 +68,7 @@ export default function RegistrationForm() {
       }
       
       setFinalResult(result);
-      setCurrentStep(5); // Go to confirmation
+      setCurrentStep(4); // Go to confirmation
     } catch (err: any) {
       setSubmitError(err.message);
     } finally {
@@ -83,13 +82,12 @@ export default function RegistrationForm() {
 
   return (
     <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-10 shadow-2xl">
-      <StepIndicator currentStep={currentStep} totalSteps={4} />
+      <StepIndicator currentStep={currentStep} totalSteps={3} />
       
       {currentStep === 0 && <Step0Info onNext={nextStep} />}
       {currentStep === 1 && <Step1Details data={formData} updateData={updateFormData} onNext={nextStep} />}
       {currentStep === 2 && <Step2Events data={formData} updateData={updateFormData} categories={categoriesData} onNext={nextStep} onPrev={prevStep} />}
-      {currentStep === 3 && <Step3Payment data={formData} updateData={updateFormData} onNext={nextStep} onPrev={prevStep} />}
-      {currentStep === 4 && (
+      {currentStep === 3 && (
         <Step4Declaration 
           onPrev={prevStep} 
           onSubmit={handleSubmit} 
@@ -97,7 +95,7 @@ export default function RegistrationForm() {
           error={submitError} 
         />
       )}
-      {currentStep === 5 && finalResult && <Step5Confirmation result={finalResult} />}
+      {currentStep === 4 && finalResult && <Step5Confirmation result={finalResult} />}
     </div>
   );
 }
