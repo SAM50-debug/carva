@@ -18,11 +18,6 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
       </div>
 
       <div className="bg-black/20 rounded-2xl p-6 border border-white/10">
-        <h2 className="text-xl font-semibold text-white mb-4">Before you begin</h2>
-        <p className="text-slate-400 mb-6 leading-relaxed">
-          Please download and read the official event rules, guidelines, and invitation carefully before proceeding with your registration.
-          Make sure you have your participant and team details ready.
-        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <a
@@ -72,8 +67,8 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
             onClick={onNext}
             disabled={isExpired}
             className={`flex items-center gap-2 px-8 py-4 rounded-xl font-bold transition-all shadow-lg ${isExpired
-                ? "bg-gray-600/50 text-gray-400 cursor-not-allowed opacity-80 shadow-none hover:scale-100 active:scale-100"
-                : "bg-[#c8102e] hover:bg-[#a50e26] text-white hover:scale-105 active:scale-95 shadow-[#c8102e]/20"
+              ? "bg-gray-600/50 text-gray-400 cursor-not-allowed opacity-80 shadow-none hover:scale-100 active:scale-100"
+              : "bg-[#c8102e] hover:bg-[#a50e26] text-white hover:scale-105 active:scale-95 shadow-[#c8102e]/20"
               }`}
           >
             {isExpired ? "Registration Ended" : "Begin Registration"}
