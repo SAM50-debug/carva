@@ -75,7 +75,7 @@ export function Step2Events({
       const isFashionModeling = eventName.toLowerCase().includes("fashion modeling");
       const isBhangra = eventName.toLowerCase().includes("bhangra");
       let defaultMembers = 2;
-      if (isFashionModeling) defaultMembers = 11;
+      if (isFashionModeling) defaultMembers = 2;
       else if (isBhangra) defaultMembers = 8;
 
       updateData({
@@ -110,8 +110,8 @@ export function Step2Events({
         let maxMembers = 8;
         
         if (isFashionModeling) {
-          minMembers = 11;
-          maxMembers = 13;
+          minMembers = 1;
+          maxMembers = 2;
         } else if (isBhangra) {
           minMembers = 8;
           maxMembers = 15;
@@ -145,14 +145,16 @@ export function Step2Events({
     
     // Server-side check for Fashion Modeling exclusivity
     const hasFashion = selectedEvents.some(e => e.eventName.toLowerCase().includes("fashion modeling"));
-    if (hasFashion && isTeam && data.university) {
+    if (hasFashion && data.university) {
+      const fashionEvt = selectedEvents.find(e => e.eventName.toLowerCase().includes("fashion modeling"));
+      const memberCount = isTeam ? (fashionEvt?.teamDetails?.memberCount || 2) : 1;
       setIsChecking(true);
       try {
-        const res = await fetch(`/api/public/check-university?university=${encodeURIComponent(data.university)}&event=${encodeURIComponent("fashion modeling")}`);
+        const res = await fetch(`/api/public/check-university?university=${encodeURIComponent(data.university)}&event=${encodeURIComponent("fashion modeling")}&count=${memberCount}`);
         if (res.ok) {
-          const { registered } = await res.json();
+          const { registered, message } = await res.json();
           if (registered) {
-            setErrors(prev => ({ ...prev, events: "Your university has already registered a team for Fashion Modeling. Only one team per university is allowed." }));
+            setErrors(prev => ({ ...prev, events: message || "Your university has already registered for this Fashion Modeling category." }));
             window.scrollTo({ top: 0, behavior: "smooth" });
             setIsChecking(false);
             return;
@@ -182,7 +184,7 @@ export function Step2Events({
       const isFashionModeling = evt.eventName.toLowerCase().includes("fashion modeling");
       const isBhangra = evt.eventName.toLowerCase().includes("bhangra");
       let defaultMembers = 2;
-      if (isFashionModeling) defaultMembers = 11;
+      if (isFashionModeling) defaultMembers = 2;
       else if (isBhangra) defaultMembers = 8;
       setModalData({ memberCount: defaultMembers, membersInfo: "" });
     }
@@ -205,8 +207,8 @@ export function Step2Events({
     let maxMembers = 8;
 
     if (isFashionModeling) {
-      minMembers = 11;
-      maxMembers = 13;
+      minMembers = 1;
+      maxMembers = 2;
     } else if (isBhangra) {
       minMembers = 8;
       maxMembers = 15;
@@ -261,8 +263,8 @@ export function Step2Events({
     let currentMin = 2;
     let currentMax = 8;
     if (isCurrentFashion) {
-      currentMin = 11;
-      currentMax = 13;
+      currentMin = 1;
+      currentMax = 2;
     } else if (isCurrentBhangra) {
       currentMin = 8;
       currentMax = 15;
@@ -276,7 +278,7 @@ export function Step2Events({
 
     if (otherCount < currentMin || otherCount > currentMax) {
       if (isCurrentFashion) {
-        showToast(`Cannot copy: Fashion Modeling requires ${currentMin}-${currentMax} members, but your other event has ${otherCount}. Please adjust or enter manually.`);
+        showToast(`Cannot copy: Fashion Modeling requires ${currentMin}-${currentMax} members (Solo: 1, Duet: 2), but your other event has ${otherCount}. Please adjust or enter manually.`);
       } else if (isCurrentBhangra) {
         showToast(`Cannot copy: Bhangra requires ${currentMin}-${currentMax} members, but your other event has ${otherCount}.`);
       } else {
@@ -515,10 +517,11 @@ export function Step2Events({
                 <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-sm text-amber-200/80">
                   <strong className="text-amber-400 block mb-1">⚠️ Fashion Modeling Rules:</strong>
                   <ul className="list-disc pl-4 space-y-1">
-                    <li>Must have 11 to 13 participants.</li>
-                    <li>Only one team allowed per university.</li>
-                    <li>Prohibited on stage: original gun, sword, knife, fire, etc.</li>
-                    <li>Performance time: 12 to 15 minutes (disqualification if violated).</li>
+                    <li>Solo modeling (1 model) or Duet modeling (2 models: 1 male & 1 female).</li>
+                    <li>Performance should be 5 to 8 mins.</li>
+                    <li>Prohibited tools on stage: original gun, sword, knife, fire etc.</li>
+                    <li>Only 1 model for solo and 2 models for duet allowed from one college/university/institute.</li>
+                    <li>Solo modeling model can't be a part of duet modeling.</li>
                   </ul>
                 </div>
               )}
@@ -549,14 +552,18 @@ export function Step2Events({
                     const isMono = evtName.includes("mono acting");
                     
                     let minM = 2; let maxM = 8;
-                    if (isFash) { minM = 11; maxM = 13; }
+                    if (isFash) { minM = 1; maxM = 2; }
                     else if (isBhang) { minM = 8; maxM = 15; }
                     else if (isMono) { minM = 1; maxM = 1; }
                     else if (isCultural) { minM = 2; maxM = 15; }
                     
                     let options = [];
                     for(let i = minM; i <= maxM; i++) options.push(i);
-                    return options.map(num => <option key={num} value={num} className="bg-[#111827]">{num}</option>);
+                    return options.map(num => (
+                      <option key={num} value={num} className="bg-[#111827]">
+                        {isFash ? (num === 1 ? "1 (Solo Modeling)" : "2 (Duet Modeling: 1 Male & 1 Female)") : num}
+                      </option>
+                    ));
                   })()}
                 </select>
                 {modalErrors.memberCount && <p className="text-red-500 text-xs">{modalErrors.memberCount}</p>}

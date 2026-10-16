@@ -273,7 +273,7 @@ export function EditRegistrationModal({
                                       const isMono = evtName.includes("mono acting");
                                       
                                       let minM = 2; let maxM = 8;
-                                      if (isFash) { minM = 11; maxM = 13; }
+                                      if (isFash) { minM = 1; maxM = 2; }
                                       else if (isBhang) { minM = 8; maxM = 15; }
                                       else if (isMono) { minM = 1; maxM = 1; }
                                       else if (isCultural) { minM = 2; maxM = 15; }
@@ -281,7 +281,9 @@ export function EditRegistrationModal({
                                       let options = [];
                                       for(let j = minM; j <= maxM; j++) options.push(j);
                                       return options.map(num => (
-                                        <option key={num} value={num} className="bg-[#111827]">{num}</option>
+                                        <option key={num} value={num} className="bg-[#111827]">
+                                          {isFash ? (num === 1 ? "1 (Solo Modeling)" : "2 (Duet Modeling)") : num}
+                                        </option>
                                       ));
                                     })()}
                                   </select>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { registrationSchema } from "@/lib/validators/registrationSchema";
 import { apiError, apiSuccess } from "@/lib/api/helpers";
+import { isRegistrationClosed } from "@/lib/constants";
 import { nanoid } from "nanoid";
 import { Resend } from "resend";
 import QRCode from "qrcode";
@@ -10,6 +11,11 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
+    // Security & Business Rule: Server-side registration cutoff
+    if (isRegistrationClosed()) {
+      return apiError("Registrations for CARAVAN '26 have officially closed.", 403);
+    }
+
     const body = await req.json();
 
     const parsed = registrationSchema.safeParse(body);
@@ -27,17 +33,44 @@ export async function POST(req: NextRequest) {
 
     const db = await getDb();
 
-    // Check Fashion Modeling exclusivity: Only 1 team per university
+    // Check Fashion Modeling exclusivity: 1 model for solo modeling and 1 duet team per university
     const hasFashionModeling = data.selectedEvents.some(e => e.eventName.toLowerCase().includes("fashion modeling"));
-    if (hasFashionModeling && data.participationType === "team") {
-      const existing = await db.collection("registrations").findOne({
-        university: { $regex: new RegExp(`^${data.university}$`, "i") },
+    if (hasFashionModeling) {
+      const fashionEvt = data.selectedEvents.find(e => e.eventName.toLowerCase().includes("fashion modeling"));
+      const isSolo = data.participationType === "individual" || (fashionEvt?.teamDetails?.memberCount === 1);
+      const isDuet = data.participationType === "team" && fashionEvt?.teamDetails?.memberCount === 2;
+
+      const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const existingDocs = await db.collection("registrations").find({
+        university: { $regex: new RegExp(`^${escapeRegex(data.university)}$`, "i") },
         "selectedEvents.eventName": { $regex: /fashion modeling/i },
         status: { $ne: "rejected" }
-      });
+      }).toArray();
 
-      if (existing) {
-        return apiError("Your university has already registered a team for Fashion Modeling.", 400);
+      if (isSolo) {
+        const hasExistingSolo = existingDocs.some((r: any) =>
+          r.participationType === "individual" ||
+          r.selectedEvents?.some((e: any) =>
+            e.eventName?.toLowerCase().includes("fashion modeling") &&
+            e.teamDetails?.memberCount === 1
+          )
+        );
+        if (hasExistingSolo) {
+          return apiError("Your university has already registered a model for Solo Fashion Modeling (limit: 1 per university).", 400);
+        }
+      }
+
+      if (isDuet) {
+        const hasExistingDuet = existingDocs.some((r: any) =>
+          r.participationType === "team" &&
+          r.selectedEvents?.some((e: any) =>
+            e.eventName?.toLowerCase().includes("fashion modeling") &&
+            e.teamDetails?.memberCount === 2
+          )
+        );
+        if (hasExistingDuet) {
+          return apiError("Your university has already registered a team for Duet Fashion Modeling (limit: 1 duet team per university).", 400);
+        }
       }
     }
 

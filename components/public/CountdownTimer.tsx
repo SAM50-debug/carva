@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { REGISTRATION_DEADLINE_MS } from "@/lib/constants";
 
-// Target Date: 16th Oct 2026, 23:59:59 IST
-// IST is UTC+05:30
-const TARGET_DATE = new Date("2026-10-16T23:59:59+05:30").getTime();
+// Target Date: 18th Oct 2026, 23:59:59 IST (UTC+05:30)
+const TARGET_DATE = REGISTRATION_DEADLINE_MS;
 
 function FlipUnit({ value, label }: { value: number; label: string }) {
   const paddedValue = value.toString().padStart(2, "0");

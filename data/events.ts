@@ -27,98 +27,440 @@ export const eventsData: EventDetails[] = [
     id: "mono-acting",
     name: "Mono Acting",
     category: "CULTURAL",
-    description: "A solo theatrical performance based on social issues, patriotism, etc.",
-    teamSize: "Solo",
-    theme: "Social Issues, Patriotism, Indian Culture & Heritage, Youth & Society, Contemporary Issues",
+    description: "Solo theatrical performance on social themes, patriotism, culture, and character portrayals.",
+    teamSize: "Solo (1 participant)",
+    duration: "4–5 minutes",
+    theme: "Social Issues, Comedy, Patriotism, Indian Culture & Heritage, Youth & Society, Contemporary Issues",
     rules: [
-      "Performances must focus on a constructive social message.",
-      "Hate speech, abusive language, defamatory content not permitted."
+      "Time Limit: Each participant will be given a maximum of 4–5 minutes to perform.",
+      "Performance Type: The act must be performed by a single participant.",
+      "Theme: Participants may choose any appropriate theme, including social issues, comedy, patriotism, culture, or a meaningful character portrayal.",
+      "Language: Participants may perform in Punjabi, Hindi, English, or any other approved language.",
+      "Props and Costumes: Participants may use simple props and costumes relevant to their performance. Arrangements must be made by the participants themselves.",
+      "Originality: Performances should demonstrate creativity, expression, and originality.",
+      "Content Restrictions: Vulgarity, abusive language, offensive gestures, and content hurting any religion, community, or individual are strictly prohibited.",
+      "Time Penalty: Exceeding the allotted time may result in deduction of marks or disqualification, as decided by the judges.",
+      "Discipline: Participants must report to the venue at the scheduled reporting time and follow coordinator instructions.",
+      "Judges' Decision: The decision of the judges will be final and binding."
     ],
     judgingCriteria: [
-      "Performance & Presentation",
-      "Creativity & Originality",
-      "Expression & Confidence"
+      "Acting skills",
+      "Voice modulation",
+      "Facial expressions",
+      "Stage presence",
+      "Creativity & originality",
+      "Overall impact"
     ]
   },
   {
     id: "nukkad-natak",
     name: "Nukkad Natak / Street Play",
     category: "CULTURAL",
-    description: "A powerful team-based street theatre competition.",
-    teamSize: "Group",
-    theme: "Social Issues, Patriotism & Nationalism, Drug Abuse Awareness, Women Empowerment, Environmental Awareness, Education & Youth, Social Responsibility",
+    description: "A powerful team-based street theatre competition highlighting social and cultural issues.",
+    teamSize: "Group (5–15 participants)",
+    duration: "8–10 minutes",
+    theme: "Social Awareness, Cultural Values, Environmental Protection, Women's Empowerment, Drug Abuse Prevention, Education, Patriotism",
     rules: [
-      "Performances must focus on a constructive social message.",
-      "Teams must arrange their own costumes and basic props."
+      "Time Limit: Each team will be given 8–10 minutes to perform.",
+      "Team Size: Each team must consist of a minimum of 5 and a maximum of 15 participants.",
+      "Theme: Performance should focus on social awareness, cultural values, environmental protection, women's empowerment, drug abuse prevention, education, patriotism, or other relevant social issues.",
+      "Language: Teams may perform in Punjabi, Hindi, English, or a combination of these languages.",
+      "Performance Style: Traditional street-play format emphasizing audience engagement, powerful dialogue delivery, expressions, and coordinated group performance.",
+      "Props and Costumes: Only simple, safe, and easily manageable props and costumes are permitted. Teams must arrange their own materials.",
+      "Music and Sound: Live music, clapping, rhythmic sounds, and portable instruments may be used where appropriate. Any recorded music or sound effects must be arranged by the team.",
+      "Content Restrictions: Vulgarity, abusive language, hate speech, political campaigning, and content that hurts religious or community sentiments are strictly prohibited.",
+      "Time Penalty: Exceeding the time limit may lead to deduction of marks or disqualification.",
+      "Discipline and Safety: Participants must maintain discipline, avoid obstructing other events, and ensure props/movements do not endanger audience or participants.",
+      "Judges' Decision: The decision of the judges will be final and binding."
     ],
     judgingCriteria: [
-      "Performance & Presentation",
+      "Theme relevance",
+      "Acting & dialogue delivery",
+      "Teamwork & coordination",
+      "Creativity & audience engagement",
+      "Overall social impact"
+    ]
+  },
+  {
+    id: "shabad-gayan",
+    name: "Shabad Gayan",
+    category: "CULTURAL",
+    description: "Devotional Shabad and Gurbani singing presented with traditional musical accompaniment.",
+    teamSize: "Group (2–3 participants)",
+    duration: "3–5 minutes",
+    theme: "Gurbani and Spiritual Shabads",
+    rules: [
+      "Team Size: Each team must consist of 2–3 participants.",
+      "Time Limit: Each performance will be limited to 3–5 minutes.",
+      "Performance: Participants must present Shabad/Gurbani singing with appropriate musical accompaniment.",
+      "Language: The performance must be based on Gurbani or an approved Shabad.",
+      "Musical Accompaniment: Harmonium, tabla, and other suitable traditional instruments are permitted.",
+      "Respect and Decorum: Participants must maintain the sanctity, dignity, and spiritual essence of the Shabad.",
+      "Backing Tracks: Pre-recorded vocals are not permitted. Instrumental backing tracks may be allowed with prior approval.",
+      "Reporting: Teams must report at the venue at the designated time (at least 30 minutes before performance).",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Vocal quality",
+      "Sur and taal",
+      "Rhythm and coordination",
+      "Pronunciation",
+      "Devotional expression",
+      "Overall presentation"
+    ]
+  },
+  {
+    id: "folk-singing",
+    name: "Folk Singing",
+    category: "CULTURAL",
+    description: "Traditional folk songs representing regional cultures and musical heritage from any Indian state.",
+    teamSize: "Solo (1), Duet (2), or Group (6–8 participants)",
+    duration: "Solo: 3–5 mins | Duet: 4–5 mins | Group: 5–8 mins",
+    theme: "Traditional Indian Folk Traditions",
+    rules: [
+      "Team Categories: Solo, duet, and group performances are permitted. Group performances must consist of 6–8 participants.",
+      "Time Limit: Solo: 3–5 minutes | Duet: 4–5 minutes | Group: 5–8 minutes.",
+      "Theme: Songs must represent traditional folk music from any Indian state or region.",
+      "Language: Participants may sing in any Indian regional language.",
+      "Musical Accompaniment: Traditional instruments and suitable instrumental backing tracks are permitted.",
+      "Originality & Authenticity: Songs should preserve the traditional character and cultural identity of the selected folk tradition.",
+      "Content Restrictions: Songs containing vulgarity, abusive language, or offensive material are strictly prohibited.",
+      "Props and Costumes: Traditional attire and simple cultural props are permitted, provided they do not disrupt the performance.",
+      "Time Violation: Exceeding allotted time may result in mark deductions or disqualification.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Voice quality",
+      "Rhythm and pitch",
+      "Folk authenticity",
+      "Cultural representation",
       "Coordination",
-      "Overall Impact"
+      "Stage presentation"
+    ]
+  },
+  {
+    id: "qawwali",
+    name: "Qawwali",
+    category: "CULTURAL",
+    description: "Traditional Sufi and devotional group-singing presentation.",
+    teamSize: "Group (8–10 participants)",
+    duration: "8–10 minutes",
+    theme: "Sufi & Devotional Qawwali Traditions",
+    rules: [
+      "Team Size: Each team must consist of 8–10 participants.",
+      "Time Limit: Each performance must be between 8–10 minutes.",
+      "Performance: Teams must present a Qawwali that reflects the traditional group-singing style.",
+      "Language: Performances may be in Urdu, Hindi, Punjabi, or another suitable language.",
+      "Musical Accompaniment: Harmonium, tabla, dholak, hand clapping, and other suitable traditional instruments are permitted.",
+      "Coordination: Teams should maintain proper rhythm, vocal coordination, and interaction among singers.",
+      "Content: Lyrics must be respectful and appropriate for a university-level cultural competition.",
+      "Backing Tracks: Pre-recorded vocals are not permitted. Instrumental tracks require prior approval.",
+      "Discipline: Teams must follow organizer instructions and avoid unnecessary delays.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Vocal quality",
+      "Rhythm and improvisation",
+      "Group coordination",
+      "Traditional style",
+      "Expression",
+      "Overall impact"
+    ]
+  },
+  {
+    id: "international-music",
+    name: "International Music",
+    category: "CULTURAL",
+    description: "Vocal or instrumental presentations representing diverse global musical traditions and cultures outside India.",
+    teamSize: "Solo (1), Duet (2), or Group (6–8 participants)",
+    duration: "Solo: 3–5 mins | Duet: 4–5 mins | Group: 5–8 mins",
+    theme: "Global & International Musical Traditions",
+    rules: [
+      "Team Categories: Solo, duet, and group performances are permitted. Group performances must consist of 6–8 participants.",
+      "Time Limit: Solo: 3–5 minutes | Duet: 4–5 minutes | Group: 5–8 minutes.",
+      "Theme: Performances must represent the vocal or instrumental musical traditions of a country other than India.",
+      "Language: Participants may perform in any international language.",
+      "Music Style: Western pop, international folk, world music, and other recognized international musical styles are permitted.",
+      "Musical Accompaniment: Live instruments or approved instrumental backing tracks may be used.",
+      "Authenticity: Performances should reflect the selected country's musical style and cultural character.",
+      "Backing Vocals: Pre-recorded lead vocals are not permitted. Main vocals must be performed live.",
+      "Content Restrictions: Vulgar, abusive, discriminatory, or offensive content is prohibited.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Musical quality",
+      "Originality",
+      "International representation",
+      "Rhythm",
+      "Vocal or instrumental technique",
+      "Coordination and presentation"
+    ]
+  },
+  {
+    id: "indian-classical",
+    name: "Indian Classical / Semi-Classical",
+    category: "CULTURAL",
+    description: "Classical and semi-classical Indian compositions in Hindustani or Carnatic traditions.",
+    teamSize: "Solo, Duet, or Group (2–8 participants)",
+    duration: "Solo: 3–5 mins | Duet: 4–5 mins | Group: 5–8 mins",
+    theme: "Hindustani & Carnatic Classical Traditions",
+    rules: [
+      "Categories: Participants may compete in solo, duet, or group formats.",
+      "Time Limit: Solo: 3–5 minutes | Duet: 4–5 minutes | Group: 5–8 minutes.",
+      "Performance Style: Participants may present Hindustani or Carnatic classical or semi-classical compositions.",
+      "Musical Accompaniment: Harmonium, tabla, tanpura, mridangam, violin, and other suitable instruments are permitted.",
+      "Technical Excellence: Performances should demonstrate knowledge of raga, tala, sur, rhythm, and style characteristics.",
+      "Authenticity: Participants must maintain the essential features of Indian classical or semi-classical music.",
+      "Backing Tracks: Pre-recorded lead vocals are not permitted. Instrumental backing tracks may be used with prior approval.",
+      "Content: Compositions must be appropriate and respectful.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Voice quality",
+      "Pitch accuracy",
+      "Rhythm and tala",
+      "Raga / composition presentation",
+      "Technical skill",
+      "Improvisation & musicality"
+    ]
+  },
+  {
+    id: "instrumental-music",
+    name: "Instrumental Music",
+    category: "CULTURAL",
+    description: "Live solo and ensemble musical performances on Indian or Western instruments.",
+    teamSize: "Solo (1), Duet (2), or Group (6–8 participants)",
+    duration: "Solo: 3–5 mins | Duet: 4–5 mins | Group: 5–8 mins",
+    theme: "Live Instrumental Excellence",
+    rules: [
+      "Team Categories: Solo, duet, and group performances are permitted. Group performances must consist of 6–8 participants.",
+      "Time Limit: Solo: 3–5 minutes | Duet: 4–5 minutes | Group: 5–8 minutes.",
+      "Instruments: Participants may perform on Indian or Western instruments (guitar, keyboard, flute, tabla, violin, drums, sitar, etc.).",
+      "Performance: The presentation must primarily demonstrate live instrumental music. Vocal accompaniment, if any, must be approved in advance.",
+      "Equipment: Participants must arrange their own instruments, accessories, and essential equipment.",
+      "Setup Time: Instrument setup and sound checks must be completed within the time allotted by organizers.",
+      "Backing Tracks: Instrumental backing tracks permitted with prior approval; must not replace live lead performance.",
+      "Safety: All electrical instruments and equipment must be used safely.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Technical skill",
+      "Rhythm",
+      "Tone and accuracy",
+      "Creativity",
+      "Coordination",
+      "Musical expression",
+      "Overall performance"
+    ]
+  },
+  {
+    id: "bhangra-dhol",
+    name: "Bhangra - Dhol",
+    category: "CULTURAL",
+    description: "Traditional Punjabi Bhangra performed live to the beating of authentic dhols.",
+    teamSize: "Group (8–10 participants)",
+    duration: "8–10 minutes",
+    theme: "Traditional Punjabi Folk & Live Dhol Heritage",
+    rules: [
+      "Team Size: Each team must consist of 8–10 participants.",
+      "Time Limit: Each performance must be between 8–10 minutes.",
+      "Performance Style: The performance must represent traditional Punjabi Bhangra with live dhol accompaniment, highlighting energetic movements and cultural identity.",
+      "Costumes: Traditional Punjabi attire (Chhadra, Kurta, Pagri/Turle) is strongly encouraged.",
+      "Props: Traditional folk props (Saap, Khunda, Chimta, Kato) may be used, provided they are safe.",
+      "Originality & Energy: Choreography should demonstrate synchronization, formations, and authentic folk vigour.",
+      "Content Restrictions: Vulgarity, obscene gestures, and offensive lyrics or movements are strictly prohibited.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Coordination & synchronization",
+      "Energy & rhythm",
+      "Formations & stage coverage",
+      "Expressions & folk spirit",
+      "Cultural authenticity"
+    ]
+  },
+  {
+    id: "bhangra-empire",
+    name: "Bhangra Empire",
+    category: "CULTURAL",
+    description: "Contemporary competitive Bhangra showcase blending high-intensity choreography and dynamic formations.",
+    teamSize: "Group (8–10 participants)",
+    duration: "8–10 minutes",
+    theme: "Competitive & Contemporary Bhangra",
+    rules: [
+      "Team Size: Each team must consist of 8–10 participants.",
+      "Time Limit: Each performance must be between 8–10 minutes.",
+      "Performance Style: High-energy competitive Bhangra demonstrating contemporary stage agility and traditional foundation.",
+      "Music: High-tempo Bhangra tracks or live fusion percussion permitted.",
+      "Costumes: Uniform traditional Bhangra attire representing the university team.",
+      "Props: Safe traditional props permitted.",
+      "Content Restrictions: Vulgarity and offensive gestures strictly prohibited.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Synchronization & timing",
+      "Energy level & stamina",
+      "Creative formations",
+      "Expressions & stage presence",
+      "Overall impact"
+    ]
+  },
+  {
+    id: "bhangra-on-music",
+    name: "Bhangra on Music",
+    category: "CULTURAL",
+    description: "Bhangra choreography synchronized seamlessly to recorded music tracks.",
+    teamSize: "Group (8–10 participants)",
+    duration: "8–10 minutes",
+    theme: "Recorded Track Bhangra Synchronization",
+    rules: [
+      "Team Size: Each team must consist of 8–10 participants.",
+      "Time Limit: Each performance must be between 8–10 minutes.",
+      "Music Submission: Recorded audio tracks must be submitted in advance in high quality format.",
+      "Costumes & Props: Traditional Punjabi dress and approved cultural props.",
+      "Choreography: Emphasis on synchronization to track cues, dynamic transitions, and expressive storytelling.",
+      "Content Restrictions: Obscene gestures and inappropriate lyrics strictly prohibited.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Track synchronization",
+      "Energy & coordination",
+      "Formations & transitions",
+      "Folk authenticity",
+      "Overall performance"
+    ]
+  },
+  {
+    id: "western-dance",
+    name: "Western Dance",
+    category: "CULTURAL",
+    description: "Western and contemporary dance forms covering Hip-Hop, Jazz, Freestyle, Locking, Popping, and Urban styles.",
+    teamSize: "Solo (1), Duet (2), or Group (8–10 participants)",
+    duration: "Solo: 4–5 mins | Duet: 4–5 mins | Group: 6–8 mins",
+    theme: "Western & Contemporary Dance Expressions",
+    rules: [
+      "Categories and Team Size: Solo (1), Duet (2), Group (8–10 participants).",
+      "Time Limit: Solo: 4–5 minutes | Duet: 4–5 minutes | Group: 6–8 minutes.",
+      "Dance Styles: Hip-Hop, Contemporary, Jazz, Freestyle, Locking, Popping, and other Western dance styles.",
+      "Music: Suitable Western or fusion tracks submitted in advance.",
+      "Choreography: Must demonstrate technique, musicality, creativity, and effective stage usage.",
+      "Costumes & Props: Costumes must be safe and appropriate for a university competition. Safe props permitted.",
+      "Safety Warning: Dangerous stunts, fire, sharp objects, and hazardous props are strictly prohibited.",
+      "Content Restrictions: Vulgarity, obscene gestures, inappropriate lyrics, and offensive choreography are prohibited.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Technique and execution",
+      "Synchronization & coordination",
+      "Creativity and choreography",
+      "Musicality and rhythm",
+      "Expressions and formations",
+      "Stage presence and overall impact"
+    ]
+  },
+  {
+    id: "folk-dance",
+    name: "Indian Folk Dance",
+    category: "CULTURAL",
+    description: "Traditional folk dances celebrating the heritage of any Indian state (Garba, Bihu, Ghoomar, Lavani, Kalbelia, etc.).",
+    teamSize: "Solo (1), Duet (2), or Group (8–10 participants)",
+    duration: "Solo: 4–5 mins | Duet: 4–5 mins | Group: 6–8 mins",
+    theme: "Indian Regional Folk Dance Traditions",
+    rules: [
+      "Categories and Team Size: Solo (1), Duet (2), Group (8–10 participants).",
+      "Time Limit: Solo: 4–5 minutes | Duet: 4–5 minutes | Group: 6–8 minutes.",
+      "Dance Styles: Folk dances from any Indian state or region (Garba, Bihu, Ghoomar, Lavani, Kalbelia, etc.). Note: Bhangra and Giddha compete in their dedicated categories.",
+      "Cultural Authenticity: The performance should authentically represent the selected region's folk traditions, movements, music, and cultural identity.",
+      "Music: Traditional folk music or suitable instrumental tracks permitted.",
+      "Costumes & Props: Regionally authentic attire and safe cultural props.",
+      "Content Restrictions: Offensive lyrics, vulgarity, and inappropriate gestures are strictly prohibited.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Cultural authenticity",
+      "Technique & rhythm",
+      "Synchronization & coordination",
+      "Expressions & costumes",
+      "Creativity and presentation"
+    ]
+  },
+  {
+    id: "international-dance",
+    name: "International Dance",
+    category: "CULTURAL",
+    description: "Global dance styles representing cultures outside India (Salsa, Flamenco, African dance, K-pop, Latin dance, etc.).",
+    teamSize: "Solo (1), Duet (2), or Group (8–10 participants)",
+    duration: "Solo: 3–4 mins | Duet: 4–5 mins | Group: 5–7 mins",
+    theme: "Global & International Dance Heritage",
+    rules: [
+      "Categories and Team Size: Solo (1), Duet (2), Group (8–10 participants).",
+      "Time Limit: Solo: 3–4 minutes | Duet: 4–5 minutes | Group: 5–7 minutes.",
+      "Dance Styles: Dance forms representing countries or cultures outside India (Salsa, Flamenco, African dance, K-pop, Latin dance, etc.).",
+      "Cultural Representation: Performances should reflect the authentic characteristics and background of the selected international style.",
+      "Costumes & Props: Must complement the selected style and remain appropriate for a university competition.",
+      "Content Restrictions: Vulgarity, discriminatory expressions, offensive gestures, and inappropriate music are prohibited.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Technique and footwork",
+      "Cultural representation",
+      "Synchronization and rhythm",
+      "Creativity and formations",
+      "Stage presence and impact"
     ]
   },
   {
     id: "traditional-attire",
-    name: "Traditional Attire & Talent Show",
+    name: "Traditional Attire & Talent Showcase",
     category: "CULTURAL",
-    description: "My Culture, My Pride – Traditional Attire & Talent Showcase.",
-    teamSize: "Individual or Group",
-    theme: "My Culture, My Pride",
+    description: "Cultural presentation celebrating regional and traditional costumes, customs, and heritage of India or global cultures.",
+    teamSize: "Team (11–13 participants)",
+    duration: "12–15 minutes (Strict)",
+    theme: "Cultural Heritage, Traditional Attire & Customs",
     rules: [
-      "Participants will represent the cultural identity of their state, region, or country.",
-      "Costumes should be appropriate and culturally respectful."
+      "Team Size: Each participating team must consist of 11–13 participants.",
+      "One Team per Institution: Only one team from each institute, college, or university is permitted to participate.",
+      "Time Limit: Performance must be between 12 and 15 minutes strictly. Performing under 12 minutes or exceeding 15 minutes will result in disqualification.",
+      "Theme & Presentation: Must highlight traditional attire, cultural heritage, diversity, and customs.",
+      "Costumes & Styling: Decent, elegant attire representing the chosen culture or traditional theme.",
+      "Music Tracks: Suitable background music submitted in advance.",
+      "Prohibited Items: Real guns, swords, knives, fire, explosives, or hazardous items strictly prohibited (immediate disqualification).",
+      "Content Restrictions: Vulgarity, obscene gestures, offensive language strictly prohibited.",
+      "Judges' Decision: The decision of the judges will be final and binding."
     ],
     judgingCriteria: [
-      "Cultural Authenticity",
-      "Performance & Presentation"
+      "Traditional & cultural representation",
+      "Costume selection & styling",
+      "Creativity & theme interpretation",
+      "Stage presence & confidence",
+      "Coordination & overall presentation"
     ]
   },
   {
-    id: "dance-solo",
-    name: "Solo Dance",
+    id: "fashion-modeling",
+    name: "Fashion Modeling",
     category: "CULTURAL",
-    description: "Individual dance performance in various categories (Bhangra, Western, Folk, etc.)",
-    teamSize: "1 participant",
+    description: "Solo and Duet Fashion Modeling inter-university runway competition combining couture, poise, and choreography.",
+    teamSize: "Solo (1 model) or Duet (2 models: 1 male & 1 female)",
+    duration: "5–8 minutes",
+    theme: "Solo and Duet Fashion Modeling (Inter-University)",
     rules: [
-      "Participants must submit their final audio tracks before the performance.",
-      "Props may be permitted subject to safety requirements and prior approval."
+      "Competition Format: Solo and duet fashion modeling inter-university competition.",
+      "Prohibited Tools: Prohibited tools on stage are: original gun, sword, knife, fire, etc.",
+      "Performance Time: Performance should be 5 to 8 minutes.",
+      "Team Representation: Only one model for solo modeling and two models (one male & one female) for duet modeling are allowed from one college/university/institute.",
+      "Exclusivity: Solo modeling model cannot be a part of duet modeling.",
+      "Costumes & Styling: Attire must be elegant, decent, and suitable for a university-level cultural festival.",
+      "Music Submission: Background tracks must be submitted in advance to the organizing team.",
+      "Reporting: Participants must report to the venue at least 30 minutes before their scheduled slot.",
+      "Judges' Decision: The decision of the judges will be final and binding."
     ],
     judgingCriteria: [
-      "Performance & Presentation",
-      "Coordination",
-      "Stage Presence"
-    ]
-  },
-  {
-    id: "dance-group",
-    name: "Group Dance",
-    category: "CULTURAL",
-    description: "Group dance performance (Bhangra, Western, Folk, etc.)",
-    teamSize: "2–8 participants",
-    rules: [
-      "Participants must submit their final audio tracks before the performance.",
-      "Costumes should be appropriate and suitable for a university-level competition."
-    ],
-    judgingCriteria: [
-      "Performance & Presentation",
-      "Coordination",
-      "Stage Presence"
-    ]
-  },
-  {
-    id: "vocal-solo",
-    name: "Solo Vocal",
-    category: "CULTURAL",
-    description: "Individual singing performance.",
-    teamSize: "1 participant",
-    rules: [
-      "Pre-recorded vocals should not be used in a live vocal competition.",
-      "Participants may perform vocal pieces according to the selected category."
-    ],
-    judgingCriteria: [
-      "Technical Skill",
-      "Expression & Confidence",
-      "Overall Impact"
+      "Poise, confidence & stage presence",
+      "Costume styling & aesthetic presentation",
+      "Ramp walk & choreography (coordination for duet)",
+      "Adherence to time limit (5–8 mins) and rules",
+      "Overall impact & creative presentation"
     ]
   },
   

@@ -4,18 +4,6 @@ import { eventsData } from "@/data/events";
 
 const EVENT_SLUG_ALIASES: Record<string, string> = {
   "earth-and-form": "earth-form",
-  "bhangra-dhol": "dance-group",
-  "bhangra-empire": "dance-group",
-  "bhangra-on-music": "dance-group",
-  "western-dance": "dance-group",
-  "folk-dance": "dance-group",
-  "international-dance": "dance-group",
-  "shabad-gayan": "vocal-solo",
-  "folk-singing": "vocal-solo",
-  "qawwali": "vocal-solo",
-  "international-music": "vocal-solo",
-  "indian-classical": "vocal-solo",
-  "instrumental-music": "vocal-solo",
 };
 
 export async function GET() {

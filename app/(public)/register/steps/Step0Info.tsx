@@ -19,7 +19,7 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
 
       <div className="bg-black/20 rounded-2xl p-6 border border-white/10">
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <a
             href="/Final Events Caravan'26.pdf"
             target="_blank"
@@ -50,6 +50,17 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
             <FileText className="w-5 h-5 text-[#c8102e]" />
             <div className="text-left">
               <div className="font-medium">Venues</div>
+              <div className="text-xs text-slate-400">PDF Document</div>
+            </div>
+          </a>
+          <a
+            href="/culture_event_rules.pdf"
+            target="_blank"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors"
+          >
+            <FileText className="w-5 h-5 text-[#c8102e]" />
+            <div className="text-left">
+              <div className="font-medium">Cultural Rules</div>
               <div className="text-xs text-slate-400">PDF Document</div>
             </div>
           </a>

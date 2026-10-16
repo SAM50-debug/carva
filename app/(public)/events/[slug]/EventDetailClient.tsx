@@ -63,12 +63,12 @@ export default function EventDetailClient({ event }: { event: { id: string; name
   const isFashionModeling = event.name.toLowerCase().includes("fashion modeling");
   const displayRules = [...(event.rules || [])];
   
-  if (isFashionModeling) {
+  if (isFashionModeling && !displayRules.some(r => r.toLowerCase().includes("prohibited tools") || r.toLowerCase().includes("solo and duet"))) {
     displayRules.unshift(
-      "Must have 11 to 13 participants.",
-      "Only one team allowed per university.",
-      "Prohibited on stage: original gun, sword, knife, fire, etc.",
-      "Performance time: 12 to 15 minutes (disqualification if violated)."
+      "Prohibited tools on stage are: original gun, sword, knife, fire etc.",
+      "Performance should be 5 to 8 mins.",
+      "Only one model for solo modeling and two models (one male & one female) for duet modeling are allowed from one college/university/institute.",
+      "Solo modeling model can't be a part of duet modeling."
     );
   }
 

@@ -4,21 +4,9 @@ import { Metadata } from "next";
 import EventDetailClient from "@/app/(public)/events/[slug]/EventDetailClient";
 import { eventsData } from "@/data/events";
 
-// Slug alias mapping for events where database slug differs slightly or maps to category template
+// Slug alias mapping for events where database slug differs slightly from static ID
 const EVENT_SLUG_ALIASES: Record<string, string> = {
   "earth-and-form": "earth-form",
-  "bhangra-dhol": "dance-group",
-  "bhangra-empire": "dance-group",
-  "bhangra-on-music": "dance-group",
-  "western-dance": "dance-group",
-  "folk-dance": "dance-group",
-  "international-dance": "dance-group",
-  "shabad-gayan": "vocal-solo",
-  "folk-singing": "vocal-solo",
-  "qawwali": "vocal-solo",
-  "international-music": "vocal-solo",
-  "indian-classical": "vocal-solo",
-  "instrumental-music": "vocal-solo",
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

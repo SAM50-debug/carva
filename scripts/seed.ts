@@ -57,8 +57,8 @@ const EVENTS_BY_CATEGORY: Record<string, object[]> = {
     },
     {
       slug: "fashion-modeling", name: "Fashion Modeling",
-      descriptor: "Fashion modeling team event with special rules",
-      participation: { type: "team", min: 11, max: 13, notes: "Only 1 team per university. 11-13 participants." },
+      descriptor: "Solo and Duet Fashion Modeling inter-university competition",
+      participation: { type: "team", min: 1, max: 2, notes: "Solo (1 model) or Duet (2 models: 1 male & 1 female)" },
     },
     // ── Dance events (event name = style, subEvents = formats) ──
     {

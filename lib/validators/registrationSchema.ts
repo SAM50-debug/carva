@@ -71,8 +71,8 @@ export const registrationSchema = z.object({
         let maxMembers = 8;
         
         if (isFashionModeling) {
-          minMembers = 11;
-          maxMembers = 13;
+          minMembers = 1;
+          maxMembers = 2;
         } else if (isBhangra) {
           minMembers = 8;
           maxMembers = 15;
