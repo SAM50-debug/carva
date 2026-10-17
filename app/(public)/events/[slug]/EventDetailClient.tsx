@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { motion, Variants } from "framer-motion";
-import { ArrowLeft, Users, Clock, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft, Users, Clock, ArrowRight, Loader2, PhoneCall, UserCheck } from "lucide-react";
 import { useState } from "react";
+import { getCategoryContact } from "@/data/contacts";
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
   CULTURAL: "from-rose-900/50 via-red-900/20 to-transparent",
@@ -221,6 +222,48 @@ export default function EventDetailClient({ event }: { event: { id: string; name
               <p className="text-xl font-bold text-center" style={{ color }}>Registration is free</p>
             </div>
           </Section>
+
+          {/* Event Coordinator Section */}
+          {(() => {
+            const coordinator = getCategoryContact(event.category);
+            if (!coordinator) return null;
+            return (
+              <Section num="08" title="Event Coordinator & Inquiries">
+                <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-6 sm:p-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border"
+                        style={{
+                          backgroundColor: `${color}18`,
+                          borderColor: `${color}40`,
+                        }}
+                      >
+                        <UserCheck className="w-7 h-7" style={{ color }} />
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-wider text-slate-400 font-semibold">
+                          {coordinator.categoryLabel} Coordinator
+                        </div>
+                        <h4 className="text-xl font-bold text-white mt-0.5">{coordinator.name}</h4>
+                        <p className="text-xs text-slate-400 mt-1">
+                          Contact for event rules, stage setup, schedule, or slot assistance
+                        </p>
+                      </div>
+                    </div>
+
+                    <a
+                      href={`tel:${coordinator.tel}`}
+                      className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-semibold transition-all hover:border-[#c8102e]/60 hover:shadow-[0_0_25px_rgba(200,16,46,0.3)] group shrink-0"
+                    >
+                      <PhoneCall className="w-4 h-4 text-[#c8102e] group-hover:scale-110 transition-transform" />
+                      <span>{coordinator.phone}</span>
+                    </a>
+                  </div>
+                </div>
+              </Section>
+            );
+          })()}
 
           {/* CTA */}
           <motion.div

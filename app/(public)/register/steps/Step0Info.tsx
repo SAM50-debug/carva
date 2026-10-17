@@ -19,48 +19,59 @@ export function Step0Info({ onNext }: { onNext: () => void }) {
 
       <div className="bg-black/20 rounded-2xl p-6 border border-white/10">
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 mb-8">
           <a
             href="/Final Events Caravan'26.pdf"
             target="_blank"
-            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-3 rounded-xl text-white transition-colors"
           >
-            <FileText className="w-5 h-5 text-[#c8102e]" />
+            <FileText className="w-5 h-5 text-[#c8102e] shrink-0" />
             <div className="text-left">
-              <div className="font-medium">Final Events Guidelines</div>
+              <div className="font-medium text-sm">Final Events Guidelines</div>
               <div className="text-xs text-slate-400">PDF Document</div>
             </div>
           </a>
           <a
             href="/Invitation to Universities.pdf"
             target="_blank"
-            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-3 rounded-xl text-white transition-colors"
           >
-            <FileText className="w-5 h-5 text-[#c8102e]" />
+            <FileText className="w-5 h-5 text-[#c8102e] shrink-0" />
             <div className="text-left">
-              <div className="font-medium">Invitation to Universities</div>
+              <div className="font-medium text-sm">Invitation to Universities</div>
               <div className="text-xs text-slate-400">PDF Document</div>
             </div>
           </a>
           <a
             href="/CARAVAN26_venue.pdf"
             target="_blank"
-            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-3 rounded-xl text-white transition-colors"
           >
-            <FileText className="w-5 h-5 text-[#c8102e]" />
+            <FileText className="w-5 h-5 text-[#c8102e] shrink-0" />
             <div className="text-left">
-              <div className="font-medium">Venues</div>
+              <div className="font-medium text-sm">Venues</div>
               <div className="text-xs text-slate-400">PDF Document</div>
             </div>
           </a>
           <a
             href="/culture_event_rules.pdf"
             target="_blank"
-            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-5 py-3 rounded-xl text-white transition-colors"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-3 rounded-xl text-white transition-colors"
           >
-            <FileText className="w-5 h-5 text-[#c8102e]" />
+            <FileText className="w-5 h-5 text-[#c8102e] shrink-0" />
             <div className="text-left">
-              <div className="font-medium">Cultural Rules</div>
+              <div className="font-medium text-sm">Cultural Rules</div>
+              <div className="text-xs text-slate-400">PDF Document</div>
+            </div>
+          </a>
+          <a
+            href="/Event Contacts Directory.pdf"
+            target="_blank"
+            className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-3 rounded-xl text-white transition-colors"
+          >
+            <FileText className="w-5 h-5 text-[#c8102e] shrink-0" />
+            <div className="text-left">
+              <div className="font-medium text-sm">Contacts Directory</div>
               <div className="text-xs text-slate-400">PDF Document</div>
             </div>
           </a>

@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import { RegistrationFormData } from "@/lib/validators/registrationSchema";
-import { ArrowLeft, ArrowRight, Check, Users, Copy, X, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Users, Copy, X, Loader2, PhoneCall } from "lucide-react";
 import { createPortal } from "react-dom";
+import { getCategoryContact } from "@/data/contacts";
 
 export function Step2Events({ 
   data, 
@@ -355,10 +356,45 @@ export function Step2Events({
                       {eventsInCategory > 0 && <p className="text-sm text-[#c8102e] font-medium">{eventsInCategory} event(s) selected</p>}
                     </div>
                   </div>
+
+                  {(() => {
+                    const coord = getCategoryContact(cat.name);
+                    if (!coord) return null;
+                    return (
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="hidden sm:flex items-center gap-2 text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/10 transition-colors"
+                      >
+                        <span className="text-slate-400">Coordinator:</span>
+                        <span className="text-white font-medium">{coord.name}</span>
+                        <a
+                          href={`tel:${coord.tel}`}
+                          className="flex items-center gap-1 text-[#c8102e] hover:underline font-semibold"
+                          title={`Call ${coord.name}`}
+                        >
+                          <PhoneCall className="w-3 h-3" />
+                          <span>{coord.phone}</span>
+                        </a>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {isExpanded && (
                   <div className="px-6 pb-6 pt-2 border-t border-white/5 space-y-4">
+                    {(() => {
+                      const coord = getCategoryContact(cat.name);
+                      if (!coord) return null;
+                      return (
+                        <div className="sm:hidden flex items-center justify-between text-xs bg-white/[0.04] p-2.5 rounded-xl border border-white/10">
+                          <span className="text-slate-400">Coordinator: <strong className="text-white">{coord.name}</strong></span>
+                          <a href={`tel:${coord.tel}`} className="flex items-center gap-1 text-[#c8102e] font-semibold">
+                            <PhoneCall className="w-3 h-3" />
+                            <span>{coord.phone}</span>
+                          </a>
+                        </div>
+                      );
+                    })()}
                     {availableEvents.map((evt: any) => {
                       
                       let displaySubEvents = evt.subEvents;
