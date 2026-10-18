@@ -81,22 +81,37 @@ export default async function RegistrationsPage({ searchParams }: { searchParams
       })
       .join(", ");
 
+    const isTeam = r.participationType === "team";
+    const teamLeader = r.teamDetails?.leaderName || (isTeam ? r.studentName : "N/A");
+    const memberCount = r.selectedEvents?.find((e: any) => e.teamDetails?.memberCount)?.teamDetails?.memberCount 
+      || r.teamDetails?.memberCount 
+      || (isTeam ? 2 : 1);
+    const membersInfo = r.selectedEvents?.find((e: any) => e.teamDetails?.membersInfo)?.teamDetails?.membersInfo 
+      || r.teamDetails?.membersInfo 
+      || "N/A";
+
     return {
-      "Participant Name": r.studentName || "N/A",
+      "Participant / Leader Name": r.studentName || "N/A",
       "Roll Number": r.rollNumber || "N/A",
       "Email": r.email || "N/A",
-      "Phone": r.phone || r.mobile || "N/A", // handles both phone/mobile key if it exists
+      "Phone": r.mobile || r.phone || "N/A",
       "Gender": r.gender || "N/A",
       "Course": r.course || "N/A",
       "Year": r.year || "N/A",
       "University": r.university || r.collegeName || "RIMT University",
-      "Participation Type": r.participationType || r.type || "individual",
+      "Participation Type": isTeam ? "Team" : "Individual",
       "Team Name": r.teamDetails?.teamName || "N/A",
+      "Team Leader": isTeam ? teamLeader : "N/A",
+      "Team Member Count": isTeam ? memberCount : 1,
+      "Team Members Details": isTeam ? membersInfo : "N/A",
+      "Faculty Coordinator": r.facultyName || "N/A",
+      "Faculty Mobile": r.facultyMobile || "N/A",
+      "Faculty Email": r.facultyEmail || "N/A",
       "Status": r.status || "verified",
       "QR Code": r.qrCode || "N/A",
       "Total Events": r.selectedEvents?.length || 0,
       "Registered Events": registeredEventNames,
-      "Submitted At": r.submittedAt?.toString()
+      "Submitted At": r.submittedAt ? new Date(r.submittedAt).toLocaleString("en-IN") : "N/A"
     };
   });
 
