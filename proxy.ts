@@ -39,6 +39,7 @@ export async function proxy(request: NextRequest) {
         !pathname.startsWith("/admin/attendance") && 
         !pathname.startsWith("/admin/attendance-records") && 
         !pathname.startsWith("/admin/registrations") && 
+        !pathname.startsWith("/admin/gate") && 
         !pathname.startsWith("/api/admin/auth") &&
         !pathname.startsWith("/api/admin/attendance") &&
         !pathname.startsWith("/api/admin/registrations")

@@ -164,3 +164,23 @@ body {
   50%  { opacity: 0.15; }
   100% { opacity: 0; transform: translateX(100%); }
 }
+
+/* ─── Gate Scanner Laser Beam ────────────────────────────────── */
+@keyframes laser-scan {
+  0% {
+    top: 5%;
+    opacity: 0.2;
+  }
+  50% {
+    top: 95%;
+    opacity: 1;
+  }
+  100% {
+    top: 5%;
+    opacity: 0.2;
+  }
+}
+.animate-laser-scan {
+  animation: laser-scan 2s ease-in-out infinite;
+}
+

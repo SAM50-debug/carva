@@ -188,3 +188,25 @@ export interface SessionPayload {
   name: string;
   assignedEventIds: string[];
 }
+
+// ─── Gate Entry ───────────────────────────────────────────────────────────────
+
+export interface GateEntryRecord {
+  _id?: ObjectId;
+  registrationId: ObjectId;
+  qrCode: string;
+  studentName: string;
+  university: string;
+  rollNumber: string;
+  participationType: "individual" | "team";
+  teamName?: string;
+  leaderName?: string;
+  admittedCount: number;
+  gateName: string;
+  scannedAt: Date;
+  scannedBy?: string;
+  scannerIp?: string;
+  userAgent?: string;
+  isReEntry?: boolean;
+}
+

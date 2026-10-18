@@ -5,3 +5,7 @@ export const REGISTRATION_DEADLINE_MS = new Date(REGISTRATION_DEADLINE_ISO).getT
 export function isRegistrationClosed(): boolean {
   return Date.now() > REGISTRATION_DEADLINE_MS;
 }
+
+// Gate Security Access Key (configured in env or default for festival security team)
+export const GATE_SECURITY_KEY = process.env.GATE_SECURITY_KEY || "rimt2026";
+
