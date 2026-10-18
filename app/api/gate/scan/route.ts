@@ -3,9 +3,20 @@ import { getDb } from "@/lib/db/client";
 import { apiError, apiSuccess } from "@/lib/api/helpers";
 import { GATE_SECURITY_KEY } from "@/lib/constants";
 import { GateEntryRecord } from "@/lib/db/models/types";
+import { rateLimiter } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
   try {
+    const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown_ip";
+    const rateCheck = rateLimiter.check(`gate_scan_${clientIp}`, 120, 60 * 1000); // 120 scans per minute
+
+    if (!rateCheck.success) {
+      return NextResponse.json(
+        { error: "Too many scan requests. Scanner throttled for 10 seconds." },
+        { status: 429, headers: { "Retry-After": Math.ceil(rateCheck.resetMs / 1000).toString() } }
+      );
+    }
+
     const body = await req.json();
     const { 
       qrCode, 
@@ -24,27 +35,44 @@ export async function POST(req: NextRequest) {
       return apiError("Unauthorized: Invalid or missing Gate Security Key.", 401);
     }
 
-    // 2. Validate QR Code input
+    // 2. Validate QR Code / Search Query input
     if (!qrCode || typeof qrCode !== "string") {
-      return apiError("Valid QR Code string is required.", 400);
+      return apiError("Valid QR Code, Roll Number, or Mobile number is required.", 400);
     }
 
-    const cleanQr = qrCode.trim();
-    if (!/^[a-zA-Z0-9_-]{8,64}$/.test(cleanQr)) {
-      return apiError("Malformed QR code format.", 400);
+    const cleanInput = qrCode.trim();
+    if (!/^[a-zA-Z0-9_\-\.\/]{4,64}$/.test(cleanInput)) {
+      return apiError("Malformed search query format.", 400);
     }
 
     const db = await getDb();
+    const startTime = Date.now();
+    const requestId = req.headers.get("x-request-id") || `gate_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
-    // 3. Find registration
-    const registration = await db.collection("registrations").findOne({ qrCode: cleanQr });
+    // 3. Find registration: Try QR Code first, then fallback to Roll Number or Mobile
+    let registration = await db.collection("registrations").findOne({ qrCode: cleanInput });
+
+    if (!registration) {
+      registration = await db.collection("registrations").findOne({
+        $or: [
+          { rollNumber: cleanInput },
+          { rollNumber: cleanInput.toUpperCase() },
+          { mobile: cleanInput }
+        ]
+      });
+    }
 
     if (!registration) {
       return NextResponse.json({
         status: "invalid",
-        error: "Invalid Ticket: No registration found in system.",
-      }, { status: 404 });
+        error: "Invalid Ticket: No registration found for this QR code, Roll number, or Mobile in system.",
+      }, { 
+        status: 404,
+        headers: { "x-request-id": requestId }
+      });
     }
+
+    const cleanQr = registration.qrCode || cleanInput;
 
     if (registration.status !== "verified") {
       return NextResponse.json({
@@ -52,7 +80,10 @@ export async function POST(req: NextRequest) {
         error: `Entry Denied: Registration is '${registration.status}'. Only 'verified' registrations are admitted.`,
         studentName: registration.studentName || registration.teamDetails?.leaderName,
         university: registration.university,
-      }, { status: 403 });
+      }, { 
+        status: 403,
+        headers: { "x-request-id": requestId }
+      });
     }
 
     // Determine headcount
@@ -91,7 +122,6 @@ export async function POST(req: NextRequest) {
       .sort({ scannedAt: 1 })
       .toArray();
 
-    const clientIp = req.headers.get("x-forwarded-for") || "";
     const userAgent = req.headers.get("user-agent") || "";
 
     // A. Handle Already Entered scenario
@@ -120,13 +150,19 @@ export async function POST(req: NextRequest) {
 
         await db.collection("gate_entries").insertOne(reEntryDoc);
 
-        return apiSuccess({
+        const latencyMs = Date.now() - startTime;
+        return NextResponse.json({
+          success: true,
           status: "re_entry_admitted",
           message: "Re-Entry Authorized & Logged",
           participant: participantProfile,
           scannedAt: reEntryDoc.scannedAt,
           firstEntryTime: firstEntry.scannedAt,
           totalScans: existingEntries.length + 1,
+          latencyMs,
+        }, {
+          status: 200,
+          headers: { "x-request-id": requestId }
         });
       }
 
@@ -138,15 +174,22 @@ export async function POST(req: NextRequest) {
         gateName: firstEntry.gateName || gateName,
         totalScans: existingEntries.length,
         participant: participantProfile,
-      }, { status: 409 });
+      }, { 
+        status: 409,
+        headers: { "x-request-id": requestId }
+      });
     }
 
     // B. PHASE 1: Verify Only (Do NOT insert yet, let the guard check details first)
     if (action === "verify") {
-      return apiSuccess({
+      return NextResponse.json({
+        success: true,
         status: "pending_mark",
         message: "Ticket Verified. Check details and tap 'Mark Entry'.",
         participant: participantProfile,
+      }, {
+        status: 200,
+        headers: { "x-request-id": requestId }
       });
     }
 
@@ -169,15 +212,40 @@ export async function POST(req: NextRequest) {
       isReEntry: false,
     };
 
-    await db.collection("gate_entries").insertOne(entryDoc);
+    try {
+      await db.collection("gate_entries").insertOne(entryDoc);
+    } catch (insertError: any) {
+      // Concurrency race condition protection: catch duplicate key (code 11000)
+      if (insertError?.code === 11000) {
+        const raceEntry = await db.collection("gate_entries").findOne({ registrationId: registration._id });
+        return NextResponse.json({
+          status: "already_entered",
+          message: "Ticket already used for campus entry! (Concurrent scan admitted at another gate)",
+          firstEntryTime: raceEntry?.scannedAt || new Date(),
+          gateName: raceEntry?.gateName || gateName,
+          totalScans: 1,
+          participant: participantProfile,
+        }, { 
+          status: 409,
+          headers: { "x-request-id": requestId }
+        });
+      }
+      throw insertError;
+    }
 
-    return apiSuccess({
+    const latencyMs = Date.now() - startTime;
+    return NextResponse.json({
+      success: true,
       status: "admitted",
       message: "Campus Gate Entry Marked Successfully",
       participant: participantProfile,
       scannedAt: entryDoc.scannedAt,
       firstEntryTime: entryDoc.scannedAt,
       totalScans: 1,
+      latencyMs,
+    }, {
+      status: 200,
+      headers: { "x-request-id": requestId }
     });
 
   } catch (error) {

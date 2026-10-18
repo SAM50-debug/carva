@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { apiError, apiSuccess } from "@/lib/api/helpers";
+import { ObjectId } from "mongodb";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,14 +12,20 @@ export async function POST(req: NextRequest) {
       return apiError("QR Code and Event ID are required", 400);
     }
 
+    if (!ObjectId.isValid(eventId)) {
+      return apiError("Invalid Event ID format", 400);
+    }
+
+    const eventObjId = new ObjectId(eventId);
     const db = await getDb();
+    const requestId = req.headers.get("x-request-id") || `att_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+
     // 1. Authorization check
     const payloadStr = req.headers.get("x-user-payload");
     const user = payloadStr ? JSON.parse(payloadStr) : null;
     
     // Find the event to get its category
-    const { ObjectId } = require("mongodb");
-    const event = await db.collection("events").findOne({ _id: new ObjectId(eventId) });
+    const event = await db.collection("events").findOne({ _id: eventObjId });
     if (!event) return apiError("Event not found", 404);
 
     if (user && user.role === "sub_admin") {
@@ -28,19 +35,30 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2. Find registration by QR code
-    const registration = await db.collection("registrations").findOne({ qrCode });
+    // 2. Find registration by QR code, with fallback to Roll Number or Mobile
+    const cleanInput = qrCode.trim();
+    let registration = await db.collection("registrations").findOne({ qrCode: cleanInput });
     if (!registration) {
-      return apiError("Invalid QR Code: No registration found.", 404);
+      registration = await db.collection("registrations").findOne({
+        $or: [
+          { rollNumber: cleanInput },
+          { rollNumber: cleanInput.toUpperCase() },
+          { mobile: cleanInput }
+        ]
+      });
+    }
+
+    if (!registration) {
+      return apiError("Invalid Ticket: No registration found in system.", 404);
     }
 
     if (registration.status !== "verified") {
       return apiError(`Registration is currently '${registration.status}'. Must be 'verified'.`, 403);
     }
 
-    // 2. Check if this participant is registered for this specific event
-    const matchedEvent = registration.selectedEvents.find(
-      (evt: any) => evt.eventId.toString() === eventId.toString()
+    // 3. Check if this participant is registered for this specific event
+    const matchedEvent = registration.selectedEvents?.find(
+      (evt: any) => evt.eventId?.toString() === eventId.toString()
     );
 
     if (!matchedEvent) {
@@ -50,7 +68,7 @@ export async function POST(req: NextRequest) {
     // Check if already scanned
     const existing = await db.collection("attendance").findOne({ 
       registrationId: registration._id, 
-      eventId: eventId 
+      eventId: eventObjId 
     });
 
     if (existing) {
@@ -62,11 +80,15 @@ export async function POST(req: NextRequest) {
         teamName: registration.teamDetails?.teamName,
         leaderName: registration.teamDetails?.leaderName,
         memberCount: matchedEvent.teamDetails?.memberCount,
-      }, { status: 409 });
+      }, { 
+        status: 409,
+        headers: { "x-request-id": requestId }
+      });
     }
 
     if (body.action === "verify") {
-      return apiSuccess({
+      return NextResponse.json({
+        success: true,
         message: "Verification successful",
         participantName: registration.studentName,
         university: registration.university,
@@ -74,21 +96,48 @@ export async function POST(req: NextRequest) {
         teamName: registration.teamDetails?.teamName,
         leaderName: registration.teamDetails?.leaderName,
         memberCount: matchedEvent.teamDetails?.memberCount,
+      }, {
+        status: 200,
+        headers: { "x-request-id": requestId }
       });
     }
 
-    // 3. Mark attendance
+    // 4. Mark attendance atomically
     const attendanceDoc = {
       registrationId: registration._id,
-      eventId: eventId,
+      eventId: eventObjId,
       scannedAt: new Date(),
+      markedBy: user?.userId ? new ObjectId(user.userId) : undefined,
+      method: body.method || "qr_scan",
     };
 
-    await db.collection("attendance").insertOne(attendanceDoc);
+    try {
+      await db.collection("attendance").insertOne(attendanceDoc);
+    } catch (insertErr: any) {
+      if (insertErr?.code === 11000) {
+        return NextResponse.json({ 
+          error: "Participant has already been scanned in for this event! (Concurrent scan detected)", 
+          participantName: registration.studentName,
+          university: registration.university,
+          participationType: registration.participationType,
+          teamName: registration.teamDetails?.teamName,
+          leaderName: registration.teamDetails?.leaderName,
+          memberCount: matchedEvent.teamDetails?.memberCount,
+        }, { 
+          status: 409,
+          headers: { "x-request-id": requestId }
+        });
+      }
+      throw insertErr;
+    }
 
-    return apiSuccess({
+    return NextResponse.json({
+      success: true,
       message: "Attendance marked",
       participantName: registration.studentName
+    }, {
+      status: 200,
+      headers: { "x-request-id": requestId }
     });
 
   } catch (error) {

@@ -24,19 +24,21 @@ export class RegistrationRepository {
     const col = await this.col();
     const { search, category, eventId, university, paymentStatus, page = 1, limit = 50 } = filters;
 
+    const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const query: Filter<Registration> = {};
 
     if (search) {
+      const escaped = escapeRegex(search.trim());
       query.$or = [
-        { studentName: { $regex: search, $options: "i" } },
-        { collegeName: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { rollNumber: { $regex: search, $options: "i" } },
+        { studentName: { $regex: escaped, $options: "i" } },
+        { collegeName: { $regex: escaped, $options: "i" } },
+        { email: { $regex: escaped, $options: "i" } },
+        { rollNumber: { $regex: escaped, $options: "i" } },
       ];
     }
     if (category) query.selectedCategories = category;
-    if (eventId) query.selectedEvents = new ObjectId(eventId);
-    if (university) query.collegeName = { $regex: university, $options: "i" };
+    if (eventId && ObjectId.isValid(eventId)) query.selectedEvents = new ObjectId(eventId);
+    if (university) query.collegeName = { $regex: escapeRegex(university.trim()), $options: "i" };
     if (paymentStatus) query.paymentStatus = paymentStatus as Registration["paymentStatus"];
 
     const total = await col.countDocuments(query);

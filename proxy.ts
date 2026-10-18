@@ -10,13 +10,21 @@ export async function proxy(request: NextRequest) {
   const isAdminRoute = pathname.startsWith("/admin");
   const isAdminApiRoute = pathname.startsWith("/api/admin");
 
+  // Strip any untrusted incoming x-user-payload header to prevent role spoofing
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.delete("x-user-payload");
+
   // Skip if not an admin route or if it's the login page
   if (
     (!isAdminRoute && !isAdminApiRoute) ||
     pathname === "/admin/login" ||
     pathname === "/api/admin/auth/login"
   ) {
-    return NextResponse.next();
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   }
 
   const token = request.cookies.get("admin_session")?.value;
@@ -51,10 +59,13 @@ export async function proxy(request: NextRequest) {
       }
     }
 
-    // Forward decoded user payload to API routes via header
-    const response = NextResponse.next();
-    response.headers.set("x-user-payload", JSON.stringify(payload));
-    return response;
+    // Forward verified user payload to API routes via internal request headers
+    requestHeaders.set("x-user-payload", JSON.stringify(payload));
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   } catch {
     // Token expired or invalid
     if (isAdminApiRoute) {

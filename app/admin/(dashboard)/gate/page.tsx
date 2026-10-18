@@ -7,20 +7,22 @@ import { GATE_SECURITY_KEY } from "@/lib/constants";
 export default async function AdminGateRecordsPage() {
   const db = await getDb();
 
-  // Query all gate records sorted newest first
-  const gateEntries = await db
-    .collection("gate_entries")
-    .find()
-    .sort({ scannedAt: -1 })
-    .toArray();
+  // Query recent 500 gate records and aggregate counts efficiently in parallel
+  const [totalEntriesCount, universities, headcountAgg, gateEntries] = await Promise.all([
+    db.collection("gate_entries").countDocuments(),
+    db.collection("gate_entries").distinct("university"),
+    db.collection("gate_entries").aggregate([
+      { $match: { isReEntry: { $ne: true } } },
+      { $group: { _id: null, total: { $sum: "$admittedCount" } } }
+    ]).toArray(),
+    db.collection("gate_entries")
+      .find()
+      .sort({ scannedAt: -1 })
+      .limit(500)
+      .toArray()
+  ]);
 
-  // Distinct universities
-  const universities = await db.collection("gate_entries").distinct("university");
-
-  // Total headcount
-  const totalHeadcount = gateEntries.reduce((sum, e) => {
-    return e.isReEntry ? sum : sum + (e.admittedCount || 1);
-  }, 0);
+  const totalHeadcount = headcountAgg[0]?.total || totalEntriesCount;
 
   // Prepare Excel export payload
   const exportData = gateEntries.map((e, index) => ({
@@ -105,8 +107,8 @@ export default async function AdminGateRecordsPage() {
             </div>
             <span className="text-sm text-slate-400 font-medium">Total Gate Scans</span>
           </div>
-          <div className="text-3xl font-bold text-white">{gateEntries.length}</div>
-          <div className="text-xs text-slate-400 mt-1">Verified tickets scanned at gates</div>
+          <div className="text-3xl font-bold text-white">{totalEntriesCount}</div>
+          <div className="text-xs text-slate-400 mt-1">Total physical scans at entry gates</div>
         </div>
 
         <div className="bg-white/5 border border-white/10 p-5 rounded-2xl">
