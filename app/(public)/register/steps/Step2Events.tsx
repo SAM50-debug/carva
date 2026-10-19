@@ -76,10 +76,11 @@ export function Step2Events({
       const isFashionModeling = eventName.toLowerCase().includes("fashion modeling");
       const isBhangra = eventName.toLowerCase().includes("bhangra");
       const isGiddha = eventName.toLowerCase().includes("giddha");
-      const isLuddi = eventName.toLowerCase().includes("luddi") || eventName.toLowerCase().includes("sammi");
+      const isLuddi = eventName.toLowerCase().includes("luddi");
+      const isSammi = eventName.toLowerCase().includes("sammi");
       let defaultMembers = 2;
       if (isFashionModeling) defaultMembers = 2;
-      else if (isBhangra || isGiddha || isLuddi) defaultMembers = 8;
+      else if (isBhangra || isGiddha || isLuddi || isSammi) defaultMembers = 8;
 
       updateData({
         selectedEvents: [...selectedEvents, {
@@ -107,7 +108,8 @@ export function Step2Events({
         const isFashionModeling = evt.eventName.toLowerCase().includes("fashion modeling");
         const isBhangra = evt.eventName.toLowerCase().includes("bhangra");
         const isGiddha = evt.eventName.toLowerCase().includes("giddha");
-        const isLuddi = evt.eventName.toLowerCase().includes("luddi") || evt.eventName.toLowerCase().includes("sammi");
+        const isLuddi = evt.eventName.toLowerCase().includes("luddi");
+        const isSammi = evt.eventName.toLowerCase().includes("sammi");
         const isMonoActing = evt.eventName.toLowerCase().includes("mono acting");
         const isCultural = evt.categoryName.toLowerCase().includes("cultural");
         
@@ -120,7 +122,7 @@ export function Step2Events({
         } else if (isBhangra) {
           minMembers = 8;
           maxMembers = 15;
-        } else if (isGiddha || isLuddi) {
+        } else if (isGiddha || isLuddi || isSammi) {
           minMembers = 8;
           maxMembers = 12;
         } else if (isMonoActing) {
@@ -192,10 +194,11 @@ export function Step2Events({
       const isFashionModeling = evt.eventName.toLowerCase().includes("fashion modeling");
       const isBhangra = evt.eventName.toLowerCase().includes("bhangra");
       const isGiddha = evt.eventName.toLowerCase().includes("giddha");
-      const isLuddi = evt.eventName.toLowerCase().includes("luddi") || evt.eventName.toLowerCase().includes("sammi");
+      const isLuddi = evt.eventName.toLowerCase().includes("luddi");
+      const isSammi = evt.eventName.toLowerCase().includes("sammi");
       let defaultMembers = 2;
       if (isFashionModeling) defaultMembers = 2;
-      else if (isBhangra || isGiddha || isLuddi) defaultMembers = 8;
+      else if (isBhangra || isGiddha || isLuddi || isSammi) defaultMembers = 8;
       setModalData({ memberCount: defaultMembers, membersInfo: "" });
     }
     setModalErrors({});
@@ -212,7 +215,8 @@ export function Step2Events({
     const isFashionModeling = evtName.includes("fashion modeling");
     const isBhangra = evtName.includes("bhangra");
     const isGiddha = evtName.includes("giddha");
-    const isLuddi = evtName.includes("luddi") || evtName.includes("sammi");
+    const isLuddi = evtName.includes("luddi");
+    const isSammi = evtName.includes("sammi");
     const isMonoActing = evtName.includes("mono acting");
 
     let minMembers = 2;
@@ -224,7 +228,7 @@ export function Step2Events({
     } else if (isBhangra) {
       minMembers = 8;
       maxMembers = 15;
-    } else if (isGiddha || isLuddi) {
+    } else if (isGiddha || isLuddi || isSammi) {
       minMembers = 8;
       maxMembers = 12;
     } else if (isMonoActing) {
@@ -271,7 +275,8 @@ export function Step2Events({
     const isCurrentFashion = activeModalEvent.eventName.toLowerCase().includes("fashion modeling");
     const isCurrentBhangra = activeModalEvent.eventName.toLowerCase().includes("bhangra");
     const isCurrentGiddha = activeModalEvent.eventName.toLowerCase().includes("giddha");
-    const isCurrentLuddi = activeModalEvent.eventName.toLowerCase().includes("luddi") || activeModalEvent.eventName.toLowerCase().includes("sammi");
+    const isCurrentLuddi = activeModalEvent.eventName.toLowerCase().includes("luddi");
+    const isCurrentSammi = activeModalEvent.eventName.toLowerCase().includes("sammi");
     const isCurrentMonoActing = activeModalEvent.eventName.toLowerCase().includes("mono acting");
     const isCurrentCultural = activeModalEvent.categoryName.toLowerCase().includes("cultural");
     
@@ -285,7 +290,7 @@ export function Step2Events({
     } else if (isCurrentBhangra) {
       currentMin = 8;
       currentMax = 15;
-    } else if (isCurrentGiddha || isCurrentLuddi) {
+    } else if (isCurrentGiddha || isCurrentLuddi || isCurrentSammi) {
       currentMin = 8;
       currentMax = 12;
     } else if (isCurrentMonoActing) {
@@ -607,13 +612,14 @@ export function Step2Events({
                     const isFash = evtName.includes("fashion modeling");
                     const isBhang = evtName.includes("bhangra");
                     const isGiddha = evtName.includes("giddha");
-                    const isLuddi = evtName.includes("luddi") || evtName.includes("sammi");
+                    const isLuddi = evtName.includes("luddi");
+                    const isSammi = evtName.includes("sammi");
                     const isMono = evtName.includes("mono acting");
                     
                     let minM = 2; let maxM = 8;
                     if (isFash) { minM = 1; maxM = 2; }
                     else if (isBhang) { minM = 8; maxM = 15; }
-                    else if (isGiddha || isLuddi) { minM = 8; maxM = 12; }
+                    else if (isGiddha || isLuddi || isSammi) { minM = 8; maxM = 12; }
                     else if (isMono) { minM = 1; maxM = 1; }
                     else if (isCultural) { minM = 2; maxM = 15; }
                     

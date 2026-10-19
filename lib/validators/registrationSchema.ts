@@ -66,7 +66,8 @@ export const registrationSchema = z.object({
         const isFashionModeling = evtName.includes("fashion modeling");
         const isBhangra = evtName.includes("bhangra");
         const isGiddha = evtName.includes("giddha");
-        const isLuddi = evtName.includes("luddi") || evtName.includes("sammi");
+        const isLuddi = evtName.includes("luddi");
+        const isSammi = evtName.includes("sammi");
         const isMonoActing = evtName.includes("mono acting");
         
         let minMembers = 2;
@@ -78,7 +79,7 @@ export const registrationSchema = z.object({
         } else if (isBhangra) {
           minMembers = 8;
           maxMembers = 15;
-        } else if (isGiddha || isLuddi) {
+        } else if (isGiddha || isLuddi || isSammi) {
           minMembers = 8;
           maxMembers = 12;
         } else if (isMonoActing) {
