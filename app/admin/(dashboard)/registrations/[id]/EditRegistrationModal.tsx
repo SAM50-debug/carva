@@ -270,11 +270,14 @@ export function EditRegistrationModal({
                                       const isCultural = evt.categoryName?.toLowerCase().includes("cultural") || false;
                                       const isFash = evtName.includes("fashion modeling");
                                       const isBhang = evtName.includes("bhangra");
+                                      const isGiddha = evtName.includes("giddha");
+                                      const isLuddi = evtName.includes("luddi") || evtName.includes("sammi");
                                       const isMono = evtName.includes("mono acting");
                                       
                                       let minM = 2; let maxM = 8;
                                       if (isFash) { minM = 1; maxM = 2; }
                                       else if (isBhang) { minM = 8; maxM = 15; }
+                                      else if (isGiddha || isLuddi) { minM = 8; maxM = 12; }
                                       else if (isMono) { minM = 1; maxM = 1; }
                                       else if (isCultural) { minM = 2; maxM = 15; }
 
