@@ -114,16 +114,21 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.3 }}
               whileHover={{ scale: 1.03, y: -2 }}
-              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold tracking-wide shadow-[0_0_25px_rgba(245,158,11,0.2)] backdrop-blur-xl"
             >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
-              </span>
-              <Clock size={15} className="text-amber-400 shrink-0" />
-              <span>
-                <strong className="text-white font-bold">Important:</strong> Reporting Time on Oct 23 &amp; 24 is <strong className="text-amber-200 underline decoration-amber-400/40 underline-offset-2">9:15 AM Sharp</strong>
-              </span>
+              <Link
+                href="/schedules"
+                className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold tracking-wide shadow-[0_0_25px_rgba(245,158,11,0.2)] backdrop-blur-xl hover:bg-amber-500/20 transition-all cursor-pointer group"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+                </span>
+                <Clock size={15} className="text-amber-400 shrink-0" />
+                <span>
+                  <strong className="text-white font-bold">Important:</strong> Reporting Time on Oct 23 &amp; 24 is <strong className="text-amber-200 underline decoration-amber-400/40 underline-offset-2">9:15 AM Sharp</strong>
+                </span>
+                <ArrowRight size={13} className="text-amber-400/60 group-hover:translate-x-0.5 transition-transform ml-1" />
+              </Link>
             </motion.div>
           </div>
 
@@ -174,9 +179,18 @@ export default function Home() {
             <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/events"
-                className="w-full sm:w-auto bg-brand-cream/[0.07] text-brand-cream px-10 py-4 rounded-full font-bold text-lg border border-brand-cream/20 hover:bg-brand-cream/[0.12] transition-colors flex items-center justify-center"
+                className="w-full sm:w-auto bg-brand-cream/[0.07] text-brand-cream px-8 py-4 rounded-full font-bold text-lg border border-brand-cream/20 hover:bg-brand-cream/[0.12] transition-colors flex items-center justify-center"
               >
                 Explore Events
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                href="/schedules"
+                className="w-full sm:w-auto bg-brand-gold/[0.1] text-brand-gold px-8 py-4 rounded-full font-bold text-lg border border-brand-gold/30 hover:bg-brand-gold/[0.18] transition-colors flex items-center justify-center gap-2"
+              >
+                <Calendar size={18} />
+                Schedules
               </Link>
             </motion.div>
           </motion.div>

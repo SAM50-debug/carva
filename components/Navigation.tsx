@@ -47,6 +47,7 @@ export default function Navigation() {
           {[
             { label: "Categories", href: "/#categories", hideMobile: true },
             { label: "Events", href: "/events" },
+            { label: "Schedules", href: "/schedules" },
             { label: "Rules", href: "/rules" },
           ].map((link) => (
             <motion.div key={link.href} whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>

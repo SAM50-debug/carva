@@ -18,9 +18,12 @@ export default function Footer() {
             <p className="text-brand-cream/40 text-sm font-medium">RIMT University Youth Festival</p>
           </div>
         </div>
-        <nav className="flex gap-8 text-sm font-semibold text-brand-cream/50 bg-brand-cream/[0.04] px-6 py-3 rounded-full border border-brand-gold/15">
+        <nav className="flex flex-wrap justify-center gap-6 md:gap-8 text-sm font-semibold text-brand-cream/50 bg-brand-cream/[0.04] px-6 py-3 rounded-full border border-brand-gold/15">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link href="/events" className="hover:text-brand-gold transition-colors block">Events</Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link href="/schedules" className="hover:text-brand-gold transition-colors block">Schedules</Link>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link href="/rules" className="hover:text-brand-gold transition-colors block">Rules &amp; Guidelines</Link>
