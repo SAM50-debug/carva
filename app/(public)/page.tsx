@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import { eventsData } from "@/data/events";
-import { ArrowRight, Sparkles, Code2, Briefcase, Palette, BookOpen, Video, Calendar, Clock } from "lucide-react";
+import { ArrowRight, Sparkles, Code2, Briefcase, Palette, BookOpen, Video, Calendar, Clock, FileText, Download, Building2 } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
 export default function Home() {
@@ -193,6 +193,50 @@ export default function Home() {
                 Schedules
               </Link>
             </motion.div>
+          </motion.div>
+
+          {/* Official Institution Form Download Card (Mandatory Requirement) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.85, type: "spring", stiffness: 200, damping: 22 }}
+            className="mt-10 max-w-2xl mx-auto w-full"
+          >
+            <div className="relative rounded-2xl p-4 sm:p-5 border border-brand-gold/30 bg-gradient-to-r from-brand-gold/[0.12] via-brand-gold/[0.05] to-transparent backdrop-blur-2xl shadow-[0_0_35px_rgba(201,162,39,0.12)] flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5 text-left w-full sm:w-auto">
+                <div className="w-11 h-11 rounded-xl bg-brand-gold/20 border border-brand-gold/40 flex items-center justify-center shrink-0 shadow-inner">
+                  <Building2 className="w-5 h-5 text-brand-gold" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-brand-gold bg-brand-gold/15 px-2 py-0.5 rounded-full border border-brand-gold/30">
+                      Mandatory Requirement
+                    </span>
+                  </div>
+                  <h4 className="text-sm sm:text-base font-bold text-white tracking-tight mt-0.5">
+                    Institution Verification Form
+                  </h4>
+                  <p className="text-xs text-brand-cream/70 leading-snug">
+                    Must be filled, signed &amp; stamped by your respective University / College authority.
+                  </p>
+                </div>
+              </div>
+
+              <div className="shrink-0 w-full sm:w-auto">
+                <motion.a
+                  whileHover={{ scale: 1.05, y: -1 }}
+                  whileTap={{ scale: 0.95 }}
+                  href="/Caravan26_Concise_Institution_Form.docx.pdf"
+                  download="Caravan26_Concise_Institution_Form.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-brand-gold text-brand-dark font-bold text-xs sm:text-sm hover:bg-amber-300 transition-colors shadow-lg shadow-brand-gold/20 whitespace-nowrap"
+                >
+                  <Download size={15} />
+                  <span>Download Form</span>
+                </motion.a>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
 
