@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import { eventsData } from "@/data/events";
-import { ArrowRight, Sparkles, Code2, Briefcase, Palette, BookOpen, Video, Calendar } from "lucide-react";
+import { ArrowRight, Sparkles, Code2, Briefcase, Palette, BookOpen, Video, Calendar, Clock } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
 export default function Home() {
@@ -83,27 +83,47 @@ export default function Home() {
         >
           {/* Badges */}
           <div className="flex flex-col items-center gap-3 mb-10">
-            {/* Date badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
-              className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-brand-gold/[0.08] border border-brand-gold/30"
-            >
-              <span className="w-2 h-2 rounded-full bg-brand-gold" style={{ animation: "dot-pulse 1.5s ease-in-out infinite" }} />
-              <Calendar size={14} className="text-brand-gold" />
-              <span className="text-sm font-semibold text-brand-cream/90">October 23–24, 2026 · RIMT University</span>
-            </motion.div>
+            <div className="flex flex-wrap items-center justify-center gap-2.5">
+              {/* Date badge */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
+                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-brand-gold/[0.08] border border-brand-gold/30"
+              >
+                <span className="w-2 h-2 rounded-full bg-brand-gold" style={{ animation: "dot-pulse 1.5s ease-in-out infinite" }} />
+                <Calendar size={14} className="text-brand-gold" />
+                <span className="text-xs sm:text-sm font-semibold text-brand-cream/90">October 23–24, 2026 · RIMT University</span>
+              </motion.div>
 
-            {/* Free to Register badge */}
+              {/* Free to Register badge */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide shadow-[0_0_20px_rgba(16,185,129,0.18)] backdrop-blur-md"
+              >
+                <Sparkles size={13} className="text-emerald-400 animate-pulse" />
+                <span>Free Registration</span>
+              </motion.div>
+            </div>
+
+            {/* Reporting Time Alert badge (Option A) */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.22 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide shadow-[0_0_20px_rgba(16,185,129,0.18)] backdrop-blur-md"
+              initial={{ opacity: 0, scale: 0.9, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.3 }}
+              whileHover={{ scale: 1.03, y: -2 }}
+              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold tracking-wide shadow-[0_0_25px_rgba(245,158,11,0.2)] backdrop-blur-xl"
             >
-              <Sparkles size={13} className="text-emerald-400 animate-pulse" />
-              <span>Free Registration</span>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+              </span>
+              <Clock size={15} className="text-amber-400 shrink-0" />
+              <span>
+                <strong className="text-white font-bold">Important:</strong> Reporting Time on Oct 23 &amp; 24 is <strong className="text-amber-200 underline decoration-amber-400/40 underline-offset-2">9:15 AM Sharp</strong>
+              </span>
             </motion.div>
           </div>
 
