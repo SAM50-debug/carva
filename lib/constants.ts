@@ -1,5 +1,5 @@
 // Target Registration Deadline: 22nd Oct 2026, 12:00:00 PM IST (Noon)
-export const REGISTRATION_DEADLINE_ISO = process.env.NEXT_PUBLIC_REGISTRATION_DEADLINE || "2026-10-22T12:00:00+05:30";
+export const REGISTRATION_DEADLINE_ISO = process.env.NEXT_PUBLIC_REGISTRATION_DEADLINE || "2026-10-22T14:30:00+05:30";
 export const REGISTRATION_DEADLINE_MS = new Date(REGISTRATION_DEADLINE_ISO).getTime();
 
 export function isRegistrationClosed(): boolean {
