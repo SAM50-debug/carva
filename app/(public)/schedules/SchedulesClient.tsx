@@ -47,7 +47,7 @@ export default function SchedulesClient() {
         !q ||
         ev.name.toLowerCase().includes(q) ||
         ev.venue.toLowerCase().includes(q) ||
-        ev.coordinators.toLowerCase().includes(q) ||
+        (ev.coordinators && ev.coordinators.toLowerCase().includes(q)) ||
         ev.category.toLowerCase().includes(q);
 
       // Status filter
@@ -340,10 +340,14 @@ export default function SchedulesClient() {
                         {/* Coordinators */}
                         <td className="py-4 px-6">
                           {ev.isScheduled ? (
-                            <div className="flex items-start gap-1.5 text-brand-cream/80 text-xs font-medium">
-                              <UserCheck size={14} className="text-brand-gold shrink-0 mt-0.5" />
-                              <span className="max-w-[220px] leading-snug">{ev.coordinators}</span>
-                            </div>
+                            ev.coordinators ? (
+                              <div className="flex items-start gap-1.5 text-brand-cream/80 text-xs font-medium">
+                                <UserCheck size={14} className="text-brand-gold shrink-0 mt-0.5" />
+                                <span className="max-w-[220px] leading-snug">{ev.coordinators}</span>
+                              </div>
+                            ) : (
+                              <span className="text-brand-cream/35 text-xs italic">Help Desk / Assigned at Venue</span>
+                            )
                           ) : (
                             <span className="text-brand-cream/35 text-xs italic">Coming Soon</span>
                           )}
@@ -440,10 +444,12 @@ export default function SchedulesClient() {
                         <span><strong>Venue:</strong> {ev.venue}</span>
                       </div>
 
-                      <div className="flex items-start gap-1.5 text-brand-cream/70 pt-1">
-                        <UserCheck size={14} className="text-brand-gold shrink-0 mt-0.5" />
-                        <span><strong>Coordinators:</strong> {ev.coordinators}</span>
-                      </div>
+                      {ev.coordinators ? (
+                        <div className="flex items-start gap-1.5 text-brand-cream/70 pt-1">
+                          <UserCheck size={14} className="text-brand-gold shrink-0 mt-0.5" />
+                          <span><strong>Coordinators:</strong> {ev.coordinators}</span>
+                        </div>
+                      ) : null}
                     </div>
                   ) : (
                     <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-white/40">
