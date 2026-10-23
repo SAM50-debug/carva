@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   try {
     const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown_ip";
-    const rateCheck = rateLimiter.check(`cert_detect_${clientIp}`, 30, 60 * 1000); // 30 requests per minute
+    const rateCheck = rateLimiter.check(`cert_detect_${clientIp}`, 150, 60 * 1000); // 150 detection requests per minute
     if (!rateCheck.success) {
       return NextResponse.json(
         { success: false, error: "Too many detection attempts. Please wait a moment." },

@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   try {
     const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown_ip";
-    const rateCheck = rateLimiter.check(`cert_gen_${clientIp}`, 20, 60 * 1000);
+    const rateCheck = rateLimiter.check(`cert_gen_${clientIp}`, 120, 60 * 1000); // 120 per minute
     if (!rateCheck.success) {
       return NextResponse.json(
         { success: false, error: "Too many requests. Please wait a moment." },
@@ -27,7 +27,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: firstError }, { status: 400 });
     }
 
-    const origin = req.nextUrl.origin || "https://caravanrimt.com";
+    // Resolve public URL origin (support reverse proxy headers)
+    const proto = req.headers.get("x-forwarded-proto") || req.nextUrl.protocol.replace(":", "") || "https";
+    const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || req.nextUrl.host;
+    const origin = host ? `${proto}://${host}` : (req.nextUrl.origin || "https://caravanrimt.com");
+
     const certificate = await certificateService.generateCertificate({
       ...parseResult.data,
       origin,

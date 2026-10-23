@@ -28,9 +28,9 @@ export const editRegistrationSchema = z.object({
   gender: z.enum(["male", "female", "other"]),
   mobile: z.string().regex(/^[0-9]{10}$/, "Mobile number must be 10 digits"),
   email: z.string().email("Invalid email address"),
-  facultyName: z.string().min(1, "Faculty Coordinator name is required"),
-  facultyMobile: z.string().min(1, "Faculty Coordinator mobile is required"),
-  facultyEmail: z.string().email("Invalid Faculty Coordinator email").optional().or(z.literal("")),
+  facultyName: z.string().optional().or(z.literal("")),
+  facultyMobile: z.string().optional().or(z.literal("")),
+  facultyEmail: z.union([z.literal(""), z.string().email("Invalid Faculty Coordinator email")]).optional(),
   
   // Team Info (Nested as per public schema)
   teamDetails: teamDetailsSchema.optional(),

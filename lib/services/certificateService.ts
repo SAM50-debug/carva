@@ -112,47 +112,86 @@ export class CertificateService {
     detectedUniversities: string[];
   }> {
     const cleanMobile = mobile.trim().replace(/\D/g, "");
-    if (cleanMobile.length < 10) {
+    const noZero = cleanMobile.replace(/^0+/, "");
+    const last10 = cleanMobile.length >= 10 ? cleanMobile.slice(-10) : cleanMobile;
+    const mobileVariants = Array.from(new Set([cleanMobile, noZero, last10].filter((m) => m.length >= 7)));
+
+    const cleanName = (name || "").trim().toLowerCase();
+    const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const escapedName = escapeRegex(cleanName);
+
+    if (mobileVariants.length === 0 && cleanName.length < 2) {
       return { found: false, detectedUniversities: [] };
     }
 
-    const db = await getDb();
-    const query: any = {
-      status: { $ne: "rejected" },
-      $or: [
-        { mobile: cleanMobile },
-        { "teamDetails.membersInfo": { $regex: cleanMobile } },
-      ],
-    };
+    const orConditions: any[] = [];
+    for (const m of mobileVariants) {
+      orConditions.push({ mobile: m });
+      orConditions.push({ "teamDetails.membersInfo": { $regex: m } });
+      orConditions.push({ "selectedEvents.teamDetails.membersInfo": { $regex: m } });
+    }
 
-    const registrations = await db.collection("registrations").find(query).toArray();
+    if (cleanName.length >= 2) {
+      orConditions.push({ studentName: { $regex: new RegExp(escapedName, "i") } });
+      orConditions.push({ "teamDetails.leaderName": { $regex: new RegExp(escapedName, "i") } });
+      orConditions.push({ "teamDetails.membersInfo": { $regex: new RegExp(escapedName, "i") } });
+      orConditions.push({ "selectedEvents.teamDetails.membersInfo": { $regex: new RegExp(escapedName, "i") } });
+    }
+
+    const db = await getDb();
+    const registrations = await db
+      .collection("registrations")
+      .find({
+        status: { $ne: "rejected" },
+        $or: orConditions,
+      })
+      .toArray();
+
     if (!registrations || registrations.length === 0) {
       return { found: false, detectedUniversities: [] };
     }
 
-    const cleanName = (name || "").trim().toLowerCase();
+    // Sort registrations so that exact/closer matches come first
+    registrations.sort((a, b) => {
+      const getMembers = (doc: any) =>
+        [
+          doc.teamDetails?.membersInfo || "",
+          ...(Array.isArray(doc.selectedEvents)
+            ? doc.selectedEvents.map((e: any) => e.teamDetails?.membersInfo || "")
+            : []),
+        ]
+          .join(" ")
+          .toLowerCase();
 
-    // Sort registrations so that if name is provided, closer matches come first
-    if (cleanName.length >= 2) {
-      registrations.sort((a, b) => {
-        const aName = (a.studentName || "").toLowerCase();
-        const bName = (b.studentName || "").toLowerCase();
-        const aLead = (a.teamDetails?.leaderName || "").toLowerCase();
-        const bLead = (b.teamDetails?.leaderName || "").toLowerCase();
-        const aMem = (a.teamDetails?.membersInfo || "").toLowerCase();
-        const bMem = (b.teamDetails?.membersInfo || "").toLowerCase();
+      const aMembers = getMembers(a);
+      const bMembers = getMembers(b);
+      const aName = (a.studentName || "").toLowerCase();
+      const bName = (b.studentName || "").toLowerCase();
+      const aLead = (a.teamDetails?.leaderName || "").toLowerCase();
+      const bLead = (b.teamDetails?.leaderName || "").toLowerCase();
 
-        const aScore =
-          (aName.includes(cleanName) || cleanName.includes(aName) ? 2 : 0) +
-          (aLead.includes(cleanName) || cleanName.includes(aLead) ? 2 : 0) +
-          (aMem.includes(cleanName) ? 1 : 0);
-        const bScore =
-          (bName.includes(cleanName) || cleanName.includes(bName) ? 2 : 0) +
-          (bLead.includes(cleanName) || cleanName.includes(bLead) ? 2 : 0) +
-          (bMem.includes(cleanName) ? 1 : 0);
-        return bScore - aScore;
-      });
-    }
+      let aScore = 0;
+      let bScore = 0;
+
+      if (cleanName.length >= 2) {
+        if (aName.includes(cleanName) || cleanName.includes(aName)) aScore += 3;
+        if (aLead.includes(cleanName) || cleanName.includes(aLead)) aScore += 3;
+        if (aMembers.includes(cleanName)) aScore += 4; // High priority for team member name match
+
+        if (bName.includes(cleanName) || cleanName.includes(bName)) bScore += 3;
+        if (bLead.includes(cleanName) || cleanName.includes(bLead)) bScore += 3;
+        if (bMembers.includes(cleanName)) bScore += 4;
+      }
+
+      for (const m of mobileVariants) {
+        if (a.mobile === m) aScore += 3;
+        if (aMembers.includes(m)) aScore += 4;
+        if (b.mobile === m) bScore += 3;
+        if (bMembers.includes(m)) bScore += 4;
+      }
+
+      return bScore - aScore;
+    });
 
     const detectedUniversities: string[] = [];
     const seen = new Set<string>();
@@ -202,9 +241,9 @@ export class CertificateService {
   }
 
   /**
-   * Look up eligible events for a student by Name, Mobile, and optional University.
-   * If mobile matches a registration, university is auto-inherited so typos in university do not break lookup.
-   * ONLY returns events where the student was marked PRESENT.
+   * Look up eligible events for a student (individual or team member) by Name, Mobile, and optional University.
+   * If mobile matches a registration or team member, university is auto-inherited.
+   * ONLY returns events where attendance was marked PRESENT.
    */
   async lookupStudentEvents(
     name: string,
@@ -215,38 +254,52 @@ export class CertificateService {
     const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
     const cleanMobile = mobile.trim().replace(/\D/g, "");
+    const noZero = cleanMobile.replace(/^0+/, "");
+    const last10 = cleanMobile.length >= 10 ? cleanMobile.slice(-10) : cleanMobile;
+    const mobileVariants = Array.from(new Set([cleanMobile, noZero, last10].filter((m) => m.length >= 7)));
+
     const cleanName = name.trim();
     const cleanUniv = (university || "").trim();
     const escapedUniv = escapeRegex(cleanUniv);
     const escapedName = escapeRegex(cleanName);
 
-    let registrations: any[] = [];
+    const orConditions: any[] = [];
 
-    // Strategy 1: Look up primarily by verified 10-digit mobile number
-    if (cleanMobile.length === 10) {
-      const mobileQuery: any = {
-        status: { $ne: "rejected" },
-        $or: [
-          { mobile: cleanMobile },
-          { "teamDetails.membersInfo": { $regex: cleanMobile } },
-        ],
-      };
-      registrations = await db.collection("registrations").find(mobileQuery).toArray();
+    // Search by all mobile variants in primary mobile and in all team member records
+    for (const m of mobileVariants) {
+      orConditions.push({ mobile: m });
+      orConditions.push({ "teamDetails.membersInfo": { $regex: m } });
+      orConditions.push({ "selectedEvents.teamDetails.membersInfo": { $regex: m } });
     }
 
-    // Strategy 2: If no registration found by mobile alone, look up by name and university
-    if (registrations.length === 0) {
+    // Search by student name in primary registrant, team leader, or member roster
+    if (cleanName.length >= 2) {
+      orConditions.push({ studentName: { $regex: new RegExp(escapedName, "i") } });
+      orConditions.push({ "teamDetails.leaderName": { $regex: new RegExp(escapedName, "i") } });
+      orConditions.push({ "teamDetails.membersInfo": { $regex: new RegExp(escapedName, "i") } });
+      orConditions.push({ "selectedEvents.teamDetails.membersInfo": { $regex: new RegExp(escapedName, "i") } });
+    }
+
+    let registrations = await db
+      .collection("registrations")
+      .find({
+        status: { $ne: "rejected" },
+        $or: orConditions,
+      })
+      .toArray();
+
+    // Fallback strategy: if nothing matched with orConditions, attempt university + name fallback
+    if (registrations.length === 0 && cleanUniv) {
       const fallbackQuery: any = {
+        university: { $regex: new RegExp(`^${escapedUniv}$`, "i") },
         status: { $ne: "rejected" },
         $or: [
           { studentName: { $regex: new RegExp(escapedName, "i") } },
           { "teamDetails.leaderName": { $regex: new RegExp(escapedName, "i") } },
           { "teamDetails.membersInfo": { $regex: new RegExp(escapedName, "i") } },
+          { "selectedEvents.teamDetails.membersInfo": { $regex: new RegExp(escapedName, "i") } },
         ],
       };
-      if (cleanUniv) {
-        fallbackQuery.university = { $regex: new RegExp(`^${escapedUniv}$`, "i") };
-      }
       registrations = await db.collection("registrations").find(fallbackQuery).toArray();
     }
 
@@ -257,27 +310,36 @@ export class CertificateService {
       };
     }
 
-    // Determine the student's canonical registered university from the registration record
-    const canonicalUniversity = registrations[0]?.university?.trim() || cleanUniv;
-
-    // Filter registrations where either mobile matches OR student name matches closely
+    // Filter registrations where either mobile matches OR student name matches
     const matchingRegs = registrations.filter((r) => {
+      const allMembersInfo = [
+        r.teamDetails?.membersInfo || "",
+        ...(Array.isArray(r.selectedEvents)
+          ? r.selectedEvents.map((e: any) => e.teamDetails?.membersInfo || "")
+          : []),
+      ].join(" ");
+
       const rMobile = (r.mobile || "").replace(/\D/g, "");
-      const rMembersInfo = r.teamDetails?.membersInfo || "";
       const rName = r.studentName || "";
       const rLeader = r.teamDetails?.leaderName || "";
 
-      const mobileMatch = rMobile === cleanMobile || rMembersInfo.includes(cleanMobile);
+      const mobileMatch = mobileVariants.some(
+        (m) => rMobile.includes(m) || allMembersInfo.includes(m)
+      );
+
       const nameMatch =
         rName.toLowerCase().includes(cleanName.toLowerCase()) ||
         cleanName.toLowerCase().includes(rName.toLowerCase()) ||
         rLeader.toLowerCase().includes(cleanName.toLowerCase()) ||
-        rMembersInfo.toLowerCase().includes(cleanName.toLowerCase());
+        allMembersInfo.toLowerCase().includes(cleanName.toLowerCase());
 
       return mobileMatch || nameMatch;
     });
 
     const targetRegs = matchingRegs.length > 0 ? matchingRegs : registrations;
+
+    // Determine the student's canonical registered university from the top registration
+    const canonicalUniversity = targetRegs[0]?.university?.trim() || cleanUniv;
 
     // Load all results / declared winners
     const allResults = await certificateRepository.findAllResults();
@@ -577,8 +639,12 @@ export class CertificateService {
       };
 
       if (winner.registrationId) {
+        const regObj = ObjectId.isValid(winner.registrationId)
+          ? new ObjectId(winner.registrationId)
+          : null;
         existingQuery.$or = [
-          { registrationId: new ObjectId(winner.registrationId) },
+          ...(regObj ? [{ registrationId: regObj }] : []),
+          { registrationId: winner.registrationId.toString() },
           { studentName: { $regex: nameRegex } },
         ];
       } else {
@@ -612,6 +678,56 @@ export class CertificateService {
           }
         );
         upgradedCount++;
+      }
+    }
+
+    // Safely demote any previous winner certificates for this event that are no longer in the winner list
+    const winnerRegIds = new Set(
+      winners
+        .map((w) => (w.registrationId ? w.registrationId.toString() : null))
+        .filter(Boolean)
+    );
+    const winnerNames = new Set(winners.map((w) => w.studentName.trim().toLowerCase()));
+
+    const previousWinnerCerts = await db
+      .collection("certificates")
+      .find({ eventId, position: { $gt: 0 } })
+      .toArray();
+
+    for (const cert of previousWinnerCerts) {
+      const certRegStr = cert.registrationId?.toString();
+      const certName = (cert.studentName || "").trim().toLowerCase();
+      const isStillWinner =
+        (certRegStr && winnerRegIds.has(certRegStr)) || winnerNames.has(certName);
+
+      if (!isStillWinner) {
+        const categoryLetter =
+          cert.categoryLetter || this.getCategoryLetter(cert.categoryName);
+        const suffix = `${categoryLetter}.0`;
+        const serialNumber = `RIMT/CARVAN26/P-${suffix}`;
+        const awardTitle = this.getAwardTitle(0);
+        const templateUrl = this.getTemplateUrl(0);
+        const verificationHash = this.generateHmac(
+          cert.certificateId,
+          cert.studentName,
+          eventId,
+          0
+        );
+
+        await db.collection("certificates").updateOne(
+          { _id: cert._id },
+          {
+            $set: {
+              position: 0,
+              awardTitle,
+              templateUrl,
+              suffix,
+              serialNumber,
+              verificationHash,
+              updatedAt: new Date(),
+            },
+          }
+        );
       }
     }
 

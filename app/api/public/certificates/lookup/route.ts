@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   try {
     const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown_ip";
-    const rateCheck = rateLimiter.check(`cert_lookup_${clientIp}`, 20, 60 * 1000); // 20 lookups per minute
+    const rateCheck = rateLimiter.check(`cert_lookup_${clientIp}`, 120, 60 * 1000); // 120 lookups per minute per IP for campus Wi-Fi
     if (!rateCheck.success) {
       return NextResponse.json(
         { success: false, error: "Too many lookup attempts. Please wait a moment." },

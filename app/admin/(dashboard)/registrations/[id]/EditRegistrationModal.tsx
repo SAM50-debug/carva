@@ -212,17 +212,17 @@ export function EditRegistrationModal({
                 {/* Faculty Info */}
                 <div className="space-y-5">
                   <h3 className="text-sm font-bold text-[#c8102e] uppercase tracking-widest flex items-center gap-3">
-                    Faculty Info
+                    Faculty Info <span className="text-xs font-normal lowercase tracking-normal text-slate-400">(optional)</span>
                     <div className="h-px flex-1 bg-gradient-to-r from-[#c8102e]/20 to-transparent" />
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className={labelClass}>Faculty Name</label>
-                      <input name="facultyName" value={formData.facultyName} onChange={handleChange} required className={inputClass} />
+                      <label className={labelClass}>Faculty Name <span className="text-slate-500 font-normal lowercase">(optional)</span></label>
+                      <input name="facultyName" value={formData.facultyName} onChange={handleChange} placeholder="Optional" className={inputClass} />
                     </div>
                     <div>
-                      <label className={labelClass}>Faculty Mobile</label>
-                      <input name="facultyMobile" value={formData.facultyMobile} onChange={handleChange} required className={inputClass} />
+                      <label className={labelClass}>Faculty Mobile <span className="text-slate-500 font-normal lowercase">(optional)</span></label>
+                      <input name="facultyMobile" value={formData.facultyMobile} onChange={handleChange} placeholder="Optional" className={inputClass} />
                     </div>
                   </div>
                 </div>

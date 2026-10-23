@@ -32,39 +32,44 @@ export default function CertificateCanvas({
   const [isRendered, setIsRendered] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const [renderError, setRenderError] = useState(false);
+
   const drawCertificate = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Fixed certificate dimensions
-    canvas.width = 1748;
-    canvas.height = 1240;
+    setRenderError(false);
 
-    // Load template image
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = templateUrl;
-
-    await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = reject;
-    });
-
-    // Draw base certificate background
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-    // Ensure Quattrocento font is loaded
     try {
-      await (document as any).fonts.load("bold 48px Quattrocento");
-      await (document as any).fonts.load("bold 42px Quattrocento");
-      await (document as any).fonts.load("bold 40px Quattrocento");
-      await (document as any).fonts.load("bold 20px Quattrocento");
-    } catch {
-      // Font fallback is handled gracefully
-    }
+      // Fixed certificate dimensions
+      canvas.width = 1748;
+      canvas.height = 1240;
+
+      // Load template image
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = templateUrl;
+
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error(`Failed to load template image: ${templateUrl}`));
+      });
+
+      // Draw base certificate background
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // Ensure Quattrocento font is loaded
+      try {
+        await (document as any).fonts?.load?.("bold 48px Quattrocento");
+        await (document as any).fonts?.load?.("bold 42px Quattrocento");
+        await (document as any).fonts?.load?.("bold 40px Quattrocento");
+        await (document as any).fonts?.load?.("bold 20px Quattrocento");
+      } catch {
+        // Font fallback is handled gracefully
+      }
 
     // 1. Render Serial Number Suffix in top-left
     // Template already has "Certificate No: RIMT/CARVAN26/W-" or ".../P-"
@@ -162,7 +167,12 @@ export default function CertificateCanvas({
       console.error("Failed to render QR Code on certificate", err);
     }
 
-    setIsRendered(true);
+      setIsRendered(true);
+    } catch (err) {
+      console.error("Failed to render certificate canvas:", err);
+      setRenderError(true);
+      setIsRendered(true);
+    }
   };
 
   useEffect(() => {
@@ -226,10 +236,21 @@ export default function CertificateCanvas({
           className="w-full max-w-4xl h-auto rounded-xl shadow-2xl block transition-all"
           style={{ aspectRatio: "1748 / 1240" }}
         />
-        {!isRendered && (
+        {!isRendered && !renderError && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 gap-3">
             <RefreshCw className="w-8 h-8 text-brand-gold animate-spin" />
             <p className="text-sm font-semibold text-brand-gold">Rendering Official Certificate...</p>
+          </div>
+        )}
+        {renderError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 gap-3 p-4 text-center z-10">
+            <p className="text-sm font-semibold text-red-300">Unable to load high-resolution certificate template graphics.</p>
+            <button
+              onClick={() => drawCertificate()}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-gold text-black font-bold text-xs hover:opacity-95 shadow-md shadow-brand-gold/20 transition-all"
+            >
+              <RefreshCw className="w-3.5 h-3.5" /> Tap to Retry Rendering
+            </button>
           </div>
         )}
       </div>

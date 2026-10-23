@@ -68,10 +68,10 @@ export default function CertificateClaimPage() {
     loadUniversities();
   }, []);
 
-  // Automatically detect student's registered university when 10-digit mobile number is entered
+  // Automatically detect student's registered university when mobile number is entered
   useEffect(() => {
     const cleanMobile = mobile.trim().replace(/\D/g, "");
-    if (cleanMobile.length !== 10) {
+    if (cleanMobile.length < 9 || cleanMobile.length > 11) {
       setIsDetectingUniv(false);
       return;
     }
@@ -123,8 +123,8 @@ export default function CertificateClaimPage() {
       setErrorMessage("Please enter your full registered name.");
       return;
     }
-    if (cleanMobile.length !== 10) {
-      setErrorMessage("Please enter a valid 10-digit mobile number.");
+    if (cleanMobile.length < 9 || cleanMobile.length > 11) {
+      setErrorMessage("Please enter a valid mobile number.");
       return;
     }
     if (!cleanUniv) {
@@ -317,13 +317,13 @@ export default function CertificateClaimPage() {
                   {/* Mobile Number */}
                   <div className="space-y-1.5">
                     <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
-                      10-Digit Mobile Number <span className="text-brand-crimson">*</span>
+                      Mobile Number <span className="text-brand-crimson">*</span>
                     </label>
                     <div className="relative">
                       <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input
                         type="tel"
-                        maxLength={10}
+                        maxLength={11}
                         value={mobile}
                         onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
                         placeholder="e.g. 9876543210"

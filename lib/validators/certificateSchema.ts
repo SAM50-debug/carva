@@ -9,7 +9,7 @@ export const certificateLookupSchema = z.object({
   mobile: z
     .string()
     .trim()
-    .regex(/^[0-9]{10}$/, "Please enter a valid 10-digit mobile number"),
+    .regex(/^[0-9]{9,11}$/, "Please enter a valid mobile number"),
   university: z
     .string()
     .trim()
@@ -22,7 +22,7 @@ export const detectUniversitySchema = z.object({
   mobile: z
     .string()
     .trim()
-    .regex(/^[0-9]{10}$/, "Please enter a valid 10-digit mobile number"),
+    .regex(/^[0-9]{9,11}$/, "Please enter a valid mobile number"),
   name: z.string().trim().optional(),
 });
 
@@ -32,7 +32,7 @@ export const certificateGenerateSchema = z.object({
   registrationId: z.string().trim().min(1, "Registration ID is required"),
   eventId: z.string().trim().min(1, "Event ID is required"),
   studentName: z.string().trim().min(2, "Student name is required"),
-  mobile: z.string().trim().regex(/^[0-9]{10}$/, "Valid 10-digit mobile number required"),
+  mobile: z.string().trim().regex(/^[0-9]{9,11}$/, "Valid mobile number required"),
   university: z.string().trim().min(2, "University is required"),
 });
 
