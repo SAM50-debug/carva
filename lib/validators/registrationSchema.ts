@@ -93,19 +93,19 @@ export const registrationSchema = z.object({
           }
         } else if (isTeamFashion) {
           const count = event.teamDetails.memberCount;
-          if (count < 11 || count > 13) {
+          if (count < 4 || count > 13) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
-              message: "Team Fashion Modeling requires 11 to 13 models",
+              message: "Team Fashion Modeling requires 4 to 13 models",
               path: ["selectedEvents", index, "teamDetails", "memberCount"],
             });
           }
         } else if (isLegacyFashion) {
           const count = event.teamDetails.memberCount;
-          if (count !== 1 && count !== 2 && (count < 11 || count > 13)) {
+          if (count !== 1 && count !== 2 && (count < 4 || count > 13)) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
-              message: "Fashion Modeling allows Solo (1), Duet (2), or Team (11-13 members)",
+              message: "Fashion Modeling allows Solo (1), Duet (2), or Team (4-13 members)",
               path: ["selectedEvents", index, "teamDetails", "memberCount"],
             });
           }

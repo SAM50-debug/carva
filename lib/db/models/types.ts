@@ -187,6 +187,7 @@ export interface SessionPayload {
   role: AdminRole;
   name: string;
   assignedEventIds: string[];
+  assignedCategoryIds?: string[];
 }
 
 // ─── Gate Entry ───────────────────────────────────────────────────────────────

@@ -29,7 +29,7 @@ export default async function AttendanceScannerPage({ params }: { params: Promis
 
   return (
     <div className="p-4 md:p-8">
-      <div className="flex items-center justify-between mb-6 max-w-md mx-auto">
+      <div className="flex items-center justify-between mb-6 max-w-xl mx-auto">
         <Link href="/admin/attendance" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Events
         </Link>
@@ -38,7 +38,7 @@ export default async function AttendanceScannerPage({ params }: { params: Promis
         </Link>
       </div>
       
-      <QRScanner eventId={eventId} eventName={event.name} />
+      <QRScanner eventId={eventId} eventName={event.name} categoryName={event.categoryName} />
     </div>
   );
 }

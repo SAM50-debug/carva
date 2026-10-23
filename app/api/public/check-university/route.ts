@@ -65,13 +65,13 @@ export async function GET(req: NextRequest) {
           r.participationType === "team" &&
           r.selectedEvents?.some((e: any) =>
             e.eventName?.toLowerCase().includes("fashion modeling") &&
-            ((e.teamDetails?.memberCount >= 11 && e.teamDetails?.memberCount <= 13) || e.eventName?.toLowerCase().includes("(team)"))
+            ((e.teamDetails?.memberCount >= 4 && e.teamDetails?.memberCount <= 13) || e.eventName?.toLowerCase().includes("(team)"))
           )
         );
         if (hasTeam) {
           return NextResponse.json({
             registered: true,
-            message: "Your university has already registered a team for Group Fashion Modeling (limit: 1 team of 11-13 members per university)."
+            message: "Your university has already registered a team for Group Fashion Modeling (limit: 1 team of 4-13 members per university)."
           });
         }
       }

@@ -68,7 +68,7 @@ export default function EventDetailClient({ event }: { event: { id: string; name
     displayRules.unshift(
       "Prohibited tools on stage are: original gun, sword, knife, fire etc.",
       "Performance should be 5 to 8 mins.",
-      "Only one entry per category allowed from each college/university/institute (1 Solo, 1 Duet, and 1 Team of 11–13 members).",
+      "Only one entry per category allowed from each college/university/institute (1 Solo, 1 Duet, and 1 Team of 4–13 members).",
       "A model participating in one category cannot participate in another category."
     );
   }

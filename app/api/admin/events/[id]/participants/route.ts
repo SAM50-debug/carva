@@ -7,7 +7,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { error } = requireAuth(req);
+  const { session, error } = requireAuth(req);
   if (error) return error;
 
   try {
@@ -21,6 +21,17 @@ export async function GET(
     const event = await db.collection("events").findOne(
       eventObjId ? { _id: eventObjId } : { slug: id }
     );
+
+    if (!event) return apiError("Event not found", 404);
+
+    // Sub-admin RBAC authorization check: verify category assignment
+    if (session.role === "sub_admin") {
+      const assignedIds = session.assignedCategoryIds || [];
+      const eventCatId = event.categoryId ? event.categoryId.toString() : "";
+      if (!assignedIds.includes(eventCatId)) {
+        return apiError("Forbidden: You do not have permission to view participants for this event", 403);
+      }
+    }
 
     // 2. Query all registrations containing this event
     const orConditions: any[] = [
@@ -72,9 +83,13 @@ export async function GET(
       university: string;
       mobile: string;
       rollNumber?: string;
+      course?: string;
+      year?: string;
       participationType: string;
       isPresent: boolean;
       teamName?: string;
+      leaderName?: string;
+      memberCount?: number;
     }> = [];
 
     for (const reg of registrations) {
@@ -96,6 +111,9 @@ export async function GET(
       const leaderName =
         reg.teamDetails?.leaderName || matchingSelectedEvent?.teamDetails?.leaderName;
 
+      const memberCount =
+        matchingSelectedEvent?.teamDetails?.memberCount || reg.teamDetails?.memberCount;
+
       // Primary applicant
       participants.push({
         registrationId: regIdStr,
@@ -103,9 +121,13 @@ export async function GET(
         university: reg.university ? reg.university.trim() : "University",
         mobile: reg.mobile || "",
         rollNumber: reg.rollNumber || "",
+        course: reg.course || "",
+        year: reg.year || "",
         participationType: reg.participationType || "individual",
         isPresent,
         teamName,
+        leaderName,
+        memberCount,
       });
 
       // If team leader is different from primary student name
@@ -119,9 +141,13 @@ export async function GET(
           university: reg.university ? reg.university.trim() : "University",
           mobile: reg.mobile || "",
           rollNumber: reg.rollNumber || "",
+          course: reg.course || "",
+          year: reg.year || "",
           participationType: "team",
           isPresent,
           teamName,
+          leaderName,
+          memberCount,
         });
       }
     }

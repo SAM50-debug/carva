@@ -99,18 +99,18 @@ async function run() {
   const teamDoc = {
     slug: "fashion-modeling-team",
     name: "Fashion Modeling (Team)",
-    descriptor: "Team Fashion Modeling (11–13 models) inter-university runway competition showcasing coordinated couture, choreography, and themed presentations.",
+    descriptor: "Team Fashion Modeling (4–13 models) inter-university runway competition showcasing coordinated couture, choreography, and themed presentations.",
     participation: {
       type: "team",
-      min: 11,
+      min: 4,
       max: 13,
-      notes: "Team modeling (strictly 11 to 13 models)"
+      notes: "Team modeling (strictly 4 to 13 models)"
     },
     categoryId: CULTURAL_CATEGORY_ID,
     isActive: true,
     updatedAt: now,
     rules: [
-      "Team modeling (strictly 11 to 13 models).",
+      "Team modeling (strictly 4 to 13 models).",
       "Performance time: 5 to 8 minutes.",
       "Only 1 team permitted per university/college.",
       "Prohibited tools on stage: real weapons, firearms, open flame, sharp objects.",

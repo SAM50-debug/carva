@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     const db = await getDb();
 
-    // Check Fashion Modeling exclusivity: 1 model for solo modeling, 1 duet team, and 1 group team (11-13) per university
+    // Check Fashion Modeling exclusivity: 1 model for solo modeling, 1 duet team, and 1 group team (4-13) per university
     const hasFashionModeling = data.selectedEvents.some(e => e.eventName.toLowerCase().includes("fashion modeling"));
     if (hasFashionModeling) {
       const fashionEvt = data.selectedEvents.find(e => e.eventName.toLowerCase().includes("fashion modeling"));
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       const fName = fashionEvt?.eventName?.toLowerCase() || "";
       const isSolo = data.participationType === "individual" || count === 1 || fName.includes("(solo)");
       const isDuet = (data.participationType === "team" && count === 2) || fName.includes("(duet)");
-      const isTeam = (data.participationType === "team" && (count ? count >= 11 && count <= 13 : false)) || fName.includes("(team)");
+      const isTeam = (data.participationType === "team" && (count ? count >= 4 && count <= 13 : false)) || fName.includes("(team)");
 
       const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const existingDocs = await db.collection("registrations").find({
@@ -81,11 +81,11 @@ export async function POST(req: NextRequest) {
           r.participationType === "team" &&
           r.selectedEvents?.some((e: any) =>
             e.eventName?.toLowerCase().includes("fashion modeling") &&
-            ((e.teamDetails?.memberCount >= 11 && e.teamDetails?.memberCount <= 13) || e.eventName?.toLowerCase().includes("(team)"))
+            ((e.teamDetails?.memberCount >= 4 && e.teamDetails?.memberCount <= 13) || e.eventName?.toLowerCase().includes("(team)"))
           )
         );
         if (hasExistingTeam) {
-          return apiError("Your university has already registered a team for Group Fashion Modeling (limit: 1 team of 11-13 members per university).", 400);
+          return apiError("Your university has already registered a team for Group Fashion Modeling (limit: 1 team of 4-13 members per university).", 400);
         }
       }
     }

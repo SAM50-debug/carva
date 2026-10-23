@@ -205,8 +205,8 @@ export function Step2Events({
       let defaultMembers = 2;
       if (isSoloFash) defaultMembers = 1;
       else if (isDuetFash) defaultMembers = 2;
-      else if (isTeamFash) defaultMembers = 11;
-      else if (isFashionModeling) defaultMembers = 2;
+      else if (isTeamFash) defaultMembers = 4;
+      else if (isFashionModeling) defaultMembers = 4;
       else if (isBhangra || isGiddha || isLuddi || isSammi) defaultMembers = 8;
       setModalData({ memberCount: defaultMembers, membersInfo: "" });
     }
@@ -242,14 +242,14 @@ export function Step2Events({
         return;
       }
     } else if (isTeamFash) {
-      if (modalData.memberCount < 11 || modalData.memberCount > 13) {
-        setModalErrors({ memberCount: "Team Fashion Modeling requires 11 to 13 models." });
+      if (modalData.memberCount < 4 || modalData.memberCount > 13) {
+        setModalErrors({ memberCount: "Team Fashion Modeling requires 4 to 13 models." });
         return;
       }
     } else if (isFashionModeling) {
       const count = modalData.memberCount;
-      if (count !== 1 && count !== 2 && (count < 11 || count > 13)) {
-        setModalErrors({ memberCount: "Fashion Modeling allows Solo (1), Duet (2), or Team (11-13 members)." });
+      if (count !== 1 && count !== 2 && (count < 4 || count > 13)) {
+        setModalErrors({ memberCount: "Fashion Modeling allows Solo (1), Duet (2), or Team (4-13 members)." });
         return;
       }
     } else {
@@ -611,7 +611,7 @@ export function Step2Events({
                 <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-sm text-amber-200/80">
                   <strong className="text-amber-400 block mb-1">⚠️ Fashion Modeling Rules:</strong>
                   <ul className="list-disc pl-4 space-y-1">
-                    <li>Solo modeling (1 model), Duet modeling (2 models: 1 male & 1 female), or Team modeling (11–13 models).</li>
+                    <li>Solo modeling (1 model), Duet modeling (2 models: 1 male & 1 female), or Team modeling (4–13 models).</li>
                     <li>Performance should be 5 to 8 mins.</li>
                     <li>Prohibited tools on stage: original gun, sword, knife, fire etc.</li>
                     <li>Only 1 entry per category allowed from each college/university/institute (1 Solo, 1 Duet, and 1 Team).</li>
@@ -655,9 +655,9 @@ export function Step2Events({
                       } else if (evtName.includes("(duet)")) {
                         options = [2];
                       } else if (evtName.includes("(team)")) {
-                        options = [11, 12, 13];
+                        options = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
                       } else {
-                        options = [1, 2, 11, 12, 13];
+                        options = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
                       }
                     } else {
                       let minM = 2; let maxM = 8;
