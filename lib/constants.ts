@@ -7,7 +7,7 @@ export function isRegistrationClosed(): boolean {
 }
 
 // Certificate Portal Public Visibility: 23rd Oct 2026, 5:00:00 PM IST (Evening 17:00)
-export const CERTIFICATES_LIVE_ISO = process.env.NEXT_PUBLIC_CERTIFICATES_LIVE_TIME || "2026-10-23T17:00:00+05:30";
+export const CERTIFICATES_LIVE_ISO = process.env.NEXT_PUBLIC_CERTIFICATES_LIVE_TIME || "2026-10-24T17:00:00+05:30";
 export const CERTIFICATES_LIVE_MS = new Date(CERTIFICATES_LIVE_ISO).getTime();
 
 export function areCertificatesLive(): boolean {
