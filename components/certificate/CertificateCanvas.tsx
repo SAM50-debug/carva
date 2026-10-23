@@ -32,6 +32,11 @@ export default function CertificateCanvas({
   const [isRendered, setIsRendered] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // Guarantee that QR codes and verification links always point to public production domain
+  const normalizedQrUrl = (qrUrl && !qrUrl.includes("localhost") && !qrUrl.includes("127.0.0.1") && !qrUrl.includes("caravanrimt.com"))
+    ? qrUrl
+    : `https://caravanrimt.vercel.app/verify/${certificateId}`;
+
   const [renderError, setRenderError] = useState(false);
 
   const drawCertificate = async () => {
@@ -129,7 +134,7 @@ export default function CertificateCanvas({
     // 5. Generate and draw Dynamic Verification QR Code
     // Placed in empty space between the two dignitary signatures at the bottom
     try {
-      const qrDataUrl = await QRCode.toDataURL(qrUrl, {
+      const qrDataUrl = await QRCode.toDataURL(normalizedQrUrl, {
         errorCorrectionLevel: "H",
         margin: 1,
         width: 130,
@@ -177,7 +182,7 @@ export default function CertificateCanvas({
 
   useEffect(() => {
     drawCertificate();
-  }, [studentName, university, eventName, templateUrl, suffix, position, qrUrl]);
+  }, [studentName, university, eventName, templateUrl, suffix, position, normalizedQrUrl]);
 
   const handleDownload = () => {
     const canvas = canvasRef.current;
@@ -221,7 +226,7 @@ export default function CertificateCanvas({
 
   const handleCopyLink = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(qrUrl);
+      navigator.clipboard.writeText(normalizedQrUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }

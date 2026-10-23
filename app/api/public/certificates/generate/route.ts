@@ -3,6 +3,8 @@ import { certificateGenerateSchema } from "@/lib/validators/certificateSchema";
 import { certificateService } from "@/lib/services/certificateService";
 import { rateLimiter } from "@/lib/rateLimit";
 
+import { getCanonicalBaseUrl } from "@/lib/constants";
+
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
@@ -30,7 +32,8 @@ export async function POST(req: NextRequest) {
     // Resolve public URL origin (support reverse proxy headers)
     const proto = req.headers.get("x-forwarded-proto") || req.nextUrl.protocol.replace(":", "") || "https";
     const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || req.nextUrl.host;
-    const origin = host ? `${proto}://${host}` : (req.nextUrl.origin || "https://caravanrimt.com");
+    const requestOrigin = host ? `${proto}://${host}` : req.nextUrl.origin;
+    const origin = getCanonicalBaseUrl(requestOrigin);
 
     const certificate = await certificateService.generateCertificate({
       ...parseResult.data,

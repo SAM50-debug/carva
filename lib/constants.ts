@@ -17,4 +17,24 @@ export function areCertificatesLive(): boolean {
 // Gate Security Access Key (configured in env or default for festival security team)
 export const GATE_SECURITY_KEY = process.env.GATE_SECURITY_KEY || "rimt2026";
 
+// Canonical production site URL
+export const PUBLIC_PRODUCTION_URL = "https://caravanrimt.vercel.app";
+
+/**
+ * Resolves the canonical public base URL for public verification links and QR codes.
+ * Ensures physical QR scans always resolve to the public live site (never localhost).
+ */
+export function getCanonicalBaseUrl(origin?: string): string {
+  const envUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_APP_URL;
+  if (envUrl && !envUrl.includes("localhost") && !envUrl.includes("127.0.0.1")) {
+    return envUrl.replace(/\/$/, "");
+  }
+
+  if (origin && !origin.includes("localhost") && !origin.includes("127.0.0.1")) {
+    return origin.replace(/\/$/, "");
+  }
+
+  return PUBLIC_PRODUCTION_URL;
+}
+
 

@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { getDb } from "../db/client";
 import { CertificateRecord, EventWinnerEntry } from "../db/models/types";
 import { certificateRepository } from "../repositories/CertificateRepository";
+import { getCanonicalBaseUrl } from "../constants";
 
 const CERT_SECRET = process.env.CERT_SECRET_KEY || process.env.JWT_SECRET || "caravan26_rimt_cert_secret_key";
 
@@ -455,6 +456,16 @@ export class CertificateService {
       studentName
     );
     if (existing) {
+      const canonicalBase = getCanonicalBaseUrl(origin);
+      const expectedQrUrl = `${canonicalBase}/verify/${existing.certificateId}`;
+      if (!existing.qrUrl || existing.qrUrl.includes("localhost") || existing.qrUrl.includes("127.0.0.1") || existing.qrUrl.includes("caravanrimt.com")) {
+        existing.qrUrl = expectedQrUrl;
+        const db = await getDb();
+        await db.collection("certificates").updateOne(
+          { _id: existing._id },
+          { $set: { qrUrl: expectedQrUrl, updatedAt: new Date() } }
+        );
+      }
       await certificateRepository.incrementDownloadCount(existing.certificateId);
       return existing;
     }
@@ -510,7 +521,7 @@ export class CertificateService {
     // Cryptographic anti-tamper hash
     const verificationHash = this.generateHmac(certificateId, studentName, eventId, position);
 
-    const baseUrl = origin ? origin.replace(/\/$/, "") : "https://caravanrimt.com";
+    const baseUrl = getCanonicalBaseUrl(origin);
     const qrUrl = `${baseUrl}/verify/${certificateId}`;
 
     const newRecord: Omit<CertificateRecord, "_id"> = {
