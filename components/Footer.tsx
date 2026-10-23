@@ -1,9 +1,18 @@
 "use client";
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { areCertificatesLive } from '@/lib/constants';
 
 export default function Footer() {
+  const [certificatesLive, setCertificatesLive] = useState(false);
+
+  useEffect(() => {
+    setCertificatesLive(areCertificatesLive());
+  }, []);
+
   return (
     <footer className="relative z-10 w-full border-t border-brand-gold/15 mt-auto" style={{ background: 'linear-gradient(to top, rgba(201,162,39,0.03) 0%, transparent 100%)' }}>
       <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row justify-between items-center gap-8">
@@ -25,6 +34,11 @@ export default function Footer() {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link href="/schedules" className="hover:text-brand-gold transition-colors block">Schedules</Link>
           </motion.div>
+          {certificatesLive && (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href="/certificate" className="hover:text-brand-gold transition-colors block">Certificates</Link>
+            </motion.div>
+          )}
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link href="/rules" className="hover:text-brand-gold transition-colors block">Rules &amp; Guidelines</Link>
           </motion.div>

@@ -57,6 +57,20 @@ export async function GET(req: NextRequest) {
             message: "Your university has already registered a team for Duet Fashion Modeling (limit: 1 duet team per university)."
           });
         }
+      } else if (memberCount >= 11 && memberCount <= 13) {
+        const hasTeam = existingDocs.some((r: any) =>
+          r.participationType === "team" &&
+          r.selectedEvents?.some((e: any) =>
+            e.eventName?.toLowerCase().includes("fashion modeling") &&
+            e.teamDetails?.memberCount >= 11 && e.teamDetails?.memberCount <= 13
+          )
+        );
+        if (hasTeam) {
+          return NextResponse.json({
+            registered: true,
+            message: "Your university has already registered a team for Group Fashion Modeling (limit: 1 team of 11-13 members per university)."
+          });
+        }
       }
 
       return NextResponse.json({ registered: false });

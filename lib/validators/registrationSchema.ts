@@ -70,32 +70,40 @@ export const registrationSchema = z.object({
         const isSammi = evtName.includes("sammi");
         const isMonoActing = evtName.includes("mono acting");
         
-        let minMembers = 2;
-        let maxMembers = 8;
-        
         if (isFashionModeling) {
-          minMembers = 1;
-          maxMembers = 2;
-        } else if (isBhangra) {
-          minMembers = 8;
-          maxMembers = 15;
-        } else if (isGiddha || isLuddi || isSammi) {
-          minMembers = 8;
-          maxMembers = 12;
-        } else if (isMonoActing) {
-          minMembers = 1;
-          maxMembers = 1;
-        } else if (isCultural) {
-          minMembers = 2;
-          maxMembers = 15;
-        }
+          const count = event.teamDetails.memberCount;
+          if (count !== 1 && count !== 2 && (count < 11 || count > 13)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Fashion Modeling allows Solo (1), Duet (2), or Team (11-13 members)",
+              path: ["selectedEvents", index, "teamDetails", "memberCount"],
+            });
+          }
+        } else {
+          let minMembers = 2;
+          let maxMembers = 8;
+          
+          if (isBhangra) {
+            minMembers = 8;
+            maxMembers = 15;
+          } else if (isGiddha || isLuddi || isSammi) {
+            minMembers = 8;
+            maxMembers = 12;
+          } else if (isMonoActing) {
+            minMembers = 1;
+            maxMembers = 1;
+          } else if (isCultural) {
+            minMembers = 2;
+            maxMembers = 15;
+          }
 
-        if (event.teamDetails.memberCount < minMembers || event.teamDetails.memberCount > maxMembers) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `Member count must be between ${minMembers} and ${maxMembers} for this event`,
-            path: ["selectedEvents", index, "teamDetails", "memberCount"],
-          });
+          if (event.teamDetails.memberCount < minMembers || event.teamDetails.memberCount > maxMembers) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `Member count must be between ${minMembers} and ${maxMembers} for this event`,
+              path: ["selectedEvents", index, "teamDetails", "memberCount"],
+            });
+          }
         }
       }
     });

@@ -113,26 +113,28 @@ export function Step2Events({
         const isMonoActing = evt.eventName.toLowerCase().includes("mono acting");
         const isCultural = evt.categoryName.toLowerCase().includes("cultural");
         
-        let minMembers = 2;
-        let maxMembers = 8;
-        
         if (isFashionModeling) {
-          minMembers = 1;
-          maxMembers = 2;
-        } else if (isBhangra) {
-          minMembers = 8;
-          maxMembers = 15;
-        } else if (isGiddha || isLuddi || isSammi) {
-          minMembers = 8;
-          maxMembers = 12;
-        } else if (isMonoActing) {
-          minMembers = 1;
-          maxMembers = 1;
-        } else if (isCultural) {
-          minMembers = 2;
-          maxMembers = 15;
+          const count = evt.teamDetails.memberCount;
+          if (count !== 1 && count !== 2 && (count < 11 || count > 13)) return true;
+        } else {
+          let minMembers = 2;
+          let maxMembers = 8;
+          
+          if (isBhangra) {
+            minMembers = 8;
+            maxMembers = 15;
+          } else if (isGiddha || isLuddi || isSammi) {
+            minMembers = 8;
+            maxMembers = 12;
+          } else if (isMonoActing) {
+            minMembers = 1;
+            maxMembers = 1;
+          } else if (isCultural) {
+            minMembers = 2;
+            maxMembers = 15;
+          }
+          if (evt.teamDetails.memberCount < minMembers || evt.teamDetails.memberCount > maxMembers) return true;
         }
-        if (evt.teamDetails.memberCount < minMembers || evt.teamDetails.memberCount > maxMembers) return true;
         if (!evt.teamDetails.membersInfo.trim()) return true;
         return false;
       });
@@ -219,29 +221,34 @@ export function Step2Events({
     const isSammi = evtName.includes("sammi");
     const isMonoActing = evtName.includes("mono acting");
 
-    let minMembers = 2;
-    let maxMembers = 8;
-
     if (isFashionModeling) {
-      minMembers = 1;
-      maxMembers = 2;
-    } else if (isBhangra) {
-      minMembers = 8;
-      maxMembers = 15;
-    } else if (isGiddha || isLuddi || isSammi) {
-      minMembers = 8;
-      maxMembers = 12;
-    } else if (isMonoActing) {
-      minMembers = 1;
-      maxMembers = 1;
-    } else if (isCultural) {
-      minMembers = 2;
-      maxMembers = 15;
-    }
+      const count = modalData.memberCount;
+      if (count !== 1 && count !== 2 && (count < 11 || count > 13)) {
+        setModalErrors({ memberCount: "Fashion Modeling allows Solo (1), Duet (2), or Team (11-13 members)." });
+        return;
+      }
+    } else {
+      let minMembers = 2;
+      let maxMembers = 8;
 
-    if (modalData.memberCount < minMembers || modalData.memberCount > maxMembers) {
-      setModalErrors({ memberCount: `Must be between ${minMembers} and ${maxMembers} members.` });
-      return;
+      if (isBhangra) {
+        minMembers = 8;
+        maxMembers = 15;
+      } else if (isGiddha || isLuddi || isSammi) {
+        minMembers = 8;
+        maxMembers = 12;
+      } else if (isMonoActing) {
+        minMembers = 1;
+        maxMembers = 1;
+      } else if (isCultural) {
+        minMembers = 2;
+        maxMembers = 15;
+      }
+
+      if (modalData.memberCount < minMembers || modalData.memberCount > maxMembers) {
+        setModalErrors({ memberCount: `Must be between ${minMembers} and ${maxMembers} members.` });
+        return;
+      }
     }
     if (!modalData.membersInfo.trim()) {
       setModalErrors({ membersInfo: "Required" });
@@ -579,11 +586,11 @@ export function Step2Events({
                 <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-sm text-amber-200/80">
                   <strong className="text-amber-400 block mb-1">⚠️ Fashion Modeling Rules:</strong>
                   <ul className="list-disc pl-4 space-y-1">
-                    <li>Solo modeling (1 model) or Duet modeling (2 models: 1 male & 1 female).</li>
+                    <li>Solo modeling (1 model), Duet modeling (2 models: 1 male & 1 female), or Team modeling (11–13 models).</li>
                     <li>Performance should be 5 to 8 mins.</li>
                     <li>Prohibited tools on stage: original gun, sword, knife, fire etc.</li>
-                    <li>Only 1 model for solo and 2 models for duet allowed from one college/university/institute.</li>
-                    <li>Solo modeling model can't be a part of duet modeling.</li>
+                    <li>Only 1 entry per category allowed from each college/university/institute (1 Solo, 1 Duet, and 1 Team).</li>
+                    <li>A model participating in one category cannot participate in another category.</li>
                   </ul>
                 </div>
               )}
@@ -616,18 +623,24 @@ export function Step2Events({
                     const isSammi = evtName.includes("sammi");
                     const isMono = evtName.includes("mono acting");
                     
-                    let minM = 2; let maxM = 8;
-                    if (isFash) { minM = 1; maxM = 2; }
-                    else if (isBhang) { minM = 8; maxM = 15; }
-                    else if (isGiddha || isLuddi || isSammi) { minM = 8; maxM = 12; }
-                    else if (isMono) { minM = 1; maxM = 1; }
-                    else if (isCultural) { minM = 2; maxM = 15; }
-                    
-                    let options = [];
-                    for(let i = minM; i <= maxM; i++) options.push(i);
+                    let options: number[] = [];
+                    if (isFash) {
+                      options = [1, 2, 11, 12, 13];
+                    } else {
+                      let minM = 2; let maxM = 8;
+                      if (isBhang) { minM = 8; maxM = 15; }
+                      else if (isGiddha || isLuddi || isSammi) { minM = 8; maxM = 12; }
+                      else if (isMono) { minM = 1; maxM = 1; }
+                      else if (isCultural) { minM = 2; maxM = 15; }
+                      for(let i = minM; i <= maxM; i++) options.push(i);
+                    }
                     return options.map(num => (
                       <option key={num} value={num} className="bg-[#111827]">
-                        {isFash ? (num === 1 ? "1 (Solo Modeling)" : "2 (Duet Modeling: 1 Male & 1 Female)") : num}
+                        {isFash ? (
+                          num === 1 ? "1 (Solo Modeling)" :
+                          num === 2 ? "2 (Duet Modeling: 1 Male & 1 Female)" :
+                          `${num} (Team Modeling - ${num} Members)`
+                        ) : num}
                       </option>
                     ));
                   })()}

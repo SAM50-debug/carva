@@ -4,14 +4,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import { eventsData } from "@/data/events";
-import { ArrowRight, Sparkles, Code2, Briefcase, Palette, BookOpen, Video, Calendar, Clock, FileText, Download, Building2 } from "lucide-react";
+import { ArrowRight, Sparkles, Code2, Briefcase, Palette, BookOpen, Video, Calendar, Clock, FileText, Download, Building2, Award } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
+import { areCertificatesLive } from "@/lib/constants";
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
   const opacityHero = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
   const yHero = useTransform(scrollYProgress, [0, 0.4], ["0%", "15%"]);
+
+  const [certificatesLive, setCertificatesLive] = useState(false);
+  useEffect(() => {
+    setCertificatesLive(areCertificatesLive());
+  }, []);
 
   // Mouse parallax for ambient blobs
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
@@ -168,14 +174,25 @@ export default function Home() {
             transition={{ delay: 0.7, type: "spring", stiffness: 200, damping: 22 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <motion.a
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              href="/register"
-              className="w-full sm:w-auto bg-brand-crimson text-brand-cream px-10 py-4 rounded-full font-bold text-lg flex items-center justify-center gap-2 shadow-[0_0_40px_rgba(196,30,58,0.4)] hover:shadow-[0_0_60px_rgba(196,30,58,0.6)] transition-shadow"
-            >
-              Register for Free <ArrowRight size={20} />
-            </motion.a>
+            {certificatesLive ? (
+              <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/certificate"
+                  className="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-brand-gold to-yellow-500 text-black px-10 py-4 rounded-full font-bold text-lg flex items-center justify-center gap-2 shadow-[0_0_40px_rgba(201,162,39,0.4)] hover:shadow-[0_0_60px_rgba(201,162,39,0.6)] transition-all"
+                >
+                  Claim Certificates <Award size={20} />
+                </Link>
+              </motion.div>
+            ) : (
+              <motion.a
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                href="/register"
+                className="w-full sm:w-auto bg-brand-crimson text-brand-cream px-10 py-4 rounded-full font-bold text-lg flex items-center justify-center gap-2 shadow-[0_0_40px_rgba(196,30,58,0.4)] hover:shadow-[0_0_60px_rgba(196,30,58,0.6)] transition-shadow"
+              >
+                Register for Free <ArrowRight size={20} />
+              </motion.a>
+            )}
             <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/events"
@@ -193,6 +210,16 @@ export default function Home() {
                 Schedules
               </Link>
             </motion.div>
+            {certificatesLive && (
+              <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/register"
+                  className="w-full sm:w-auto bg-brand-crimson/80 text-brand-cream px-8 py-4 rounded-full font-bold text-lg border border-brand-crimson/50 hover:bg-brand-crimson transition-colors flex items-center justify-center gap-2"
+                >
+                  Register
+                </Link>
+              </motion.div>
+            )}
           </motion.div>
 
           {/* Official Institution Form Download Card (Mandatory Requirement) */}

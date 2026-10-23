@@ -210,3 +210,51 @@ export interface GateEntryRecord {
   isReEntry?: boolean;
 }
 
+// ─── Certificate ──────────────────────────────────────────────────────────────
+
+export interface CertificateRecord {
+  _id?: ObjectId;
+  certificateId: string; // Public unique unguessable ID, e.g. "CRVN-CERT-XXXXXXXX"
+  serialNumber: string; // E.g., "RIMT/CARVAN26/W-[T.1]" or "RIMT/CARVAN26/P-[T.0]"
+  suffix: string; // E.g., "[T.1]" or "[T.0]"
+  registrationId: ObjectId;
+  studentName: string;
+  mobile: string;
+  university: string;
+  eventId: string;
+  eventName: string;
+  categorySlug: string;
+  categoryName: string;
+  categoryLetter: string; // "T", "C", "B", "F", "L", "M"
+  position: 0 | 1 | 2 | 3; // 0 = Participation, 1/2/3 = Winners
+  awardTitle: string; // "1st Position - Winner" | "2nd Position - 1st Runner Up" | "3rd Position - 2nd Runner Up" | "Certificate of Participation"
+  templateUrl: string; // "/certificate/1st.png", "/certificate/2nd.png", etc.
+  verificationHash: string; // HMAC-SHA256 signature
+  qrUrl: string; // Absolute or relative URL to /verify/[certificateId]
+  issuedAt: Date;
+  downloadCount: number;
+  lastDownloadedAt?: Date;
+}
+
+// ─── Event Result (Winners) ───────────────────────────────────────────────────
+
+export interface EventWinnerEntry {
+  position: 1 | 2 | 3;
+  studentName: string;
+  university: string;
+  mobile?: string;
+  rollNumber?: string;
+  registrationId?: ObjectId;
+}
+
+export interface EventResultDoc {
+  _id?: ObjectId;
+  eventId: string;
+  eventName: string;
+  categoryId?: string;
+  categoryName?: string;
+  winners: EventWinnerEntry[];
+  publishedBy?: ObjectId;
+  publishedAt: Date;
+  updatedAt: Date;
+}

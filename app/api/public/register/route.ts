@@ -33,12 +33,14 @@ export async function POST(req: NextRequest) {
 
     const db = await getDb();
 
-    // Check Fashion Modeling exclusivity: 1 model for solo modeling and 1 duet team per university
+    // Check Fashion Modeling exclusivity: 1 model for solo modeling, 1 duet team, and 1 group team (11-13) per university
     const hasFashionModeling = data.selectedEvents.some(e => e.eventName.toLowerCase().includes("fashion modeling"));
     if (hasFashionModeling) {
       const fashionEvt = data.selectedEvents.find(e => e.eventName.toLowerCase().includes("fashion modeling"));
-      const isSolo = data.participationType === "individual" || (fashionEvt?.teamDetails?.memberCount === 1);
-      const isDuet = data.participationType === "team" && fashionEvt?.teamDetails?.memberCount === 2;
+      const count = fashionEvt?.teamDetails?.memberCount;
+      const isSolo = data.participationType === "individual" || count === 1;
+      const isDuet = data.participationType === "team" && count === 2;
+      const isTeam = data.participationType === "team" && (count ? count >= 11 && count <= 13 : false);
 
       const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const existingDocs = await db.collection("registrations").find({
@@ -70,6 +72,19 @@ export async function POST(req: NextRequest) {
         );
         if (hasExistingDuet) {
           return apiError("Your university has already registered a team for Duet Fashion Modeling (limit: 1 duet team per university).", 400);
+        }
+      }
+
+      if (isTeam) {
+        const hasExistingTeam = existingDocs.some((r: any) =>
+          r.participationType === "team" &&
+          r.selectedEvents?.some((e: any) =>
+            e.eventName?.toLowerCase().includes("fashion modeling") &&
+            e.teamDetails?.memberCount >= 11 && e.teamDetails?.memberCount <= 13
+          )
+        );
+        if (hasExistingTeam) {
+          return apiError("Your university has already registered a team for Group Fashion Modeling (limit: 1 team of 11-13 members per university).", 400);
         }
       }
     }

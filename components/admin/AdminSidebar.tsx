@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   ShieldCheck,
+  Trophy,
 } from "lucide-react";
 import { useState } from "react";
 import clsx from "clsx";
@@ -23,6 +24,7 @@ const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/categories", label: "Categories", icon: FolderOpen },
   { href: "/admin/events", label: "Events", icon: CalendarDays },
+  { href: "/admin/results", label: "Results & Winners", icon: Trophy },
   { href: "/admin/form-builder", label: "Form Builder", icon: FormInput },
   { href: "/admin/registrations", label: "Registrations", icon: ClipboardList },
   { href: "/admin/gate", label: "Gate Admissions", icon: ShieldCheck },
@@ -52,6 +54,7 @@ export default function AdminSidebar({ role = "super_admin" }: { role?: string }
       item.href === "/admin/attendance" || 
       item.href === "/admin/attendance-records" || 
       item.href === "/admin/registrations" ||
+      item.href === "/admin/results" ||
       item.href === "/admin/gate"
     );
   });

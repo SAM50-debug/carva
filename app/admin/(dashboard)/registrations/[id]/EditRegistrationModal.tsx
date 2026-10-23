@@ -275,18 +275,25 @@ export function EditRegistrationModal({
                                       const isSammi = evtName.includes("sammi");
                                       const isMono = evtName.includes("mono acting");
                                       
-                                      let minM = 2; let maxM = 8;
-                                      if (isFash) { minM = 1; maxM = 2; }
-                                      else if (isBhang) { minM = 8; maxM = 15; }
-                                      else if (isGiddha || isLuddi || isSammi) { minM = 8; maxM = 12; }
-                                      else if (isMono) { minM = 1; maxM = 1; }
-                                      else if (isCultural) { minM = 2; maxM = 15; }
+                                      let options: number[] = [];
+                                      if (isFash) {
+                                        options = [1, 2, 11, 12, 13];
+                                      } else {
+                                        let minM = 2; let maxM = 8;
+                                        if (isBhang) { minM = 8; maxM = 15; }
+                                        else if (isGiddha || isLuddi || isSammi) { minM = 8; maxM = 12; }
+                                        else if (isMono) { minM = 1; maxM = 1; }
+                                        else if (isCultural) { minM = 2; maxM = 15; }
+                                        for(let j = minM; j <= maxM; j++) options.push(j);
+                                      }
 
-                                      let options = [];
-                                      for(let j = minM; j <= maxM; j++) options.push(j);
                                       return options.map(num => (
                                         <option key={num} value={num} className="bg-[#111827]">
-                                          {isFash ? (num === 1 ? "1 (Solo Modeling)" : "2 (Duet Modeling)") : num}
+                                          {isFash ? (
+                                            num === 1 ? "1 (Solo Modeling)" :
+                                            num === 2 ? "2 (Duet Modeling)" :
+                                            `${num} (Team Modeling - ${num} Members)`
+                                          ) : num}
                                         </option>
                                       ));
                                     })()}

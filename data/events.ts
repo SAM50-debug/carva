@@ -440,16 +440,17 @@ export const eventsData: EventDetails[] = [
     id: "fashion-modeling",
     name: "Fashion Modeling",
     category: "CULTURAL",
-    description: "Solo and Duet Fashion Modeling inter-university runway competition combining couture, poise, and choreography.",
-    teamSize: "Solo (1 model) or Duet (2 models: 1 male & 1 female)",
+    description: "Solo, Duet, and Team Fashion Modeling inter-university runway competition combining couture, poise, and choreography.",
+    teamSize: "Solo (1 model), Duet (2 models: 1 male & 1 female), or Team (11–13 models)",
     duration: "5–8 minutes",
-    theme: "Solo and Duet Fashion Modeling (Inter-University)",
+    theme: "Fashion Modeling (Inter-University)",
     rules: [
-      "Competition Format: Solo and duet fashion modeling inter-university competition.",
+      "Competition Format: Solo, duet, and team fashion modeling inter-university competition.",
+      "Team Size: Solo (1 model), Duet (2 models: 1 male & 1 female), or Team (11–13 models).",
       "Prohibited Tools: Prohibited tools on stage are: original gun, sword, knife, fire, etc.",
       "Performance Time: Performance should be 5 to 8 minutes.",
-      "Team Representation: Only one model for solo modeling and two models (one male & one female) for duet modeling are allowed from one college/university/institute.",
-      "Exclusivity: Solo modeling model cannot be a part of duet modeling.",
+      "College Representation: Each college/university/institute is allowed exactly one entry in each category (1 Solo, 1 Duet, and 1 Team of 11–13 members).",
+      "Exclusivity: A model participating in one category cannot participate in another category.",
       "Costumes & Styling: Attire must be elegant, decent, and suitable for a university-level cultural festival.",
       "Music Submission: Background tracks must be submitted in advance to the organizing team.",
       "Reporting: Participants must report to the venue at least 30 minutes before their scheduled slot.",
@@ -458,7 +459,7 @@ export const eventsData: EventDetails[] = [
     judgingCriteria: [
       "Poise, confidence & stage presence",
       "Costume styling & aesthetic presentation",
-      "Ramp walk & choreography (coordination for duet)",
+      "Ramp walk & choreography (coordination for duet/team)",
       "Adherence to time limit (5–8 mins) and rules",
       "Overall impact & creative presentation"
     ]

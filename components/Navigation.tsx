@@ -3,10 +3,16 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { areCertificatesLive } from '@/lib/constants';
 
 export default function Navigation() {
   const { scrollY } = useScroll();
   const [isExtended, setIsExtended] = useState(false);
+  const [certificatesLive, setCertificatesLive] = useState(false);
+
+  useEffect(() => {
+    setCertificatesLive(areCertificatesLive());
+  }, []);
 
   useEffect(() => {
     return scrollY.on("change", (latest) => {
@@ -51,7 +57,7 @@ export default function Navigation() {
           </Link>
         </motion.div>
 
-        {/* Center — Links */}
+        {/* Center — Links (Certificates hidden from middle nav as requested) */}
         <nav className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 mx-auto px-2 md:px-8">
           {[
             { label: "Categories", href: "/#categories", hideMobile: true },
@@ -75,15 +81,19 @@ export default function Navigation() {
           })}
         </nav>
 
-        {/* Right — CTA */}
-        <motion.a
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.96 }}
-          href="/register"
-          className="ml-auto shrink-0 bg-brand-red text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-full font-bold text-xs md:text-sm hover:bg-red-600 transition-colors shadow-lg shadow-brand-red/20 whitespace-nowrap"
-        >
-          REGISTER
-        </motion.a>
+        {/* Right — CTA (Toggles from REGISTER to CERTIFICATES at release time) */}
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="ml-auto shrink-0">
+          <Link
+            href={certificatesLive ? "/certificate" : "/register"}
+            className={`px-3 py-1.5 md:px-5 md:py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow-lg whitespace-nowrap block ${
+              certificatesLive
+                ? "bg-gradient-to-r from-amber-500 via-brand-gold to-yellow-500 text-black hover:opacity-95 shadow-brand-gold/30 ring-1 ring-white/20"
+                : "bg-brand-red text-white hover:bg-red-600 shadow-brand-red/20"
+            }`}
+          >
+            {certificatesLive ? "CERTIFICATES" : "REGISTER"}
+          </Link>
+        </motion.div>
       </motion.header>
     </div>
   );

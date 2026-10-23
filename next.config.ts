@@ -11,6 +11,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/certificates",
+        destination: "/certificate",
+        permanent: true,
+      },
+      {
+        source: "/certifictes",
+        destination: "/certificate",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
