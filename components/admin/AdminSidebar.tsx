@@ -16,6 +16,7 @@ import {
   X,
   ShieldCheck,
   Trophy,
+  MessageSquareHeart,
 } from "lucide-react";
 import { useState } from "react";
 import clsx from "clsx";
@@ -27,6 +28,7 @@ const NAV = [
   { href: "/admin/results", label: "Results & Winners", icon: Trophy },
   { href: "/admin/form-builder", label: "Form Builder", icon: FormInput },
   { href: "/admin/registrations", label: "Registrations", icon: ClipboardList },
+  { href: "/admin/feedback", label: "Participant Feedback", icon: MessageSquareHeart },
   { href: "/admin/gate", label: "Gate Admissions", icon: ShieldCheck },
   { href: "/admin/staff", label: "Staff", icon: Users },
   { href: "/admin/attendance", label: "Attendance", icon: ScanLine },
