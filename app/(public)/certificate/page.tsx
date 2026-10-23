@@ -19,6 +19,7 @@ import {
   Calendar,
 } from "lucide-react";
 import CertificateCanvas from "@/components/certificate/CertificateCanvas";
+import ParticipantFeedbackModal from "./ParticipantFeedbackModal";
 import { EligibleEventItem } from "@/lib/services/certificateService";
 import { CertificateRecord } from "@/lib/db/models/types";
 
@@ -49,6 +50,11 @@ export default function CertificateClaimPage() {
   const [selectedEvent, setSelectedEvent] = useState<EligibleEventItem | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeCertificate, setActiveCertificate] = useState<CertificateRecord | null>(null);
+
+  // Participant Feedback state (must only be submitted once per participant)
+  const [hasSubmittedFeedback, setHasSubmittedFeedback] = useState<boolean>(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState<boolean>(false);
+  const [pendingEventForGeneration, setPendingEventForGeneration] = useState<EligibleEventItem | null>(null);
 
   // Load distinct universities on mount
   useEffect(() => {
@@ -153,6 +159,7 @@ export default function CertificateClaimPage() {
 
       setStudentInfo(json.data.student);
       setEligibleEvents(json.data.events || []);
+      setHasSubmittedFeedback(!!json.data.hasSubmittedFeedback);
 
       if (!json.data.events || json.data.events.length === 0) {
         setErrorMessage(
@@ -169,7 +176,7 @@ export default function CertificateClaimPage() {
     }
   };
 
-  const handleSelectEvent = async (eventItem: EligibleEventItem) => {
+  const executeCertificateGeneration = async (eventItem: EligibleEventItem) => {
     setSelectedEvent(eventItem);
     setIsGenerating(true);
     setErrorMessage(null);
@@ -189,6 +196,14 @@ export default function CertificateClaimPage() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
+        if (json.requiresFeedback) {
+          // Trigger feedback modal if backend caught missing feedback
+          setHasSubmittedFeedback(false);
+          setPendingEventForGeneration(eventItem);
+          setShowFeedbackModal(true);
+          setIsGenerating(false);
+          return;
+        }
         setErrorMessage(json.error || "Failed to generate certificate.");
         setIsGenerating(false);
         return;
@@ -202,6 +217,25 @@ export default function CertificateClaimPage() {
       setErrorMessage("Could not generate certificate. Please try again.");
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleSelectEvent = (eventItem: EligibleEventItem) => {
+    // If the participant has not yet submitted feedback, require it once first!
+    if (!hasSubmittedFeedback) {
+      setPendingEventForGeneration(eventItem);
+      setShowFeedbackModal(true);
+      return;
+    }
+
+    executeCertificateGeneration(eventItem);
+  };
+
+  const handleFeedbackSuccess = () => {
+    setHasSubmittedFeedback(true);
+    setShowFeedbackModal(false);
+    if (pendingEventForGeneration) {
+      executeCertificateGeneration(pendingEventForGeneration);
     }
   };
 
@@ -539,6 +573,28 @@ export default function CertificateClaimPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Participant Feedback Modal - Prompted once before certificate generation */}
+        {showFeedbackModal && pendingEventForGeneration && (
+          <ParticipantFeedbackModal
+            isOpen={showFeedbackModal}
+            student={{
+              name: studentInfo?.name || name,
+              mobile: studentInfo?.mobile || mobile,
+              university: studentInfo?.university || university,
+            }}
+            event={{
+              registrationId: pendingEventForGeneration.registrationId,
+              eventId: pendingEventForGeneration.eventId,
+              eventName: pendingEventForGeneration.eventName,
+            }}
+            onSuccess={handleFeedbackSuccess}
+            onCancel={() => {
+              setShowFeedbackModal(false);
+              setPendingEventForGeneration(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );

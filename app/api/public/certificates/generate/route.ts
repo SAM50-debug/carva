@@ -35,6 +35,34 @@ export async function POST(req: NextRequest) {
     const requestOrigin = host ? `${proto}://${host}` : req.nextUrl.origin;
     const origin = getCanonicalBaseUrl(requestOrigin);
 
+    // Backend Gatekeeper: Participant must have submitted feedback before generating certificate
+    const { getDb } = await import("@/lib/db/client");
+    const db = await getDb();
+    const cleanMobile = parseResult.data.mobile.trim().replace(/\D/g, "");
+    const last10 = cleanMobile.length >= 10 ? cleanMobile.slice(-10) : cleanMobile;
+    const { ObjectId } = await import("mongodb");
+
+    const feedbackExists = await db.collection("feedback").findOne({
+      $or: [
+        { cleanMobile: last10 },
+        { mobile: parseResult.data.mobile.trim() },
+        ...(ObjectId.isValid(parseResult.data.registrationId)
+          ? [{ registrationId: new ObjectId(parseResult.data.registrationId) }]
+          : [{ registrationId: parseResult.data.registrationId }]),
+      ],
+    });
+
+    if (!feedbackExists) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Participant feedback is required before generating your certificate.",
+          requiresFeedback: true,
+        },
+        { status: 403 }
+      );
+    }
+
     const certificate = await certificateService.generateCertificate({
       ...parseResult.data,
       origin,

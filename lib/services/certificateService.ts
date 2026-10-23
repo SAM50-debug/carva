@@ -250,7 +250,11 @@ export class CertificateService {
     name: string,
     mobile: string,
     university?: string
-  ): Promise<{ student: { name: string; university: string; mobile: string }; events: EligibleEventItem[] }> {
+  ): Promise<{
+    student: { name: string; university: string; mobile: string };
+    events: EligibleEventItem[];
+    hasSubmittedFeedback: boolean;
+  }> {
     const db = await getDb();
     const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -308,6 +312,7 @@ export class CertificateService {
       return {
         student: { name: cleanName, university: cleanUniv, mobile: cleanMobile },
         events: [],
+        hasSubmittedFeedback: false,
       };
     }
 
@@ -422,9 +427,19 @@ export class CertificateService {
       }
     }
 
+    // Check if participant has submitted feedback
+    const feedbackDoc = await db.collection("feedback").findOne({
+      $or: [
+        { cleanMobile: last10 },
+        { mobile: cleanMobile },
+        { mobile: mobile.trim() },
+      ],
+    });
+
     return {
       student: { name: cleanName, university: canonicalUniversity, mobile: cleanMobile },
       events: eventsList,
+      hasSubmittedFeedback: !!feedbackDoc,
     };
   }
 
