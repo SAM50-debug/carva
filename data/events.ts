@@ -437,31 +437,87 @@ export const eventsData: EventDetails[] = [
     ]
   },
   {
-    id: "fashion-modeling",
-    name: "Fashion Modeling",
+    id: "fashion-modeling-solo",
+    name: "Fashion Modeling (Solo)",
     category: "CULTURAL",
-    description: "Solo, Duet, and Team Fashion Modeling inter-university runway competition combining couture, poise, and choreography.",
-    teamSize: "Solo (1 model), Duet (2 models: 1 male & 1 female), or Team (11–13 models)",
+    description: "Solo Fashion Modeling inter-university runway competition combining couture, poise, and stage presence.",
+    teamSize: "Individual (1 Model)",
     duration: "5–8 minutes",
-    theme: "Fashion Modeling (Inter-University)",
+    theme: "Solo Fashion Modeling",
     rules: [
-      "Competition Format: Solo, duet, and team fashion modeling inter-university competition.",
-      "Team Size: Solo (1 model), Duet (2 models: 1 male & 1 female), or Team (11–13 models).",
-      "Prohibited Tools: Prohibited tools on stage are: original gun, sword, knife, fire, etc.",
-      "Performance Time: Performance should be 5 to 8 minutes.",
-      "College Representation: Each college/university/institute is allowed exactly one entry in each category (1 Solo, 1 Duet, and 1 Team of 11–13 members).",
-      "Exclusivity: A model participating in one category cannot participate in another category.",
-      "Costumes & Styling: Attire must be elegant, decent, and suitable for a university-level cultural festival.",
-      "Music Submission: Background tracks must be submitted in advance to the organizing team.",
+      "Competition Format: Solo fashion modeling runway competition.",
+      "Team Size: Strictly 1 model per entry.",
+      "Prohibited Tools: Original gun, sword, knife, fire, and hazardous props are strictly prohibited.",
+      "Performance Time: Performance must be 5 to 8 minutes.",
+      "College Representation: Each college/university/institute is allowed 1 Solo entry.",
+      "Exclusivity: A model participating in Solo cannot participate in Duet or Team modeling.",
+      "Costumes & Styling: Attire must be elegant, decent, and suitable for a university festival.",
+      "Music Submission: Background tracks must be submitted in advance to the event desk.",
       "Reporting: Participants must report to the venue at least 30 minutes before their scheduled slot.",
       "Judges' Decision: The decision of the judges will be final and binding."
     ],
     judgingCriteria: [
       "Poise, confidence & stage presence",
       "Costume styling & aesthetic presentation",
-      "Ramp walk & choreography (coordination for duet/team)",
-      "Adherence to time limit (5–8 mins) and rules",
-      "Overall impact & creative presentation"
+      "Ramp walk execution & grace",
+      "Adherence to time limit (5–8 mins)",
+      "Overall impact & elegance"
+    ]
+  },
+  {
+    id: "fashion-modeling-duet",
+    name: "Fashion Modeling (Duet)",
+    category: "CULTURAL",
+    description: "Duet Fashion Modeling (pair of 1 male & 1 female model) runway competition combining couture, coordination, and poise.",
+    teamSize: "2 Models (1 Male & 1 Female)",
+    duration: "5–8 minutes",
+    theme: "Duet Fashion Modeling",
+    rules: [
+      "Competition Format: Duet fashion modeling competition.",
+      "Team Size: Strictly 2 models (1 male and 1 female model).",
+      "Prohibited Tools: Original gun, sword, knife, fire, and hazardous props are strictly prohibited.",
+      "Performance Time: Performance must be 5 to 8 minutes.",
+      "College Representation: Each college/university/institute is allowed 1 Duet entry.",
+      "Exclusivity: A model participating in Duet cannot participate in Solo or Team modeling.",
+      "Costumes & Styling: Attire must be coordinated, elegant, and decent.",
+      "Music Submission: Background tracks must be submitted in advance to the event desk.",
+      "Reporting: Participants must report to the venue at least 30 minutes before their scheduled slot.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Pair coordination & stage chemistry",
+      "Costume harmony & aesthetic presentation",
+      "Ramp walk & choreography",
+      "Adherence to time limit (5–8 mins)",
+      "Overall artistic impact"
+    ]
+  },
+  {
+    id: "fashion-modeling-team",
+    name: "Fashion Modeling (Team)",
+    category: "CULTURAL",
+    description: "Team Fashion Modeling (11–13 models) runway showcase combining coordinated couture, choreography, and themed presentations.",
+    teamSize: "11–13 Models",
+    duration: "5–8 minutes",
+    theme: "Team Fashion Modeling",
+    rules: [
+      "Competition Format: Team fashion modeling runway showcase.",
+      "Team Size: Strictly 11 to 13 models.",
+      "Prohibited Tools: Original gun, sword, knife, fire, and hazardous props are strictly prohibited.",
+      "Performance Time: Performance must be 5 to 8 minutes.",
+      "College Representation: Each college/university/institute is allowed 1 Team entry.",
+      "Exclusivity: A model participating in Team modeling cannot participate in Solo or Duet modeling.",
+      "Costumes & Styling: Coordinated group styling reflecting the chosen theme.",
+      "Music Submission: Background tracks must be submitted in advance to the event desk.",
+      "Reporting: Participants must report to the venue at least 30 minutes before their scheduled slot.",
+      "Judges' Decision: The decision of the judges will be final and binding."
+    ],
+    judgingCriteria: [
+      "Theme conceptualization & team choreography",
+      "Costume styling & visual coordination",
+      "Ramp walk synchronization & poise",
+      "Adherence to time limit (5–8 mins)",
+      "Overall group impact & presentation"
     ]
   },
   

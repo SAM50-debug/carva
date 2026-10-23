@@ -38,9 +38,10 @@ export async function POST(req: NextRequest) {
     if (hasFashionModeling) {
       const fashionEvt = data.selectedEvents.find(e => e.eventName.toLowerCase().includes("fashion modeling"));
       const count = fashionEvt?.teamDetails?.memberCount;
-      const isSolo = data.participationType === "individual" || count === 1;
-      const isDuet = data.participationType === "team" && count === 2;
-      const isTeam = data.participationType === "team" && (count ? count >= 11 && count <= 13 : false);
+      const fName = fashionEvt?.eventName?.toLowerCase() || "";
+      const isSolo = data.participationType === "individual" || count === 1 || fName.includes("(solo)");
+      const isDuet = (data.participationType === "team" && count === 2) || fName.includes("(duet)");
+      const isTeam = (data.participationType === "team" && (count ? count >= 11 && count <= 13 : false)) || fName.includes("(team)");
 
       const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const existingDocs = await db.collection("registrations").find({
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
           r.participationType === "individual" ||
           r.selectedEvents?.some((e: any) =>
             e.eventName?.toLowerCase().includes("fashion modeling") &&
-            e.teamDetails?.memberCount === 1
+            (e.teamDetails?.memberCount === 1 || e.eventName?.toLowerCase().includes("(solo)"))
           )
         );
         if (hasExistingSolo) {
@@ -67,7 +68,7 @@ export async function POST(req: NextRequest) {
           r.participationType === "team" &&
           r.selectedEvents?.some((e: any) =>
             e.eventName?.toLowerCase().includes("fashion modeling") &&
-            e.teamDetails?.memberCount === 2
+            (e.teamDetails?.memberCount === 2 || e.eventName?.toLowerCase().includes("(duet)"))
           )
         );
         if (hasExistingDuet) {
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
           r.participationType === "team" &&
           r.selectedEvents?.some((e: any) =>
             e.eventName?.toLowerCase().includes("fashion modeling") &&
-            e.teamDetails?.memberCount >= 11 && e.teamDetails?.memberCount <= 13
+            ((e.teamDetails?.memberCount >= 11 && e.teamDetails?.memberCount <= 13) || e.eventName?.toLowerCase().includes("(team)"))
           )
         );
         if (hasExistingTeam) {

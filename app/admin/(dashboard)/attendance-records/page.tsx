@@ -18,11 +18,23 @@ export default async function GlobalAttendanceRecordsPage() {
   let matchStage = {};
   
   if (role === "sub_admin" && assignedCategoryIds.length > 0) {
-    const assignedCategoryObjectIds = assignedCategoryIds.map((id: string) => new ObjectId(id));
-    const subAdminEvents = await db.collection("events").find({ categoryId: { $in: assignedCategoryObjectIds } }, { projection: { _id: 1 } }).toArray();
-    const eventIds = subAdminEvents.map(e => e._id.toString());
+    const assignedCategoryObjectIds = assignedCategoryIds
+      .filter((id: string) => ObjectId.isValid(id))
+      .map((id: string) => new ObjectId(id));
+
+    const subAdminEvents = await db.collection("events").find(
+      { categoryId: { $in: assignedCategoryObjectIds } },
+      { projection: { _id: 1, slug: 1 } }
+    ).toArray();
+
+    const allowedEventIds: any[] = [];
+    for (const e of subAdminEvents) {
+      allowedEventIds.push(e._id);
+      allowedEventIds.push(e._id.toString());
+      if (e.slug) allowedEventIds.push(e.slug);
+    }
     
-    matchStage = { $match: { eventId: { $in: eventIds } } };
+    matchStage = { $match: { eventId: { $in: allowedEventIds } } };
   } else if (role === "sub_admin") {
     // If sub_admin has no assigned categories, they see nothing
     matchStage = { $match: { _id: null } }; // impossible match
@@ -44,20 +56,28 @@ export default async function GlobalAttendanceRecordsPage() {
         as: "studentInfo"
       }
     },
-    { $unwind: "$studentInfo" },
+    { $unwind: { path: "$studentInfo", preserveNullAndEmptyArrays: true } },
     {
       $lookup: {
         from: "events",
-        // Event ID is a string in attendance collection right now, but let's be safe 
-        // We'll convert attendance.eventId to ObjectId for the lookup
-        let: { event_id: { $toObjectId: "$eventId" } },
+        let: { attEventId: "$eventId" },
         pipeline: [
-          { $match: { $expr: { $eq: ["$_id", "$$event_id"] } } }
+          {
+            $match: {
+              $expr: {
+                $or: [
+                  { $eq: ["$_id", "$$attEventId"] },
+                  { $eq: [{ $toString: "$_id" }, { $toString: "$$attEventId" }] },
+                  { $eq: ["$slug", { $toString: "$$attEventId" }] }
+                ]
+              }
+            }
+          }
         ],
         as: "eventInfo"
       }
     },
-    { $unwind: "$eventInfo" },
+    { $unwind: { path: "$eventInfo", preserveNullAndEmptyArrays: true } },
     { $sort: { scannedAt: -1 } },
     { $limit: 200 } // Limit to 200 most recent for performance
   );
@@ -65,11 +85,11 @@ export default async function GlobalAttendanceRecordsPage() {
   const records = await db.collection("attendance").aggregate(pipeline).toArray();
 
   const exportData = records.map(r => ({
-    participantName: r.studentInfo.studentName,
-    participationType: r.studentInfo.participationType,
-    teamName: r.studentInfo.teamDetails?.teamName || "N/A",
-    rollNumber: r.studentInfo.rollNumber,
-    eventName: r.eventInfo.name,
+    participantName: r.studentInfo?.studentName || "N/A",
+    participationType: r.studentInfo?.participationType || "N/A",
+    teamName: r.studentInfo?.teamDetails?.teamName || "N/A",
+    rollNumber: r.studentInfo?.rollNumber || "N/A",
+    eventName: r.eventInfo?.name || "N/A",
     scannedAt: r.scannedAt?.toString()
   }));
 
@@ -107,21 +127,21 @@ export default async function GlobalAttendanceRecordsPage() {
               {records.map((record) => (
                 <tr key={record._id.toString()} className="hover:bg-white/5 transition-colors">
                   <td className="px-6 py-4">
-                    <div className="font-medium text-white">{record.studentInfo.studentName}</div>
-                    {record.studentInfo.participationType === 'team' && record.studentInfo.teamDetails && (
+                    <div className="font-medium text-white">{record.studentInfo?.studentName || "Participant"}</div>
+                    {record.studentInfo?.participationType === 'team' && record.studentInfo?.teamDetails && (
                       <div className="text-xs text-[#c8102e] font-medium mt-0.5">{record.studentInfo.teamDetails.teamName}</div>
                     )}
                   </td>
-                  <td className="px-6 py-4 font-mono text-slate-400">{record.studentInfo.rollNumber}</td>
+                  <td className="px-6 py-4 font-mono text-slate-400">{record.studentInfo?.rollNumber || "N/A"}</td>
                   <td className="px-6 py-4">
                     <span className="inline-flex whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-white">
-                      {record.eventInfo.name}
+                      {record.eventInfo?.name || "Event"}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right font-mono text-xs text-emerald-400" suppressHydrationWarning>
-                    {new Date(record.scannedAt).toLocaleString([], { 
+                    {record.scannedAt ? new Date(record.scannedAt).toLocaleString([], { 
                       month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                    })}
+                    }) : "N/A"}
                   </td>
                 </tr>
               ))}

@@ -1,0 +1,201 @@
+[
+  {
+    "_id": "6ad398885959904dcadedd02",
+    "university": "Chandigarh University ",
+    "studentName": "Nitin Khurmi",
+    "rollNumber": "26BHP70002",
+    "course": "BA psychology ",
+    "year": "1st",
+    "gender": "Male",
+    "mobile": "7986626400",
+    "email": "khurminitin@gmai.com",
+    "participationType": "individual",
+    "selectedEvents": [
+      {
+        "categoryId": "6ac7a468a3734fe7a7383c0e",
+        "eventId": "6ac7a469a3734fe7a7383c17",
+        "categoryName": "Cultural Events",
+        "eventName": "Fashion Modeling"
+      }
+    ],
+    "isRIMT": false,
+    "qrCode": "DL15x40UYsP1jndy",
+    "status": "verified",
+    "submittedAt": "2026-10-17T15:47:20.546Z"
+  },
+  {
+    "_id": "6ad3b4a184b58f6fc01610bf",
+    "university": "Baba banda singh bhadur engeneering college ",
+    "studentName": "harkirat bajwa",
+    "rollNumber": "266664",
+    "course": "Bca",
+    "year": "1st",
+    "gender": "Male",
+    "mobile": "7986786471",
+    "email": "harkiratb59@gmail.com",
+    "participationType": "individual",
+    "selectedEvents": [
+      {
+        "categoryId": "6ac7a468a3734fe7a7383c0e",
+        "eventId": "6ac7a469a3734fe7a7383c17",
+        "categoryName": "Cultural Events",
+        "eventName": "Fashion Modeling"
+      }
+    ],
+    "isRIMT": false,
+    "qrCode": "QZMsdB6kgR56SwAS",
+    "status": "verified",
+    "submittedAt": "2026-10-17T17:47:13.436Z"
+  },
+  {
+    "_id": "6ad4482447ed8d6cdd7af27a",
+    "university": "RIMT University",
+    "studentName": "Ramanjot kaur ",
+    "rollNumber": "26DBAK001",
+    "course": "Bakery and confectionery ",
+    "year": "1st",
+    "gender": "Female",
+    "mobile": "7707976026",
+    "email": "ramanjotkaur1812@gmail.com",
+    "participationType": "individual",
+    "selectedEvents": [
+      {
+        "categoryId": "6ac7a468a3734fe7a7383c0e",
+        "eventId": "6ac7a469a3734fe7a7383c17",
+        "categoryName": "Cultural Events",
+        "eventName": "Fashion Modeling"
+      }
+    ],
+    "isRIMT": true,
+    "qrCode": "l6DoVENfZ-87TrdB",
+    "status": "verified",
+    "submittedAt": "2026-10-18T04:16:36.550Z"
+  },
+  {
+    "_id": "6ad4ef16d679145bf6b25969",
+    "university": "Rayat Bahra University ",
+    "studentName": "Joy Deep Singh ",
+    "rollNumber": "26031003032",
+    "course": "BBA",
+    "year": "1st",
+    "gender": "Male",
+    "mobile": "6230717188",
+    "email": "joydeeps2378@gmail.com",
+    "participationType": "individual",
+    "selectedEvents": [
+      {
+        "categoryId": "6ac7a468a3734fe7a7383c0e",
+        "eventId": "6ac7a469a3734fe7a7383c17",
+        "categoryName": "Cultural Events",
+        "eventName": "Fashion Modeling"
+      },
+      {
+        "categoryId": "6ac7a468a3734fe7a7383c11",
+        "eventId": "6ac7a46da3734fe7a7383c33",
+        "categoryName": "Fine Arts Events",
+        "eventName": "Frame the Fest (Photography)"
+      }
+    ],
+    "isRIMT": false,
+    "qrCode": "6vs2eZhuOifgoPd4",
+    "status": "verified",
+    "submittedAt": "2026-10-18T16:08:54.099Z"
+  },
+  {
+    "_id": "6adab8ef1ec79cb2bd8d65fa",
+    "university": "C.T University",
+    "studentName": "Aradhya",
+    "rollNumber": "72410614",
+    "course": "SODAI (multimedia)",
+    "year": "3rd",
+    "gender": "female",
+    "mobile": "9041510395",
+    "email": "bansalaradhya5@gmail.com",
+    "participationType": "team",
+    "teamDetails": {
+      "teamName": "shahi Andaaz",
+      "leaderName": "Aradhya"
+    },
+    "selectedEvents": [
+      {
+        "eventId": "6ac7a469a3734fe7a7383c17",
+        "categoryId": "6ac7a468a3734fe7a7383c0e",
+        "categoryName": "Cultural Events",
+        "eventName": "Fashion Modeling",
+        "teamDetails": {
+          "memberCount": 11,
+          "membersInfo": "1.Ekamjot, SODAI (multimedia),72411067, 9041510395\n2.Aradhya, SODAI (multimedia), 72410614, 9041510395\n3.Tejinder pal, BCA, 72514820, 9478213080\n4.Sahiba, SOSLA, 72610840, 8837856494\n5.Bhanu, SOET, 72510134, 9911306799\n6.Mannat, Btech, 72413150, 9877923514\n7.Joban, Management , 72513616, 8699630413\n8.Muskan, SODAI, 72413508,  7087657550\n9.Harman singh sidhu, Multimedia ,72520989, 9478213080\n10.Navdeep, Fashion designing , 72520736, 9877674142\n11.Mridul gaba, Management , 72410392, 7710377771"
+        }
+      }
+    ],
+    "isRIMT": false,
+    "qrCode": "f3nZwFKfPHwtCWNi",
+    "status": "verified",
+    "submittedAt": "2026-10-23T01:31:27.383Z",
+    "facultyMobile": "",
+    "facultyName": "",
+    "updatedAt": "2026-10-23T05:22:51.424Z"
+  },
+  {
+    "_id": "6adab9df1ec79cb2bd8d65fb",
+    "university": "C.T University",
+    "studentName": "Mridul gaba",
+    "rollNumber": "72410392",
+    "course": "Management ",
+    "year": "3rd",
+    "gender": "male",
+    "mobile": "7710377771",
+    "email": "mridulgaba@gmail.com",
+    "participationType": "individual",
+    "selectedEvents": [
+      {
+        "eventId": "6ac7a469a3734fe7a7383c17",
+        "categoryId": "6ac7a468a3734fe7a7383c0e",
+        "categoryName": "Cultural Events",
+        "eventName": "Fashion Modeling"
+      }
+    ],
+    "isRIMT": false,
+    "qrCode": "8jRc_9qsqTAKY65a",
+    "status": "verified",
+    "submittedAt": "2026-10-23T01:35:27.611Z",
+    "facultyMobile": "",
+    "facultyName": "",
+    "updatedAt": "2026-10-23T05:24:25.548Z"
+  },
+  {
+    "_id": "6adabb89ee1e19b3e1285adb",
+    "university": "C.T University",
+    "studentName": "Joban",
+    "rollNumber": "72513616",
+    "course": "Management",
+    "year": "2nd",
+    "gender": "male",
+    "mobile": "8699630413",
+    "email": "sandhu@gmail.com",
+    "participationType": "team",
+    "teamDetails": {
+      "teamName": "Shahi Andaaz",
+      "leaderName": "Joban"
+    },
+    "selectedEvents": [
+      {
+        "eventId": "6ac7a469a3734fe7a7383c17",
+        "categoryId": "6ac7a468a3734fe7a7383c0e",
+        "categoryName": "Cultural Events",
+        "eventName": "Fashion Modeling",
+        "teamDetails": {
+          "memberCount": 2,
+          "membersInfo": "1. Joban, Management, 72513616, 8699630413\n2. Muskan, SODAI, 72413508, 7087657550"
+        }
+      }
+    ],
+    "isRIMT": false,
+    "qrCode": "kmWo7_qgDkpxH5QX",
+    "status": "verified",
+    "submittedAt": "2026-10-23T01:42:33.697Z",
+    "facultyMobile": "",
+    "facultyName": "",
+    "updatedAt": "2026-10-23T05:25:25.586Z"
+  }
+]

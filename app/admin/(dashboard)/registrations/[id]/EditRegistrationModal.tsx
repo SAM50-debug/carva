@@ -277,7 +277,15 @@ export function EditRegistrationModal({
                                       
                                       let options: number[] = [];
                                       if (isFash) {
-                                        options = [1, 2, 11, 12, 13];
+                                        if (evtName.includes("(solo)")) {
+                                          options = [1];
+                                        } else if (evtName.includes("(duet)")) {
+                                          options = [2];
+                                        } else if (evtName.includes("(team)")) {
+                                          options = [11, 12, 13];
+                                        } else {
+                                          options = [1, 2, 11, 12, 13];
+                                        }
                                       } else {
                                         let minM = 2; let maxM = 8;
                                         if (isBhang) { minM = 8; maxM = 15; }

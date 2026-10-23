@@ -26,9 +26,14 @@ export default async function AttendanceListPage({ params }: { params: Promise<{
     }
   }
 
+  const eventObjId = ObjectId.isValid(eventId) ? new ObjectId(eventId) : null;
+  const matchCondition: any = eventObjId
+    ? { eventId: { $in: [eventId, eventObjId, event.slug].filter(Boolean) } }
+    : { eventId: eventId };
+
   // Fetch attendance records and join with registrations to get student names
   const attendanceRecords = await db.collection("attendance").aggregate([
-    { $match: { eventId: eventId } },
+    { $match: matchCondition },
     {
       $lookup: {
         from: "registrations",
@@ -37,7 +42,7 @@ export default async function AttendanceListPage({ params }: { params: Promise<{
         as: "studentInfo"
       }
     },
-    { $unwind: "$studentInfo" },
+    { $unwind: { path: "$studentInfo", preserveNullAndEmptyArrays: true } },
     { $sort: { scannedAt: -1 } }
   ]).toArray();
 
@@ -70,11 +75,11 @@ export default async function AttendanceListPage({ params }: { params: Promise<{
           <tbody className="divide-y divide-white/10">
             {attendanceRecords.map((record) => (
               <tr key={record._id.toString()} className="hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-medium text-white">{record.studentInfo.studentName}</td>
-                <td className="px-6 py-4">{record.studentInfo.rollNumber}</td>
-                <td className="px-6 py-4">{record.studentInfo.course} • {record.studentInfo.year}</td>
-                <td className="px-6 py-4 text-right font-mono text-xs text-emerald-400">
-                  {new Date(record.scannedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                <td className="px-6 py-4 font-medium text-white">{record.studentInfo?.studentName || "Participant"}</td>
+                <td className="px-6 py-4">{record.studentInfo?.rollNumber || "N/A"}</td>
+                <td className="px-6 py-4">{record.studentInfo?.course || "N/A"} • {record.studentInfo?.year || "N/A"}</td>
+                <td className="px-6 py-4 text-right font-mono text-xs text-emerald-400" suppressHydrationWarning>
+                  {record.scannedAt ? new Date(record.scannedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "N/A"}
                 </td>
               </tr>
             ))}

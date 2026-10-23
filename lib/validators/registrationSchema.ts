@@ -70,7 +70,37 @@ export const registrationSchema = z.object({
         const isSammi = evtName.includes("sammi");
         const isMonoActing = evtName.includes("mono acting");
         
-        if (isFashionModeling) {
+        const isSoloFashion = evtName.includes("fashion modeling (solo)");
+        const isDuetFashion = evtName.includes("fashion modeling (duet)");
+        const isTeamFashion = evtName.includes("fashion modeling (team)");
+        const isLegacyFashion = evtName.includes("fashion modeling");
+        
+        if (isSoloFashion) {
+          if (event.teamDetails.memberCount !== 1) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Solo Fashion Modeling requires strictly 1 model",
+              path: ["selectedEvents", index, "teamDetails", "memberCount"],
+            });
+          }
+        } else if (isDuetFashion) {
+          if (event.teamDetails.memberCount !== 2) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Duet Fashion Modeling requires strictly 2 models (1 male & 1 female)",
+              path: ["selectedEvents", index, "teamDetails", "memberCount"],
+            });
+          }
+        } else if (isTeamFashion) {
+          const count = event.teamDetails.memberCount;
+          if (count < 11 || count > 13) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Team Fashion Modeling requires 11 to 13 models",
+              path: ["selectedEvents", index, "teamDetails", "memberCount"],
+            });
+          }
+        } else if (isLegacyFashion) {
           const count = event.teamDetails.memberCount;
           if (count !== 1 && count !== 2 && (count < 11 || count > 13)) {
             ctx.addIssue({

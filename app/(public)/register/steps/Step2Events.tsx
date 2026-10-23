@@ -193,13 +193,20 @@ export function Step2Events({
     if (evt.teamDetails) {
       setModalData({ memberCount: evt.teamDetails.memberCount, membersInfo: evt.teamDetails.membersInfo });
     } else {
-      const isFashionModeling = evt.eventName.toLowerCase().includes("fashion modeling");
-      const isBhangra = evt.eventName.toLowerCase().includes("bhangra");
-      const isGiddha = evt.eventName.toLowerCase().includes("giddha");
-      const isLuddi = evt.eventName.toLowerCase().includes("luddi");
-      const isSammi = evt.eventName.toLowerCase().includes("sammi");
+      const eName = evt.eventName.toLowerCase();
+      const isSoloFash = eName.includes("(solo)");
+      const isDuetFash = eName.includes("(duet)");
+      const isTeamFash = eName.includes("(team)");
+      const isFashionModeling = eName.includes("fashion modeling");
+      const isBhangra = eName.includes("bhangra");
+      const isGiddha = eName.includes("giddha");
+      const isLuddi = eName.includes("luddi");
+      const isSammi = eName.includes("sammi");
       let defaultMembers = 2;
-      if (isFashionModeling) defaultMembers = 2;
+      if (isSoloFash) defaultMembers = 1;
+      else if (isDuetFash) defaultMembers = 2;
+      else if (isTeamFash) defaultMembers = 11;
+      else if (isFashionModeling) defaultMembers = 2;
       else if (isBhangra || isGiddha || isLuddi || isSammi) defaultMembers = 8;
       setModalData({ memberCount: defaultMembers, membersInfo: "" });
     }
@@ -214,6 +221,9 @@ export function Step2Events({
     if (!activeModalEvent) return;
     const evtName = activeModalEvent.eventName.toLowerCase();
     const isCultural = activeModalEvent.categoryName.toLowerCase().includes("cultural");
+    const isSoloFash = evtName.includes("(solo)");
+    const isDuetFash = evtName.includes("(duet)");
+    const isTeamFash = evtName.includes("(team)");
     const isFashionModeling = evtName.includes("fashion modeling");
     const isBhangra = evtName.includes("bhangra");
     const isGiddha = evtName.includes("giddha");
@@ -221,7 +231,22 @@ export function Step2Events({
     const isSammi = evtName.includes("sammi");
     const isMonoActing = evtName.includes("mono acting");
 
-    if (isFashionModeling) {
+    if (isSoloFash) {
+      if (modalData.memberCount !== 1) {
+        setModalErrors({ memberCount: "Solo Fashion Modeling requires strictly 1 model." });
+        return;
+      }
+    } else if (isDuetFash) {
+      if (modalData.memberCount !== 2) {
+        setModalErrors({ memberCount: "Duet Fashion Modeling requires strictly 2 models (1 male & 1 female)." });
+        return;
+      }
+    } else if (isTeamFash) {
+      if (modalData.memberCount < 11 || modalData.memberCount > 13) {
+        setModalErrors({ memberCount: "Team Fashion Modeling requires 11 to 13 models." });
+        return;
+      }
+    } else if (isFashionModeling) {
       const count = modalData.memberCount;
       if (count !== 1 && count !== 2 && (count < 11 || count > 13)) {
         setModalErrors({ memberCount: "Fashion Modeling allows Solo (1), Duet (2), or Team (11-13 members)." });
@@ -625,7 +650,15 @@ export function Step2Events({
                     
                     let options: number[] = [];
                     if (isFash) {
-                      options = [1, 2, 11, 12, 13];
+                      if (evtName.includes("(solo)")) {
+                        options = [1];
+                      } else if (evtName.includes("(duet)")) {
+                        options = [2];
+                      } else if (evtName.includes("(team)")) {
+                        options = [11, 12, 13];
+                      } else {
+                        options = [1, 2, 11, 12, 13];
+                      }
                     } else {
                       let minM = 2; let maxM = 8;
                       if (isBhang) { minM = 8; maxM = 15; }

@@ -26,15 +26,18 @@ export async function GET(req: NextRequest) {
 
     const isFashion = eventStr.toLowerCase().includes("fashion modeling");
 
-    if (isFashion && memberCount !== null) {
+    if (isFashion) {
       const existingDocs = await db.collection("registrations").find(query).toArray();
+      const isSoloQuery = memberCount === 1 || eventStr.toLowerCase().includes("(solo)");
+      const isDuetQuery = memberCount === 2 || eventStr.toLowerCase().includes("(duet)");
+      const isTeamQuery = (memberCount !== null && memberCount >= 11 && memberCount <= 13) || eventStr.toLowerCase().includes("(team)");
       
-      if (memberCount === 1) {
+      if (isSoloQuery) {
         const hasSolo = existingDocs.some((r: any) =>
           r.participationType === "individual" ||
           r.selectedEvents?.some((e: any) =>
             e.eventName?.toLowerCase().includes("fashion modeling") &&
-            e.teamDetails?.memberCount === 1
+            (e.teamDetails?.memberCount === 1 || e.eventName?.toLowerCase().includes("(solo)"))
           )
         );
         if (hasSolo) {
@@ -43,12 +46,12 @@ export async function GET(req: NextRequest) {
             message: "Your university has already registered a model for Solo Fashion Modeling (limit: 1 per university)."
           });
         }
-      } else if (memberCount === 2) {
+      } else if (isDuetQuery) {
         const hasDuet = existingDocs.some((r: any) =>
           r.participationType === "team" &&
           r.selectedEvents?.some((e: any) =>
             e.eventName?.toLowerCase().includes("fashion modeling") &&
-            e.teamDetails?.memberCount === 2
+            (e.teamDetails?.memberCount === 2 || e.eventName?.toLowerCase().includes("(duet)"))
           )
         );
         if (hasDuet) {
@@ -57,12 +60,12 @@ export async function GET(req: NextRequest) {
             message: "Your university has already registered a team for Duet Fashion Modeling (limit: 1 duet team per university)."
           });
         }
-      } else if (memberCount >= 11 && memberCount <= 13) {
+      } else if (isTeamQuery) {
         const hasTeam = existingDocs.some((r: any) =>
           r.participationType === "team" &&
           r.selectedEvents?.some((e: any) =>
             e.eventName?.toLowerCase().includes("fashion modeling") &&
-            e.teamDetails?.memberCount >= 11 && e.teamDetails?.memberCount <= 13
+            ((e.teamDetails?.memberCount >= 11 && e.teamDetails?.memberCount <= 13) || e.eventName?.toLowerCase().includes("(team)"))
           )
         );
         if (hasTeam) {
