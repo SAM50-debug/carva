@@ -27,55 +27,7 @@ export async function GET(req: NextRequest) {
     const isFashion = eventStr.toLowerCase().includes("fashion modeling");
 
     if (isFashion) {
-      const existingDocs = await db.collection("registrations").find(query).toArray();
-      const isSoloQuery = memberCount === 1 || eventStr.toLowerCase().includes("(solo)");
-      const isDuetQuery = memberCount === 2 || eventStr.toLowerCase().includes("(duet)");
-      const isTeamQuery = (memberCount !== null && memberCount >= 11 && memberCount <= 13) || eventStr.toLowerCase().includes("(team)");
-      
-      if (isSoloQuery) {
-        const hasSolo = existingDocs.some((r: any) =>
-          r.participationType === "individual" ||
-          r.selectedEvents?.some((e: any) =>
-            e.eventName?.toLowerCase().includes("fashion modeling") &&
-            (e.teamDetails?.memberCount === 1 || e.eventName?.toLowerCase().includes("(solo)"))
-          )
-        );
-        if (hasSolo) {
-          return NextResponse.json({
-            registered: true,
-            message: "Your university has already registered a model for Solo Fashion Modeling (limit: 1 per university)."
-          });
-        }
-      } else if (isDuetQuery) {
-        const hasDuet = existingDocs.some((r: any) =>
-          r.participationType === "team" &&
-          r.selectedEvents?.some((e: any) =>
-            e.eventName?.toLowerCase().includes("fashion modeling") &&
-            (e.teamDetails?.memberCount === 2 || e.eventName?.toLowerCase().includes("(duet)"))
-          )
-        );
-        if (hasDuet) {
-          return NextResponse.json({
-            registered: true,
-            message: "Your university has already registered a team for Duet Fashion Modeling (limit: 1 duet team per university)."
-          });
-        }
-      } else if (isTeamQuery) {
-        const hasTeam = existingDocs.some((r: any) =>
-          r.participationType === "team" &&
-          r.selectedEvents?.some((e: any) =>
-            e.eventName?.toLowerCase().includes("fashion modeling") &&
-            ((e.teamDetails?.memberCount >= 4 && e.teamDetails?.memberCount <= 13) || e.eventName?.toLowerCase().includes("(team)"))
-          )
-        );
-        if (hasTeam) {
-          return NextResponse.json({
-            registered: true,
-            message: "Your university has already registered a team for Group Fashion Modeling (limit: 1 team of 4-13 members per university)."
-          });
-        }
-      }
-
+      // Multiple participations per university are allowed for Fashion Modeling
       return NextResponse.json({ registered: false });
     }
 

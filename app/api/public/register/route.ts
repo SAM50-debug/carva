@@ -33,63 +33,6 @@ export async function POST(req: NextRequest) {
 
     const db = await getDb();
 
-    // Check Fashion Modeling exclusivity: 1 model for solo modeling, 1 duet team, and 1 group team (4-13) per university
-    const hasFashionModeling = data.selectedEvents.some(e => e.eventName.toLowerCase().includes("fashion modeling"));
-    if (hasFashionModeling) {
-      const fashionEvt = data.selectedEvents.find(e => e.eventName.toLowerCase().includes("fashion modeling"));
-      const count = fashionEvt?.teamDetails?.memberCount;
-      const fName = fashionEvt?.eventName?.toLowerCase() || "";
-      const isSolo = data.participationType === "individual" || count === 1 || fName.includes("(solo)");
-      const isDuet = (data.participationType === "team" && count === 2) || fName.includes("(duet)");
-      const isTeam = (data.participationType === "team" && (count ? count >= 4 && count <= 13 : false)) || fName.includes("(team)");
-
-      const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const existingDocs = await db.collection("registrations").find({
-        university: { $regex: new RegExp(`^${escapeRegex(data.university)}$`, "i") },
-        "selectedEvents.eventName": { $regex: /fashion modeling/i },
-        status: { $ne: "rejected" }
-      }).toArray();
-
-      if (isSolo) {
-        const hasExistingSolo = existingDocs.some((r: any) =>
-          r.participationType === "individual" ||
-          r.selectedEvents?.some((e: any) =>
-            e.eventName?.toLowerCase().includes("fashion modeling") &&
-            (e.teamDetails?.memberCount === 1 || e.eventName?.toLowerCase().includes("(solo)"))
-          )
-        );
-        if (hasExistingSolo) {
-          return apiError("Your university has already registered a model for Solo Fashion Modeling (limit: 1 per university).", 400);
-        }
-      }
-
-      if (isDuet) {
-        const hasExistingDuet = existingDocs.some((r: any) =>
-          r.participationType === "team" &&
-          r.selectedEvents?.some((e: any) =>
-            e.eventName?.toLowerCase().includes("fashion modeling") &&
-            (e.teamDetails?.memberCount === 2 || e.eventName?.toLowerCase().includes("(duet)"))
-          )
-        );
-        if (hasExistingDuet) {
-          return apiError("Your university has already registered a team for Duet Fashion Modeling (limit: 1 duet team per university).", 400);
-        }
-      }
-
-      if (isTeam) {
-        const hasExistingTeam = existingDocs.some((r: any) =>
-          r.participationType === "team" &&
-          r.selectedEvents?.some((e: any) =>
-            e.eventName?.toLowerCase().includes("fashion modeling") &&
-            ((e.teamDetails?.memberCount >= 4 && e.teamDetails?.memberCount <= 13) || e.eventName?.toLowerCase().includes("(team)"))
-          )
-        );
-        if (hasExistingTeam) {
-          return apiError("Your university has already registered a team for Group Fashion Modeling (limit: 1 team of 4-13 members per university).", 400);
-        }
-      }
-    }
-
     const qrCode = nanoid(16);
 
     const registrationDoc = {

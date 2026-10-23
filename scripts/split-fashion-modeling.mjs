@@ -50,7 +50,7 @@ async function run() {
     rules: [
       "Solo modeling (1 model per entry).",
       "Performance time: 5 to 8 minutes.",
-      "Only 1 solo entry permitted per university/college.",
+      "Multiple entries permitted per university/college.",
       "Prohibited tools on stage: real weapons, firearms, open flame, sharp objects.",
       "Decent and appropriate runway couture required."
     ]
@@ -81,7 +81,7 @@ async function run() {
     rules: [
       "Duet modeling (strictly 2 models: 1 male & 1 female).",
       "Performance time: 5 to 8 minutes.",
-      "Only 1 duet pair permitted per university/college.",
+      "Multiple entries permitted per university/college.",
       "Prohibited tools on stage: real weapons, firearms, open flame, sharp objects.",
       "Decent and appropriate runway couture required."
     ]
@@ -112,7 +112,7 @@ async function run() {
     rules: [
       "Team modeling (strictly 4 to 13 models).",
       "Performance time: 5 to 8 minutes.",
-      "Only 1 team permitted per university/college.",
+      "Multiple entries permitted per university/college.",
       "Prohibited tools on stage: real weapons, firearms, open flame, sharp objects.",
       "Decent and appropriate runway couture required."
     ]
